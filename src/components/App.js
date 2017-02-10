@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Navigator, BackAndroid } from 'react-native';
 
-import AnimatedButton from './AnimatedButton';
 import Lists from './Lists';
+import List from './List';
 
 class App extends Component {
   state = {
@@ -10,40 +10,46 @@ class App extends Component {
     buttonText: 'Submit',
   }
 
+  renderScene(route, navigator) {
+    if (route.name == 'Lists') {
+      return <Lists navigator={navigator} {...route.passProps} />;
+    }
+    if (route.name == 'List') {
+      return <List navigator={navigator} {...route.passProps} />;
+    }
+  }
+
+  back = () => {
+    if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
+        this.navigator.pop();
+        return true;
+    }
+    return false;
+  }
+
+  componentDidMount() {
+    BackAndroid.addEventListener('hardwareBackPress', this.back);
+  }
+
+  componentWillUnmount() {
+    BackAndroid.removeEventListener('hardwareBackPress', this.back);
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.header}>Change button state</Text>
-        <View style={styles.texts}>
-          <Button title="Submit" onPress={() => this.setState({buttonText: 'Submit', buttonVariant: 'primary'})} />
-          <Button title="Whoops" onPress={() => this.setState({buttonText: 'Whoops', buttonVariant: 'error'})} />
-          <Button title="Retry" onPress={() => this.setState({buttonText: 'Retry', buttonVariant: 'error'})} />
-          <Button title="Thanks" onPress={() => this.setState({buttonText: 'Thanks', buttonVariant: 'success'})} />
-        </View>
-        <AnimatedButton variant={this.state.buttonVariant}>
-          {this.state.buttonText}
-        </AnimatedButton>
-        <Lists />
-      </View>
+      <Navigator
+        initialRoute={{ name: 'Lists' }}
+        ref={(nav) => {this.navigator = nav;}}
+        renderScene={this.renderScene}
+        style={styles.container}
+      />
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'stretch',
     backgroundColor: '#FFF',
-  },
-  header: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  texts: {
-    flexDirection: 'row',
-    marginBottom: 25,
   },
 });
 

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { ListView, Text, View } from 'react-native';
 
+import ListsHeader from './ListsHeader';
 import ListsRow from './ListsRow';
 import * as data from '../data';
 
-class Lists extends Component {
-  // Initialize the hardcoded data
+export default class Lists extends Component {
   constructor(props) {
     super(props);
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
@@ -18,10 +18,10 @@ class Lists extends Component {
     return (
       <ListView
         dataSource={this.state.dataSource}
-        renderRow={(rowData) => <ListsRow {...rowData} />}
+        renderHeader={() => <ListsHeader {...data.account} />}
+        renderRow={(rowData) => <ListsRow {...rowData} navigator={this.props.navigator} />}
+        style={{backgroundColor: '#FFF'}}
       />
     );
   }
 }
-
-export default Lists;

@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
-import PointCircle from './PointCircle';
+import CheckCircle from './CheckCircle';
 
-export default class ListsRow extends Component {
+export default class ListRow extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      active: (this.props.sectionID == 'active')? true:false
+    }
   }
 
   _navigate() {
@@ -21,22 +24,18 @@ export default class ListsRow extends Component {
   }
 
   onPress = () => {
-    //Alert.alert(this.props.title, `${this.getNumberOfItems()} Items`);
-    this._navigate();
-  }
-
-  getNumberOfItems = () => {
-    return this.props.items.active.length + this.props.items.inactive.length;
+    this.setState({
+      active: !this.state.active
+    });
   }
 
   render() {
     return (
       <TouchableOpacity onPress={this.onPress}>
         <View style={styles.row}>
-          <PointCircle number={this.props.activePoints} style={styles.points} />
+          <CheckCircle style={styles.check} checked={this.state.active} />
           <View style={styles.text}>
-            <Text style={styles.headline}>{this.props.title}</Text>
-            <Text style={styles.subtext}>{this.getNumberOfItems()} items, {this.props.activePoints + this.props.inactivePoints} total points</Text>
+            <Text style={styles.headline}>{this.props.title}, {this.props.points} points</Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -53,14 +52,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     padding: 15,
   },
-  points: {
+  check: {
   },
   text: {
     flex: 1,
     paddingLeft: 15,
   },
   headline: {
-    fontWeight: 'bold',
   },
   subtext: {
     paddingTop: 5,

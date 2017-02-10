@@ -1,27 +1,48 @@
+export const account = {
+  name: 'Jason',
+  points: 19
+}
+
 export const lists = [
   {
-    title: 'John',
-    number: 22,
+    title: 'Today',
+    activePoints: 2,
+    inactivePoints: 1,
+    items: {
+      active: [{
+        title: 'Pet a cat',
+        points: 2,
+      }, {
+        title: 'Go to work',
+        points: 0,
+      }, {
+        title: 'Adopt a cat',
+        points: 0,
+      }],
+      inactive: [{
+        title: 'Give the cat a treat',
+        points: 1,
+      }]
+    }
   }, {
-    title: 'Joel',
-    number: 56,
-  }, {
-    title: 'James',
-    number: 48,
-  }, {
-    title: 'Jimmy',
-    number: 10,
-  }, {
-    title: 'Jackson',
-    number: 7,
-  }, {
-    title: 'Jillian',
-    number: 12,
-  }, {
-    title: 'Julie',
-    number: 18,
-  }, {
-    title: 'Kevin',
-    number: 4,
-  },
+    title: 'Tommorrow',
+    activePoints: 2,
+    inactivePoints: 1,
+    items: {
+      active: [{
+        title: 'Pet a cat',
+        points: 2,
+      }, {
+        title: 'Go to work',
+        points: 0,
+      }, {
+        title: 'Adopt a cat',
+        points: 0,
+      }],
+      inactive: [{
+        title: 'Give the cat a treat',
+        points: 1,
+      }]
+    }
+  }
 ];
