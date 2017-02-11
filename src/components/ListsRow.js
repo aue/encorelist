@@ -11,6 +11,7 @@ export default class ListsRow extends Component {
   _navigate() {
     this.props.navigator.push({
       name: 'List',
+      title: this.props.title,
       passProps: {
         title: this.props.title,
         activePoints: this.props.activePoints,

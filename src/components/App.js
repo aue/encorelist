@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Navigator, BackAndroid } from 'react-native';
+import { View, Text, StyleSheet, Navigator, BackAndroid, TouchableHighlight } from 'react-native';
 
 import Lists from './Lists';
 import List from './List';
@@ -41,6 +41,28 @@ class App extends Component {
         initialRoute={{ name: 'Lists' }}
         ref={(nav) => {this.navigator = nav;}}
         renderScene={this.renderScene}
+        navigationBar={
+          <Navigator.NavigationBar
+            routeMapper={{
+              LeftButton: (route, navigator, index, navState) =>
+              {
+               if (route.name === 'Lists') {
+                 return null;
+               } else {
+                 return (
+                   <TouchableHighlight onPress={() => navigator.pop()}>
+                     <Text style={{padding: 15}}>Back</Text>
+                   </TouchableHighlight>
+                 );
+               }
+             },
+              RightButton: (route, navigator, index, navState) =>
+                { return (<Text style={{padding: 15}}>More</Text>); },
+              Title: (route, navigator, index, navState) =>
+                { return (<Text style={{padding: 15}}>{route.title || 'Encore List'}</Text>); },
+            }}
+          />
+        }
         style={styles.container}
       />
     );

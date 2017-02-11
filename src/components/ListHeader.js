@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, StatusBar, Animated } from 'react-native';
+import { StyleSheet, Text, View, StatusBar, Animated, Navigator } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 export default class ListHeader extends Component {
@@ -10,7 +10,7 @@ export default class ListHeader extends Component {
     }
   }
 
-  componentDidMount() {
+  /*componentDidMount() {
     this.state.heightValue.setValue(155);
     Animated.timing(
       this.state.heightValue,
@@ -19,14 +19,13 @@ export default class ListHeader extends Component {
         duration: 250,
         delay: 250
       }
-    ).start();
-  }
+    ).start(); // style={{height: this.state.heightValue}}
+  }*/
 
   render() {
     return (
-      <Animated.View style={{height: this.state.heightValue}}>
+      <Animated.View>
         <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#A54348', '#E4598C']} style={styles.header}>
-          <StatusBar translucent={true} backgroundColor={'transparent'} />
           <Text style={styles.title}>Progress</Text>
           <Text style={styles.text}>{this.props.points} points</Text>
         </LinearGradient>
@@ -40,6 +39,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 15,
+    paddingTop: Navigator.NavigationBar.Styles.General.TotalNavHeight,
   },
   title: {
     fontWeight: 'bold',
