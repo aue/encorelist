@@ -21,27 +21,19 @@ export default class ListScreen extends Component {
 
   static navigationOptions = {
     title: ({ state }) => {
-      if (state.params.mode === 'edit') {
-        return `Editing ${state.params.title}`;
-      }
       return state.params.title;
     },
-    header: ({ state, setParams }) => {
+    header: ({ state, setParams, navigate }) => {
       // The navigation prop has functions like setParams, goBack, and navigate.
       let right = (
         <Button
           title="Edit"
-          onPress={() => setParams({ mode: 'edit' })}
+          onPress={() => navigate('ListEdit', {
+            title: state.params.title,
+            listId: state.params.listId
+          })}
         />
       );
-      if (state.params.mode === 'edit') {
-        right = (
-          <Button
-            title="Done"
-            onPress={() => setParams({ mode: 'none' })}
-          />
-        );
-      }
       return { right };
     },
   };

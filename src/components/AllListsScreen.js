@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ListView } from 'react-native';
+import { ListView, Button } from 'react-native';
 
 import List from './List';
 import ListsHeader from './ListsHeader';
@@ -17,6 +17,16 @@ export default class AllListsScreen extends Component {
 
   static navigationOptions = {
     title: 'Lists',
+    header: ({ state, setParams, navigate }) => {
+      // The navigation prop has functions like setParams, goBack, and navigate.
+      let right = (
+        <Button
+          title="Add"
+          onPress={() => navigate('ListAdd')}
+        />
+      );
+      return { right };
+    },
   };
 
   mapListIdsToDataSourceArray(listsIds) {
