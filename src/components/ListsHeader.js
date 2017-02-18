@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Navigator } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 
 export default class ListsHeader extends Component {
@@ -24,7 +24,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'flex-start',
     padding: 15,
-    paddingTop: Navigator.NavigationBar.Styles.General.TotalNavHeight,
   },
   title: {
     fontWeight: 'bold',

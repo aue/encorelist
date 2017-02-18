@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 
 import PointCircle from './PointCircle';
 
@@ -8,31 +8,19 @@ export default class ListsRow extends Component {
     super(props);
   }
 
-  _navigate() {
-    this.props.navigator.push({
-      name: 'List',
-      title: this.props.title,
-      passProps: {
-        title: this.props.title,
-        activePoints: this.props.activePoints,
-        inactivePoints: this.props.inactivePoints,
-        items: this.props.items
-      }
-    })
-  }
-
-  onPress = () => {
-    //Alert.alert(this.props.title, `${this.getNumberOfItems()} Items`);
-    this._navigate();
-  }
-
   getNumberOfItems = () => {
     return this.props.items.active.length + this.props.items.inactive.length;
   }
 
   render() {
+    const { navigate } = this.props.navigation;
     return (
-      <TouchableOpacity onPress={this.onPress}>
+      <TouchableOpacity onPress={
+        () => navigate('List', {
+          title: this.props.title,
+          listId: this.props.listId
+        })
+      }>
         <View style={styles.row}>
           <PointCircle number={this.props.activePoints} style={styles.points} />
           <View style={styles.text}>

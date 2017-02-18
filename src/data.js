@@ -1,10 +1,11 @@
 export const account = {
   name: 'Jason',
-  points: 19
+  points: 19,
+  listsIds: ['key1', 'key2'],
 }
 
-export const lists = [
-  {
+export const lists = {
+  key1: {
     title: 'Today',
     activePoints: 2,
     inactivePoints: 1,
@@ -24,7 +25,8 @@ export const lists = [
         points: 1,
       }]
     }
-  }, {
+  },
+  key2: {
     title: 'Tommorrow',
     activePoints: 2,
     inactivePoints: 1,
@@ -45,4 +47,4 @@ export const lists = [
       }]
     }
   }
-];
+};
