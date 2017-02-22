@@ -10,7 +10,7 @@ export default class ListsHeader extends Component {
   render() {
     return (
       <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#DDD', '#EEE']} style={styles.header}>
-        <Text style={styles.title}>At a glance</Text>
+        <Text style={styles.title}>Hi {this.props.name}! At a glance</Text>
         <Text style={styles.text}>{this.props.points} points</Text>
         <Text style={styles.title}>Your next item</Text>
         <Text style={styles.text}>Some item/task</Text>

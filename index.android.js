@@ -5,4 +5,4 @@ import App from './src/components/App';
 
 AppRegistry.registerComponent('encorelist', () => App);*/
 
-import './App';
+import './src/components/App';

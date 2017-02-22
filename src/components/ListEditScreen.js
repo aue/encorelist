@@ -7,7 +7,7 @@ export default class ListEditScreen extends Component {
     const { params } = this.props.navigation.state;
     this.state = {
       title: params.title,
-      listId: params.listId
+      id: params.id
     };
   }
 
@@ -36,8 +36,8 @@ export default class ListEditScreen extends Component {
         />
         <TextInput
           style={{height: 40}}
-          onChangeText={(listId) => this.setState({listId})}
-          value={this.state.listId}
+          onChangeText={(id) => this.setState({id})}
+          value={this.state.id}
         />
       </View>
     );

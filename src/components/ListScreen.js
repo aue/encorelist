@@ -3,20 +3,40 @@ import { ListView, Text, View, Button } from 'react-native';
 
 import ListHeader from './ListHeader';
 import ListRow from './ListRow';
-import * as data from '../data';
+
+import * as listsActions from '../actions/lists';
 
 export default class ListScreen extends Component {
   constructor(props) {
     super(props);
-    let listData = this.fetchListData();
     const ds = new ListView.DataSource({
       rowHasChanged: (r1, r2) => r1 !== r2,
       sectionHeaderHasChanged: (s1, s2) => s1 !== s2
     });
     this.state = {
-      ...listData,
-      dataSource: ds.cloneWithRowsAndSections(listData.items)
+      populated: false,
+      dataSource: ds
     };
+  }
+
+  componentWillMount() {
+    // Fetch list data
+    this.fetchData()
+      .then(listData => {
+        // Parse into dataSource for ListView
+        const ds = this.state.dataSource.cloneWithRowsAndSections(listData.items);
+
+        this.setState({
+          populated: true,
+          dataSource: ds
+        });
+      })
+      .catch(err => {
+        Alert.alert(
+          'A problem has occurred',
+          'Could not list data'
+        );
+      });
   }
 
   static navigationOptions = {
@@ -30,7 +50,7 @@ export default class ListScreen extends Component {
           title="Edit"
           onPress={() => navigate('ListEdit', {
             title: state.params.title,
-            listId: state.params.listId
+            id: state.params.id
           })}
         />
       );
@@ -44,8 +64,21 @@ export default class ListScreen extends Component {
     )
   }
 
-  fetchListData() {
-    return data.lists[this.props.navigation.state.params.listId];
+  async fetchData() {
+    try {
+      // Fetch data for lists
+      let listId = this.props.navigation.state.params.id;
+      let listData = await listsActions.getList(listId);
+
+      // Save to state
+      this.setState({
+        listData: listData,
+      });
+
+      return listData;
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   render() {

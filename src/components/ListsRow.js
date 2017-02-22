@@ -18,7 +18,7 @@ export default class ListsRow extends Component {
       <TouchableOpacity onPress={
         () => navigate('List', {
           title: this.props.title,
-          listId: this.props.listId
+          id: this.props.id
         })
       }>
         <View style={styles.row}>

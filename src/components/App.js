@@ -1,78 +1,33 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Navigator, BackAndroid, TouchableHighlight } from 'react-native';
+import { AppRegistry, Text, Button, View } from 'react-native';
+import { StackNavigator, TabNavigator } from 'react-navigation';
 
-import Lists from './Lists';
-import List from './List';
+import AllListsScreen from './AllListsScreen';
+import ListScreen from './ListScreen';
+import ListEditScreen from './ListEditScreen';
+import ListAddScreen from './ListAddScreen';
+import RewardsScreen from './RewardsScreen';
 
-class App extends Component {
-  state = {
-    buttonVariant: 'primary',
-    buttonText: 'Submit',
-  }
+import * as ListsActions from '../actions/lists';
+//ListsActions.setupLists();
 
-  renderScene(route, navigator) {
-    if (route.name == 'Lists') {
-      return <Lists navigator={navigator} {...route.passProps} />;
+const MainScreenNavigator = TabNavigator({
+  Lists: { screen: AllListsScreen },
+  Rewards: { screen: RewardsScreen },
+}, {
+  swipeEnabled: false,
+  tabBarOptions: {
+    style: {
+      backgroundColor: 'gray',
     }
-    if (route.name == 'List') {
-      return <List navigator={navigator} {...route.passProps} />;
-    }
   }
-
-  back = () => {
-    if (this.navigator && this.navigator.getCurrentRoutes().length > 1) {
-        this.navigator.pop();
-        return true;
-    }
-    return false;
-  }
-
-  componentDidMount() {
-    BackAndroid.addEventListener('hardwareBackPress', this.back);
-  }
-
-  componentWillUnmount() {
-    BackAndroid.removeEventListener('hardwareBackPress', this.back);
-  }
-
-  render() {
-    return (
-      <Navigator
-        initialRoute={{ name: 'Lists' }}
-        ref={(nav) => {this.navigator = nav;}}
-        renderScene={this.renderScene}
-        navigationBar={
-          <Navigator.NavigationBar
-            routeMapper={{
-              LeftButton: (route, navigator, index, navState) =>
-              {
-               if (route.name === 'Lists') {
-                 return null;
-               } else {
-                 return (
-                   <TouchableHighlight onPress={() => navigator.pop()}>
-                     <Text style={{padding: 15}}>Back</Text>
-                   </TouchableHighlight>
-                 );
-               }
-             },
-              RightButton: (route, navigator, index, navState) =>
-                { return (<Text style={{padding: 15}}>More</Text>); },
-              Title: (route, navigator, index, navState) =>
-                { return (<Text style={{padding: 15}}>{route.title || 'Encore List'}</Text>); },
-            }}
-          />
-        }
-        style={styles.container}
-      />
-    );
-  }
-}
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#FFF',
-  },
 });
 
-export default App;
+const App = StackNavigator({
+  Home: { screen: MainScreenNavigator, navigationOptions: {title: 'Encore List'} },
+  List: { screen: ListScreen },
+  ListEdit: { screen: ListEditScreen },
+  ListAdd: { screen: ListAddScreen },
+});
+
+AppRegistry.registerComponent('encorelist', () => App);

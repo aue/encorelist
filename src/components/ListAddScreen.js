@@ -1,13 +1,20 @@
 import React, { Component } from 'react';
 import { ListView, Text, View, Button, TextInput } from 'react-native';
 
+import * as listsActions from '../actions/lists';
+
 export default class ListAddScreen extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: '',
-      listId: ''
+      title: ''
     };
+  }
+
+  componentWillMount() {
+    this.props.navigation.setParams({
+      title: 'Adding list'
+    });
   }
 
   static navigationOptions = {
@@ -24,6 +31,16 @@ export default class ListAddScreen extends Component {
     },
   };
 
+  async addList() {
+    try {
+      let list = await listsActions.addList(this.state.title);
+      this.props.navigation.state.params.state.params.update();
+      this.props.navigation.goBack();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -34,11 +51,9 @@ export default class ListAddScreen extends Component {
           placeholder="Title"
           value={this.state.title}
         />
-        <TextInput
-          style={{height: 40}}
-          onChangeText={(listId) => this.setState({listId})}
-          placeholder="List Id"
-          value={this.state.listId}
+        <Button
+          title="Save"
+          onPress={() => this.addList()}
         />
       </View>
     );
