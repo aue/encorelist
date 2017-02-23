@@ -39,19 +39,23 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#FFF',
-    padding: 15,
+    padding: 16,
   },
   points: {
+
   },
   text: {
     flex: 1,
-    paddingLeft: 15,
+    paddingLeft: 16,
   },
   headline: {
+    fontSize: 16,
     fontWeight: 'bold',
+    color: 'rgba(0,0,0,0.87)'
   },
   subtext: {
+    fontSize: 14,
     paddingTop: 5,
+    color: 'rgba(0,0,0,0.54)'
   },
 });

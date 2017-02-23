@@ -34,7 +34,7 @@ export default class AllListsScreen extends Component {
         <Button
           title="Add"
           onPress={() => navigate('ListAdd', {
-            state
+            state,
           })}
         />
       );
@@ -89,14 +89,13 @@ export default class AllListsScreen extends Component {
   }
 
   render() {
-    console.log('rendered');
     const { navigate } = this.props.navigation;
     return (
       <ListView
         dataSource={this.state.dataSource}
         renderHeader={() => <ListsHeader {...this.state.account} />}
         renderRow={(rowData) => <ListsRow {...rowData} navigation={ this.props.navigation } />}
-        style={{backgroundColor: '#FFF'}}
+        style={{}}
       />
     );
   }

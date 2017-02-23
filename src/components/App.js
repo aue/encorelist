@@ -8,9 +8,6 @@ import ListEditScreen from './ListEditScreen';
 import ListAddScreen from './ListAddScreen';
 import RewardsScreen from './RewardsScreen';
 
-import * as ListsActions from '../actions/lists';
-//ListsActions.setupLists();
-
 const MainScreenNavigator = TabNavigator({
   Lists: { screen: AllListsScreen },
   Rewards: { screen: RewardsScreen },
@@ -18,16 +15,23 @@ const MainScreenNavigator = TabNavigator({
   swipeEnabled: false,
   tabBarOptions: {
     style: {
-      backgroundColor: 'gray',
+      backgroundColor: '#DDD',
     }
   }
 });
 
 const App = StackNavigator({
-  Home: { screen: MainScreenNavigator, navigationOptions: {title: 'Encore List'} },
+  Home: { screen: MainScreenNavigator, navigationOptions: {
+      title: 'Encore List'
+    }
+  },
   List: { screen: ListScreen },
   ListEdit: { screen: ListEditScreen },
   ListAdd: { screen: ListAddScreen },
+}, {
+  cardStyle: {
+    backgroundColor: '#fff',
+  }
 });
 
 AppRegistry.registerComponent('encorelist', () => App);
