@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50">
+  <defs>
+    <style>.cls-1{fill:none;}</style>
+  </defs>
+  <title>Asset 1</title>
+  <g id="Layer_2" data-name="Layer 2">
+    <g id="ICON">
+      <rect class="cls-1" x="16.16" y="16.16" width="17.68" height="17.68" transform="translate(-10.36 25) rotate(-45)"/>
+      <path d="M25,0,0,25,25,50,50,25ZM12.5,25,25,12.5,37.5,25,25,37.5Z"/>
+    </g>
+  </g>
+</svg>

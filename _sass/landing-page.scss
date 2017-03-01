@@ -1,5 +1,6 @@
 .bottom-cta {
-	background: linear-gradient(to bottom, $brand-color 0%, $middle-gradient-color 100%);
+	background: $brand-color; /* Old browsers */
+	background: linear-gradient(to right, $middle-gradient-color 0%, $brand-color 100%) no-repeat $brand-color;
 	color: #fff;
 	text-align: center;
 	margin: 0;
@@ -34,11 +35,33 @@
 .hero {
 	color: #ffffff;
 	text-align: center;
-	background: linear-gradient(to bottom, $middle-gradient-color 0%, $secondary-brand-color 100%) no-repeat #a05fb7;
+	background: $brand-color; /* Old browsers */
+	background: linear-gradient(to right, $middle-gradient-color 0%, $brand-color 100%) no-repeat $brand-color;
 	padding-top: 50px;
+	position: relative;
 
 	p {
 		color: #fff;
+	}
+
+	&::before, &::after {
+		position: absolute;
+    bottom: 0;
+		width: 0;
+		height: 0;
+		content: '';
+	}
+
+	&::before {
+		border-right: 30vw solid transparent;
+		border-bottom: 2rem solid #fff;
+		left: 0;
+	}
+
+	&::after {
+		border-left: 70vw solid transparent;
+		border-bottom: 4rem solid #fff;
+		right: 0;
 	}
 }
 
