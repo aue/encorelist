@@ -7,15 +7,15 @@ export default class List extends Component {
     super(props)
 
     this.state = {
-      newItem: '',
-      newItemValue: ''
+      newItemTitle: '',
+      newItemPoints: ''
     }
   }
 
   componentWillMount() {
     this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
 
-    this.props.getListItemIds(1)
+    this.props.getListItems(1)
 
     this.props.loadOfflineItems()
 
@@ -33,30 +33,30 @@ export default class List extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    // Populate items when ids are fetched
-    if (this.props.loadingItemIds && !nextProps.loadingItemIds && !nextProps.error) {
-      this.props.getItems(nextProps.itemIds)
+    // Populate list with items
+    if (this.props.items !== nextProps.items) {
+      this.dataSource = this.dataSource.cloneWithRows(nextProps.items)
     }
   }
 
   renderRow(rowData) {
-    console.log(this.props.connected)
     return (
       <Item name={rowData.title}
-            removable={this.props.connected}
-            onRemove={() => this._remove(rowData.id)} />
+        removable={this.props.connected}
+        onRemove={() => this._remove(rowData.id)} />
     )
   }
 
   _add() {
-    this.props.addItem(this.state.newItem);
-
-    this.setState({newItem: ''})
-    setTimeout(() => this.refs.newItem.focus(), 1)
+    this.props.addListItem(this.state.newItemTitle, this.state.newItemPoints, 1);
+    this.setState({
+      newItemTitle: '',
+      newItemPoints: ''
+    })
   }
 
   _remove(id) {
-    this.props.removeItem(id)
+    this.props.removeListItem(id, 1)
   }
 
   _change() {
@@ -81,24 +81,22 @@ export default class List extends Component {
       <View style={styles.container}>
         {readonlyMessage}
         <View style={styles.new}>
-          <TextInput placeholder="Add item"
-                     style={styles.newItem}
-                     ref="newItem"
-                     editable={this.props.connected}
-                     value={this.state.newItem}
-                     onChangeText={(newItem) => this.setState({newItem})}
-                     onSubmitEditing={() => this._add()} />
-          <TextInput placeholder="Points"
-                     style={styles.newItemValue}
-                     ref="newItemValue"
-                     editable={this.props.connected}
-                     value={this.state.newItemValue}
-                     onChangeText={(newItemValue) => this.setState({newItemValue})} />
-          <Button onPress={() => this._change()} title={this.props.changingItem? "Changing":"Send Change"} disabled={this.props.changingItem} />
+          <TextInput
+            placeholder="Add item"
+            style={styles.newItem}
+            value={this.state.newItemTitle}
+            onChangeText={(value) => this.setState({newItemTitle: value})} />
+          <TextInput
+            placeholder="Points"
+            style={styles.newItem}
+            keyboardType="numeric"
+            value={this.state.newItemPoints}
+            onChangeText={(value) => this.setState({newItemPoints: value})} />
+          <Button onPress={() => this._add()} title={this.props.addingItem? "Adding":"Add to List"} disabled={this.props.addingItem} />
         </View>
 
         <ListView
-          dataSource={this.dataSource.cloneWithRows(items)}
+          dataSource={this.dataSource}
           enableEmptySections={true}
           renderRow={this.renderRow.bind(this)}
         />
@@ -114,7 +112,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F6F6'
   },
   new: {
-    height: 70
+    flex: 0
   },
   newItem: {
     backgroundColor: '#FFFFFF',

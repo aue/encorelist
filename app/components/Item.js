@@ -83,7 +83,7 @@ export default class Item extends Component {
         <View ref="wrapper" collapsable={false}>
           <Animated.View style={animatedCardStyles} {...this._panResponder.panHandlers}>
             <View style={styles.row}>
-              <TextInput style={styles.text} value={this.props.name} />
+              <Text style={styles.text}>{this.props.name}</Text>
             </View>
             <View style={styles.separator} />
           </Animated.View>

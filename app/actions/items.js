@@ -2,22 +2,31 @@ import offline from 'react-native-simple-store'
 import { itemsRef } from '../firebase'
 import database from '../database';
 
-export const GET_LIST_ITEM_IDS_REQUESTED = 'GET_LIST_ITEM_IDS_REQUESTED';
+export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST';
 export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS';
-export const GET_LIST_ITEM_IDS_ERROR = 'GET_LIST_ITEM_IDS_ERROR';
+export const GET_LIST_ITEM_IDS_FAILURE = 'GET_LIST_ITEM_IDS_FAILURE';
 
-export const GET_ITEMS_REQUESTED = 'GET_ITEMS_REQUESTED';
+export const GET_ITEMS_REQUEST = 'GET_ITEMS_REQUEST';
 export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
-export const GET_ITEMS_ERROR = 'GET_ITEMS_ERROR';
+export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
+
+export const ADD_LIST_ITEM_REQUEST = 'ADD_LIST_ITEM_REQUEST';
+export const ADD_LIST_ITEM_SUCCESS = 'ADD_LIST_ITEM_SUCCESS';
+export const ADD_LIST_ITEM_FAILURE = 'ADD_LIST_ITEM_FAILURE';
+
+export const REMOVE_LIST_ITEM_REQUEST = 'REMOVE_LIST_ITEM_REQUEST';
+export const REMOVE_LIST_ITEM_SUCCESS = 'REMOVE_LIST_ITEM_SUCCESS';
+export const REMOVE_LIST_ITEM_FAILURE = 'REMOVE_LIST_ITEM_FAILURE';
+
+export const CHANGE_ITEM_REQUEST = 'CHANGE_ITEM_REQUEST';
+export const CHANGE_ITEM_SUCCESS = 'CHANGE_ITEM_SUCCESS';
+export const CHANGE_ITEM_FAILURE = 'CHANGE_ITEM_FAILURE';
+
 
 export const ADD_ITEM = 'ADD_ITEM'
 export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS'
 export const REMOVE_ITEM = 'REMOVE_ITEM'
 export const REMOVE_ITEM_SUCCESS = 'REMOVE_ITEM_SUCCESS'
-
-export const CHANGE_ITEM_REQUESTED = 'CHANGE_ITEM_REQUESTED';
-export const CHANGE_ITEM_SUCCESS = 'CHANGE_ITEM_SUCCESS';
-export const CHANGE_ITEM_ERROR = 'CHANGE_ITEM_ERROR';
 
 export const OFFLINE_ITEMS_LOADED = 'OFFLINE_ITEMS_LOADED'
 export const CONNECTION_CHECKING = 'CONNECTION_CHECKING'
@@ -26,92 +35,134 @@ export const CONNECTION_ONLINE = 'CONNECTION_ONLINE'
 export const CONNECTION_OFFLINE = 'CONNECTION_OFFLINE'
 
 /*
- * Fetch item ids in a list
- */
+* Fetch item ids in a list
+*/
 export function getListItemIds(listId) {
   return dispatch => {
-    dispatch(getListItemIdsRequested());
+    dispatch({ type: GET_LIST_ITEM_IDS_REQUEST, listId })
+
     return database.ref(`/lists/${listId}/items`).once('value', snapshot => {
-      let data = snapshot.val();
-      let itemIds = Object.keys(data);
-      console.log(itemIds);
-      dispatch(getListItemIdsSuccess(itemIds))
+      let data = snapshot.val()
+      let itemIds = Object.keys(data)
+      dispatch({ type: GET_LIST_ITEM_IDS_SUCCESS, listId, itemIds })
     })
     .catch(error => {
-      console.log(error);
-      dispatch(getListItemIdsError());
-    });
-  };
-}
-
-function getListItemIdsRequested() {
-  return {
-    type: GET_LIST_ITEM_IDS_REQUESTED
-  };
-}
-
-function getListItemIdsSuccess(itemIds) {
-  return {
-    type: GET_LIST_ITEM_IDS_SUCCESS,
-    itemIds
-  };
-}
-
-function getListItemIdsError() {
-  return {
-    type: GET_LIST_ITEM_IDS_ERROR
-  };
+      dispatch({ type: GET_LIST_ITEM_IDS_FAILURE, listId, error })
+      throw error
+    })
+  }
 }
 
 /*
- * Fetch items from ids
- */
+* Fetch items from ids
+*/
 export function getItems(itemIds) {
   return dispatch => {
-    dispatch(getItemsRequested());
+    dispatch({ type: GET_ITEMS_REQUEST, itemIds })
 
     let promises = itemIds.map(itemId => {
-      return database.ref('/items/').child(itemId).once('value');
+      return database.ref('/items/').child(itemId).once('value')
     });
 
-    Promise.all(promises).then(snapshots => {
+    return Promise.all(promises).then(snapshots => {
       let items = snapshots
         .map(snapshot => snapshot.val())
-        .filter(value => value !== null);
-
-      console.log(items);
-      dispatch(getItemsSuccess(items));
+        .filter(value => value !== null)
+      dispatch({ type: GET_ITEMS_SUCCESS, itemIds, items })
     })
     .catch(error => {
-      console.log(error);
-      dispatch(getItemsError());
-    });
-  };
-}
-
-function getItemsRequested() {
-  return {
-    type: GET_ITEMS_REQUESTED
-  };
-}
-
-function getItemsSuccess(items) {
-  return {
-    type: GET_ITEMS_SUCCESS,
-    items
-  };
-}
-
-function getItemsError() {
-  return {
-    type: GET_ITEMS_ERROR
-  };
+      dispatch({ type: GET_ITEMS_FAILURE, itemIds, error })
+      throw error
+    })
+  }
 }
 
 /*
- * Adding an item to a list
+* Fetch all items in a given list
+*/
+export function getListItems(listId) {
+  return (dispatch, getState) => {
+    return dispatch(getListItemIds(listId)).then(() => {
+      console.log(getState())
+      const itemIds = getState().items.itemIds
+      return dispatch(getItems(itemIds))
+    })
+  }
+}
+
+/*
+* Adding an item to a list
+*/
+export function addListItem(title = '', points = 0, listId) {
+  return dispatch => {
+    let newItemId = database.ref().child('items').push().key
+    dispatch({ type: ADD_LIST_ITEM_REQUEST, title, listId, newItemId })
+
+    let newItem = {
+      id: newItemId,
+      title: title,
+      points: parseInt(points, 10) || 0,
+      complete: false,
+      time: new Date().getTime()
+    }
+    let updates = {}
+    updates[`/items/${newItemId}`] = newItem
+    updates[`/lists/${listId}/items/${newItemId}`] = true
+
+    return database.ref().update(updates).then(() => {
+      setTimeout(() => dispatch({ type: ADD_LIST_ITEM_SUCCESS, title, listId, itemId: newItemId, item: newItem }), 2500)
+    })
+    .catch(error => {
+      dispatch({ type: ADD_LIST_ITEM_FAILURE, title, listId, newItemId, error })
+      throw error
+    })
+  }
+}
+
+/*
+* Removing an item from a list
+*/
+export function removeListItem(itemId, listId) {
+  return dispatch => {
+    dispatch({ type: REMOVE_LIST_ITEM_REQUEST, itemId, listId })
+
+    let updates = {}
+    updates[`/items/${itemId}`] = null
+    updates[`/lists/${listId}/items/${itemId}`] = null
+
+    return database.ref().update(updates).then(() => {
+      dispatch({ type: REMOVE_LIST_ITEM_SUCCESS, itemId, listId })
+    })
+    .catch(error => {
+      dispatch({ type: REMOVE_LIST_ITEM_FAILURE, itemId, listId, error })
+      throw error
+    })
+  }
+}
+
+/*
+ * Change an item in a list
  */
-export function addItem(title, listId = 1) {
+export function changeItem(itemId, data) {
+  return dispatch => {
+    dispatch({ type: CHANGE_ITEM_REQUEST, itemId })
+
+    return database.ref('/items/').child(itemId).update(data).then(() => {
+      dispatch({ type: CHANGE_ITEM_SUCCESS, itemId, data })
+    })
+    .catch(error => {
+      dispatch({ type: CHANGE_ITEM_FAILURE, itemId, error })
+      throw error
+    })
+  }
+}
+
+
+
+
+
+
+export function addItem(title, listId) {
   let itemId = database.ref().child('items').push().key;
   let item = {
     id: itemId,
@@ -125,17 +176,6 @@ export function addItem(title, listId = 1) {
   updates[`/lists/${listId}/items/${itemId}`] = true;
   database.ref().update(updates);
 
-  /*const id = Math.random().toString(36).substring(7)
-  const itemRef = itemsRef.child(id)
-
-  itemRef.set({
-    id,
-    title: title,
-    points: 0,
-    complete: false,
-    time: new Date().getTime()
-  })*/
-
   return {
     type: ADD_ITEM
   }
@@ -148,9 +188,6 @@ export const addItemSuccess = (itemData) => {
   }
 }
 
-/*
- * Remove an item from a list
- */
 export const removeItem = (id) => {
   itemsRef.child(id).remove()
 
@@ -165,45 +202,6 @@ export const removeItemSuccess = (id) => {
     id: id
   }
 }
-
-/*
- * Change an item in a list
- */
-export function changeItem(itemId, data) {
-  return dispatch => {
-    dispatch(changeItemRequested(itemId));
-    return database.ref('/items/').child(itemId).update(data).then(() => {
-      dispatch(changeItemSuccess(itemId));
-    })
-    .catch(error => {
-      console.log(error);
-      dispatch(changeItemError());
-    });
-  };
-}
-
-function changeItemRequested(itemId) {
-  return {
-    type: CHANGE_ITEM_REQUESTED,
-    itemId
-  };
-}
-
-function changeItemSuccess(itemId) {
-  return {
-    type: CHANGE_ITEM_SUCCESS,
-    itemId
-  };
-}
-
-function changeItemError() {
-  return {
-    type: CHANGE_ITEM_ERROR
-  };
-}
-
-
-
 
 const offlineItemsLoaded = (items) => {
   return {

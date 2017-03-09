@@ -14,7 +14,9 @@ const mapStateToProps = (state) => {
     loadingItemIds: state.items.loadingItemIds,
     loadingItems: state.items.loadingItems,
     error: state.items.error,
-    changingItem: state.items.changingItem
+    changingItem: state.items.changingItem,
+    addingItem: state.items.addingItem,
+    removingItem: state.items.removingItem
   }
 }
 
