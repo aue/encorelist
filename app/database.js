@@ -1,6 +1,5 @@
 import firebase from 'firebase';
 import config from './config';
-import { db } from './firebase';
 
 const firebaseApp = {
   apiKey: config.API_KEY,
@@ -10,8 +9,7 @@ const firebaseApp = {
   messagingSenderId: config.MESSAGING_SENDER_ID
 };
 
-//firebase.initializeApp(firebaseApp);
-//const database = firebase.database();
-const database = db;
+firebase.initializeApp(firebaseApp);
+const database = firebase.database();
 
 export default database;

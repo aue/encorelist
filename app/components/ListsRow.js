@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { Animated, PanResponder, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Animated, PanResponder, StyleSheet, Text, TextInput, View, TouchableOpacity } from 'react-native'
 
-export default class Item extends Component {
+export default class ListsRow extends Component {
   constructor(props) {
     super(props)
 
@@ -40,7 +40,7 @@ export default class Item extends Component {
             duration: 0
           })
         ]).start(() => {
-          this.props.onRemove()
+          this.props.navigateToList()
         })
       })
     } else {
@@ -51,7 +51,7 @@ export default class Item extends Component {
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => this.props.removable,
+      onMoveShouldSetPanResponderCapture: () => true,
 
       onPanResponderGrant: () => {
         this.state.pan.setOffset({x: this.state.pan.x._value})
@@ -82,10 +82,9 @@ export default class Item extends Component {
       <Animated.View style={wrapperStyles}>
         <View ref="wrapper" collapsable={false}>
           <Animated.View style={animatedCardStyles} {...this._panResponder.panHandlers}>
-            <View style={styles.row}>
+            <TouchableOpacity style={styles.row} onPress={() => this.props.navigateToList(this.props.id)}>
               <Text style={styles.title}>{this.props.title}</Text>
-              <Text style={styles.points}>{this.props.points} Points</Text>
-            </View>
+            </TouchableOpacity>
             <View style={styles.separator} />
           </Animated.View>
         </View>

@@ -1,14 +1,13 @@
-import offline from 'react-native-simple-store'
 import database from '../database';
 
-export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST';
-export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS';
-export const GET_LIST_ITEM_IDS_FAILURE = 'GET_LIST_ITEM_IDS_FAILURE';
+export const GET_USER_LIST_IDS_REQUEST = 'GET_USER_LIST_IDS_REQUEST';
+export const GET_USER_LIST_IDS_SUCCESS = 'GET_USER_LIST_IDS_SUCCESS';
+export const GET_USER_LIST_IDS_FAILURE = 'GET_USER_LIST_IDS_FAILURE';
 
-export const GET_ITEMS_REQUEST = 'GET_ITEMS_REQUEST';
-export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
-export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
-
+export const GET_LISTS_REQUEST = 'GET_LISTS_REQUEST';
+export const GET_LISTS_SUCCESS = 'GET_LISTS_SUCCESS';
+export const GET_LISTS_FAILURE = 'GET_LISTS_FAILURE';
+/*
 export const ADD_LIST_ITEM_REQUEST = 'ADD_LIST_ITEM_REQUEST';
 export const ADD_LIST_ITEM_SUCCESS = 'ADD_LIST_ITEM_SUCCESS';
 export const ADD_LIST_ITEM_FAILURE = 'ADD_LIST_ITEM_FAILURE';
@@ -19,78 +18,66 @@ export const REMOVE_LIST_ITEM_FAILURE = 'REMOVE_LIST_ITEM_FAILURE';
 
 export const CHANGE_ITEM_REQUEST = 'CHANGE_ITEM_REQUEST';
 export const CHANGE_ITEM_SUCCESS = 'CHANGE_ITEM_SUCCESS';
-export const CHANGE_ITEM_FAILURE = 'CHANGE_ITEM_FAILURE';
-
-
-export const ADD_ITEM = 'ADD_ITEM'
-export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS'
-export const REMOVE_ITEM = 'REMOVE_ITEM'
-export const REMOVE_ITEM_SUCCESS = 'REMOVE_ITEM_SUCCESS'
-
-export const OFFLINE_ITEMS_LOADED = 'OFFLINE_ITEMS_LOADED'
-export const CONNECTION_CHECKING = 'CONNECTION_CHECKING'
-export const CONNECTION_CHECKED = 'CONNECTION_CHECKED'
-export const CONNECTION_ONLINE = 'CONNECTION_ONLINE'
-export const CONNECTION_OFFLINE = 'CONNECTION_OFFLINE'
+export const CHANGE_ITEM_FAILURE = 'CHANGE_ITEM_FAILURE';*/
 
 /*
-* Fetch item ids in a list
+* Fetch lists ids in user's account
 */
-export function getListItemIds(listId) {
+export function getUserListIds(userId) {
   return dispatch => {
-    dispatch({ type: GET_LIST_ITEM_IDS_REQUEST, listId })
+    dispatch({ type: GET_USER_LIST_IDS_REQUEST, userId })
 
-    return database.ref(`/lists/${listId}/items`).once('value', snapshot => {
-      let data = snapshot.val() || {}
-      let itemIds = Object.keys(data)
-      dispatch({ type: GET_LIST_ITEM_IDS_SUCCESS, listId, itemIds })
+    return database.ref(`/users/${userId}/lists`).once('value', snapshot => {
+      let data = snapshot.val()
+      let listIds = Object.keys(data)
+      dispatch({ type: GET_USER_LIST_IDS_SUCCESS, userId, listIds })
     })
     .catch(error => {
-      dispatch({ type: GET_LIST_ITEM_IDS_FAILURE, listId, error })
+      dispatch({ type: GET_USER_LIST_IDS_FAILURE, userId, error })
       throw error
     })
   }
 }
 
 /*
-* Fetch items from ids
+* Fetch lists from ids
 */
-export function getItems(itemIds) {
+export function getLists(listIds) {
   return dispatch => {
-    dispatch({ type: GET_ITEMS_REQUEST, itemIds })
+    dispatch({ type: GET_LISTS_REQUEST, listIds })
 
-    let promises = itemIds.map(itemId => {
-      return database.ref('/items/').child(itemId).once('value')
+    let promises = listIds.map(listId => {
+      return database.ref('/lists/').child(listId).once('value')
     });
 
     return Promise.all(promises).then(snapshots => {
-      let items = snapshots
+      let lists = snapshots
         .map(snapshot => snapshot.val())
         .filter(value => value !== null)
-      dispatch({ type: GET_ITEMS_SUCCESS, itemIds, items })
+      dispatch({ type: GET_LISTS_SUCCESS, listIds, lists })
     })
     .catch(error => {
-      dispatch({ type: GET_ITEMS_FAILURE, itemIds, error })
+      dispatch({ type: GET_LISTS_FAILURE, listIds, error })
       throw error
     })
   }
 }
 
 /*
-* Fetch all items in a given list
+* Fetch all lists in a given user's account
 */
-export function getListItems(listId) {
+export function getUserLists(userId) {
   return (dispatch, getState) => {
-    return dispatch(getListItemIds(listId)).then(() => {
-      const itemIds = getState().items.itemIds
-      return dispatch(getItems(itemIds))
+    return dispatch(getUserListIds(userId)).then(() => {
+      const listIds = getState().lists.listIds
+      return dispatch(getLists(listIds))
     })
   }
 }
 
 /*
 * Adding an item to a list
-*/
+*
 export function addListItem(title = '', points = 0, listId) {
   return dispatch => {
     let newItemId = database.ref().child('items').push().key
@@ -119,7 +106,7 @@ export function addListItem(title = '', points = 0, listId) {
 
 /*
 * Removing an item from a list
-*/
+*
 export function removeListItem(itemId, listId) {
   return dispatch => {
     dispatch({ type: REMOVE_LIST_ITEM_REQUEST, itemId, listId })
@@ -140,7 +127,7 @@ export function removeListItem(itemId, listId) {
 
 /*
  * Change an item in a list
- */
+ *
 export function changeItem(itemId, data) {
   return dispatch => {
     dispatch({ type: CHANGE_ITEM_REQUEST, itemId })
@@ -153,4 +140,4 @@ export function changeItem(itemId, data) {
       throw error
     })
   }
-}
+}*/

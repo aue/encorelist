@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ListView, NetInfo, StyleSheet, Text, TextInput, View, Button } from 'react-native'
+import { ListView, StyleSheet, Text, TextInput, View, Button } from 'react-native'
 import Item from './Item'
 
 export default class List extends Component {
@@ -12,24 +12,34 @@ export default class List extends Component {
     }
   }
 
+  renderRow(rowData) {
+    return (
+      <Item
+        title={rowData.title}
+        points={rowData.points}
+        onRemove={() => this._remove(rowData.id)}
+      />
+    )
+  }
+
+  _add() {
+    this.props._add(this.state.newItemTitle, this.state.newItemPoints);
+    this.setState({
+      newItemTitle: '',
+      newItemPoints: ''
+    })
+  }
+
+  _remove(itemId) {
+    this.props._remove(itemId)
+  }
+
+  _change() {
+    this.props.changeItem('40hsfcrl5eic7x28olxr', {points: 10});
+  }
+
   componentWillMount() {
     this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2})
-
-    this.props.getListItems(1)
-
-    this.props.loadOfflineItems()
-
-    if (NetInfo) {
-      NetInfo.isConnected.fetch().done(isConnected => {
-        if (isConnected) {
-          this.props.checkConnection()
-        } else {
-          this.props.goOffline()
-        }
-      })
-    } else {
-      this.props.checkConnection()
-    }
   }
 
   componentWillReceiveProps(nextProps) {
@@ -39,47 +49,12 @@ export default class List extends Component {
     }
   }
 
-  renderRow(rowData) {
-    return (
-      <Item name={rowData.title}
-        removable={this.props.connected}
-        onRemove={() => this._remove(rowData.id)} />
-    )
-  }
-
-  _add() {
-    this.props.addListItem(this.state.newItemTitle, this.state.newItemPoints, 1);
-    this.setState({
-      newItemTitle: '',
-      newItemPoints: ''
-    })
-  }
-
-  _remove(id) {
-    this.props.removeListItem(id, 1)
-  }
-
-  _change() {
-    this.props.changeItem('40hsfcrl5eic7x28olxr', {points: 10});
-  }
-
   render() {
     console.log('PROPS!')
     console.log(this.props)
-    let items, readonlyMessage
-    if (this.props.connected) {
-      items = this.props.onlineItems
-    } else if (this.props.connectionChecked) {
-      items = this.props.offlineItems
-      readonlyMessage = <Text style={styles.offline}>Offline</Text>
-    } else {
-      items = []
-      readonlyMessage = <Text style={styles.offline}>Loading...</Text>
-    }
 
     return (
       <View style={styles.container}>
-        {readonlyMessage}
         <View style={styles.new}>
           <TextInput
             placeholder="Add item"
@@ -92,9 +67,12 @@ export default class List extends Component {
             keyboardType="numeric"
             value={this.state.newItemPoints}
             onChangeText={(value) => this.setState({newItemPoints: value})} />
-          <Button onPress={() => this._add()} title={this.props.addingItem? "Adding":"Add to List"} disabled={this.props.addingItem} />
+          <Button
+            onPress={() => this._add()}
+            title={this.props.addingItem? "Adding":"Add to List"}
+            disabled={this.props.addingItem}
+          />
         </View>
-
         <ListView
           dataSource={this.dataSource}
           enableEmptySections={true}
