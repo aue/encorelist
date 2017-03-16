@@ -1,37 +1,24 @@
-import offline from 'react-native-simple-store'
-import database from '../database';
+import database from '../database'
 
-export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST';
-export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS';
-export const GET_LIST_ITEM_IDS_FAILURE = 'GET_LIST_ITEM_IDS_FAILURE';
+export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST'
+export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS'
+export const GET_LIST_ITEM_IDS_FAILURE = 'GET_LIST_ITEM_IDS_FAILURE'
 
-export const GET_ITEMS_REQUEST = 'GET_ITEMS_REQUEST';
-export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS';
-export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE';
+export const GET_ITEMS_REQUEST = 'GET_ITEMS_REQUEST'
+export const GET_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS'
+export const GET_ITEMS_FAILURE = 'GET_ITEMS_FAILURE'
 
-export const ADD_LIST_ITEM_REQUEST = 'ADD_LIST_ITEM_REQUEST';
-export const ADD_LIST_ITEM_SUCCESS = 'ADD_LIST_ITEM_SUCCESS';
-export const ADD_LIST_ITEM_FAILURE = 'ADD_LIST_ITEM_FAILURE';
+export const ADD_LIST_ITEM_REQUEST = 'ADD_LIST_ITEM_REQUEST'
+export const ADD_LIST_ITEM_SUCCESS = 'ADD_LIST_ITEM_SUCCESS'
+export const ADD_LIST_ITEM_FAILURE = 'ADD_LIST_ITEM_FAILURE'
 
-export const REMOVE_LIST_ITEM_REQUEST = 'REMOVE_LIST_ITEM_REQUEST';
-export const REMOVE_LIST_ITEM_SUCCESS = 'REMOVE_LIST_ITEM_SUCCESS';
-export const REMOVE_LIST_ITEM_FAILURE = 'REMOVE_LIST_ITEM_FAILURE';
+export const REMOVE_LIST_ITEM_REQUEST = 'REMOVE_LIST_ITEM_REQUEST'
+export const REMOVE_LIST_ITEM_SUCCESS = 'REMOVE_LIST_ITEM_SUCCESS'
+export const REMOVE_LIST_ITEM_FAILURE = 'REMOVE_LIST_ITEM_FAILURE'
 
-export const CHANGE_ITEM_REQUEST = 'CHANGE_ITEM_REQUEST';
-export const CHANGE_ITEM_SUCCESS = 'CHANGE_ITEM_SUCCESS';
-export const CHANGE_ITEM_FAILURE = 'CHANGE_ITEM_FAILURE';
-
-
-export const ADD_ITEM = 'ADD_ITEM'
-export const ADD_ITEM_SUCCESS = 'ADD_ITEM_SUCCESS'
-export const REMOVE_ITEM = 'REMOVE_ITEM'
-export const REMOVE_ITEM_SUCCESS = 'REMOVE_ITEM_SUCCESS'
-
-export const OFFLINE_ITEMS_LOADED = 'OFFLINE_ITEMS_LOADED'
-export const CONNECTION_CHECKING = 'CONNECTION_CHECKING'
-export const CONNECTION_CHECKED = 'CONNECTION_CHECKED'
-export const CONNECTION_ONLINE = 'CONNECTION_ONLINE'
-export const CONNECTION_OFFLINE = 'CONNECTION_OFFLINE'
+export const CHANGE_LIST_ITEM_REQUEST = 'CHANGE_LIST_ITEM_REQUEST'
+export const CHANGE_LIST_ITEM_SUCCESS = 'CHANGE_LIST_ITEM_SUCCESS'
+export const CHANGE_LIST_ITEM_FAILURE = 'CHANGE_LIST_ITEM_FAILURE'
 
 /*
 * Fetch item ids in a list
@@ -61,7 +48,7 @@ export function getItems(itemIds) {
 
     let promises = itemIds.map(itemId => {
       return database.ref('/items/').child(itemId).once('value')
-    });
+    })
 
     return Promise.all(promises).then(snapshots => {
       let items = snapshots
@@ -91,15 +78,15 @@ export function getListItems(listId) {
 /*
 * Adding an item to a list
 */
-export function addListItem(title = '', points = 0, listId) {
+export function addListItem(listId, data) {
   return dispatch => {
     let newItemId = database.ref().child('items').push().key
-    dispatch({ type: ADD_LIST_ITEM_REQUEST, title, listId, newItemId })
+    dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId, data })
 
     let newItem = {
       id: newItemId,
-      title: title,
-      points: parseInt(points, 10) || 0,
+      title: data.title || '',
+      points: parseInt(data.points, 10) || 0,
       complete: false,
       time: new Date().getTime()
     }
@@ -108,10 +95,10 @@ export function addListItem(title = '', points = 0, listId) {
     updates[`/lists/${listId}/items/${newItemId}`] = true
 
     return database.ref().update(updates).then(() => {
-      setTimeout(() => dispatch({ type: ADD_LIST_ITEM_SUCCESS, title, listId, itemId: newItemId, item: newItem }), 2500)
+      dispatch({ type: ADD_LIST_ITEM_SUCCESS, listId, itemId: newItemId, item: newItem })
     })
     .catch(error => {
-      dispatch({ type: ADD_LIST_ITEM_FAILURE, title, listId, newItemId, error })
+      dispatch({ type: ADD_LIST_ITEM_FAILURE, listId, newItemId, data, error })
       throw error
     })
   }
@@ -141,15 +128,15 @@ export function removeListItem(itemId, listId) {
 /*
  * Change an item in a list
  */
-export function changeItem(itemId, data) {
+export function changeListItem(itemId, data) {
   return dispatch => {
-    dispatch({ type: CHANGE_ITEM_REQUEST, itemId })
+    dispatch({ type: CHANGE_LIST_ITEM_REQUEST, itemId, data })
 
     return database.ref('/items/').child(itemId).update(data).then(() => {
-      dispatch({ type: CHANGE_ITEM_SUCCESS, itemId, data })
+      dispatch({ type: CHANGE_LIST_ITEM_SUCCESS, itemId, data })
     })
     .catch(error => {
-      dispatch({ type: CHANGE_ITEM_FAILURE, itemId, error })
+      dispatch({ type: CHANGE_LIST_ITEM_FAILURE, itemId, error })
       throw error
     })
   }

@@ -18,8 +18,12 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
+    "babel-eslint": "^6.1.2",
     "babel-jest": "18.0.0",
     "babel-preset-react-native": "1.9.1",
+    "eslint": "^3.17.1",
+    "eslint-plugin-react": "^6.10.0",
+    "eslint-plugin-react-native": "^2.3.1",
     "jest": "18.1.0",
     "react-test-renderer": "15.4.2"
   },

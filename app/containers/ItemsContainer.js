@@ -3,7 +3,8 @@ import { Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
-import List from '../components/List'
+import Items from '../components/Items'
+import ItemRowPlaceholder from '../components/ItemRowPlaceholder'
 import * as ItemsActions from '../actions/items'
 
 class ItemsContainer extends Component {
@@ -12,15 +13,14 @@ class ItemsContainer extends Component {
   }
 
   static navigationOptions = {
-    title: 'List',
-    header: ({ state, setParams, navigate }) => {
-      // The navigation prop has functions like setParams, goBack, and navigate.
+    title: ({ state }) => {
+      return state.params.title || 'List'
+    },
+    header: ({ state, navigate }) => {
       let right = (
         <Button
           title="Add"
-          onPress={() => navigate('ListAdd', {
-            state,
-          })}
+          onPress={() => navigate('ItemDetails', { listId: state.params.listId })}
         />
       )
       return { right }
@@ -35,22 +35,38 @@ class ItemsContainer extends Component {
     this.props.removeListItem(itemId, this.props.listId)
   }
 
-  componentWillMount() {
-    let listId = this.props.navigation.state.params.listId || '';
-    this.props.getListItems(listId)
+  _toggle(itemId, complete) {
+    this.props.changeListItem(itemId, { complete: !complete })
   }
 
-  componentWillReceiveProps(nextProps) {
-    /*if (this.props.lists !== nextProps.lists) {
-      this.dataSource = this.dataSource.cloneWithRows(nextProps.lists)
-    }*/
+  _edit(data) {
+    const { navigate } = this.props.navigation
+    navigate('ItemDetails', {
+      listId: this.props.listId,
+      itemId: data.id,
+      title: data.title,
+      points: data.points
+    })
+  }
+
+  componentWillMount() {
+    //const { setParams } = this.props.navigation
+    let listId = this.props.navigation.state.params.listId || ''
+    this.props.getListItems(listId).then(() => {
+      //setParams({title: this.props.title})
+    })
   }
 
   render() {
-    console.log(this.props)
-    const { navigate } = this.props.navigation
+    if (this.props.loadingItemIds || this.props.loadingItems) return <ItemRowPlaceholder />
     return (
-      <List {...this.props} _add={this._add.bind(this)} _remove={this._remove.bind(this)} />
+      <Items
+        {...this.props}
+        _add={this._add.bind(this)}
+        _remove={this._remove.bind(this)}
+        _toggle={this._toggle.bind(this)}
+        _edit={this._edit.bind(this)}
+      />
     )
   }
 }

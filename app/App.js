@@ -5,18 +5,66 @@ import { StackNavigator, TabNavigator } from 'react-navigation'
 
 import configureStore from './store/configureStore'
 
-import ItemsContainer from './containers/ItemsContainer'
 import ListsContainer from './containers/ListsContainer'
+import ItemsContainer from './containers/ItemsContainer'
+import ItemDetailsContainer from './containers/ItemDetailsContainer'
 import RewardsContainer from './containers/RewardsContainer'
+import AccountContainer from './containers/AccountContainer'
 
-const AppNavigator = StackNavigator({
+const ListStack = StackNavigator({
   Lists: { screen: ListsContainer, navigationOptions: { title: 'Encore List' } },
   Items: { screen: ItemsContainer },
+  ItemDetails: { screen: ItemDetailsContainer }
+}, {
+  cardStyle: { backgroundColor: '#fff' }
+})
+
+const RewardStack = StackNavigator({
   Rewards: { screen: RewardsContainer }
 }, {
-  initialRouteName: 'Lists',
   cardStyle: { backgroundColor: '#fff' }
-});
+})
+
+const AccountStack = StackNavigator({
+  Account: { screen: AccountContainer }
+}, {
+  cardStyle: { backgroundColor: '#fff' }
+})
+
+const Tabs = TabNavigator({
+  ListsTab: {
+    screen: ListStack,
+    navigationOptions: {
+      tabBar: {
+        label: 'Lists'
+      }
+    }
+  },
+  RewardsTab: {
+    screen: RewardStack,
+    navigationOptions: {
+      tabBar: {
+        label: 'Rewards'
+      }
+    }
+  },
+  AccountTab: {
+    screen: AccountStack,
+    navigationOptions: {
+      tabBar: {
+        label: 'Account'
+      }
+    }
+  }
+}, {
+  initialRouteName: 'ListsTab',
+  swipeEnabled: false,
+  tabBarOptions: {
+    style: {
+      backgroundColor: '#000',
+    }
+  }
+})
 
 const store = configureStore()
 
@@ -24,7 +72,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <AppNavigator />
+        <Tabs />
       </Provider>
     )
   }

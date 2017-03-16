@@ -11,17 +11,9 @@ import {
   REMOVE_LIST_ITEM_REQUEST,
   REMOVE_LIST_ITEM_SUCCESS,
   REMOVE_LIST_ITEM_FAILURE,
-  CHANGE_ITEM_REQUEST,
-  CHANGE_ITEM_SUCCESS,
-  CHANGE_ITEM_FAILURE,
-
-  ADD_ITEM_SUCCESS,
-  REMOVE_ITEM_SUCCESS,
-  OFFLINE_ITEMS_LOADED,
-  CONNECTION_CHECKING,
-  CONNECTION_CHECKED,
-  CONNECTION_ONLINE,
-  CONNECTION_OFFLINE
+  CHANGE_LIST_ITEM_REQUEST,
+  CHANGE_LIST_ITEM_SUCCESS,
+  CHANGE_LIST_ITEM_FAILURE
 } from '../actions/items'
 
 const initialState = {
@@ -37,6 +29,8 @@ const initialState = {
 }
 
 export default function reducer(state = initialState, action) {
+  console.log(action)
+
   switch (action.type) {
     case GET_LIST_ITEM_IDS_REQUEST:
       return {
@@ -75,76 +69,79 @@ export default function reducer(state = initialState, action) {
         error: true
       }
 
-    case ADD_LIST_ITEM_REQUEST: {
+    case ADD_LIST_ITEM_REQUEST:
       return {
         ...state,
         addingItem: true
       }
-    }
     case ADD_LIST_ITEM_SUCCESS: {
+      let itemIds = state.itemIds.concat([action.itemId])
       let items = state.items.concat([action.item])
 
       return {
         ...state,
         addingItem: false,
+        itemIds: itemIds,
         items: items
       }
     }
-    case ADD_LIST_ITEM_FAILURE: {
+    case ADD_LIST_ITEM_FAILURE:
       return {
         ...state,
         addingItem: false,
         error: true
       }
-    }
 
-    case REMOVE_LIST_ITEM_REQUEST: {
+    case REMOVE_LIST_ITEM_REQUEST:
       return {
         ...state,
         removingItem: true
       }
-    }
     case REMOVE_LIST_ITEM_SUCCESS: {
-      let items = state.items.slice(0)
-      const index = items.map(i => i.id).indexOf(action.itemId)
+      let itemIds = state.itemIds.slice()
+      let items = state.items.slice()
+      const index = itemIds.indexOf(action.itemId)
+      itemIds.splice(index, 1)
       items.splice(index, 1)
 
       return {
         ...state,
         removingItem: false,
+        itemIds: itemIds,
         items: items
       }
     }
-    case REMOVE_LIST_ITEM_FAILURE: {
+    case REMOVE_LIST_ITEM_FAILURE:
       return {
         ...state,
         removingItem: false,
         error: true
       }
-    }
 
-    case CHANGE_ITEM_REQUEST: {
+    case CHANGE_LIST_ITEM_REQUEST:
       return {
         ...state,
         changingItem: true
       }
-    }
-    case CHANGE_ITEM_SUCCESS: {
-      /*list = state.onlineList.slice(0)
-      const index = list.map(i => i.id).indexOf(action.id)
-      list[index] = action.itemData*/
+    case CHANGE_LIST_ITEM_SUCCESS: {
+      const index = state.itemIds.indexOf(action.itemId)
+      let items = state.items.slice()
+      items[index] = {
+        ...items[index],
+        ...action.data
+      }
 
       return {
         ...state,
+        items,
         changingItem: false
       }
     }
-    case CHANGE_ITEM_FAILURE: {
+    case CHANGE_LIST_ITEM_FAILURE:
       return {
         ...state,
         changingItem: false
       }
-    }
 
     default:
       return state

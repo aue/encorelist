@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
-import { Animated, PanResponder, StyleSheet, Text, TextInput, View } from 'react-native'
+import { Animated, PanResponder, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
-export default class Item extends Component {
+import CheckCircle from './CheckCircle'
+
+export default class ItemRow extends Component {
   constructor(props) {
     super(props)
 
@@ -40,7 +42,7 @@ export default class Item extends Component {
             duration: 0
           })
         ]).start(() => {
-          this.props.onRemove()
+          this.props._remove()
         })
       })
     } else {
@@ -51,7 +53,7 @@ export default class Item extends Component {
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => this.props.removable,
+      onMoveShouldSetPanResponderCapture: () => true,
 
       onPanResponderGrant: () => {
         this.state.pan.setOffset({x: this.state.pan.x._value})
@@ -83,10 +85,14 @@ export default class Item extends Component {
         <View ref="wrapper" collapsable={false}>
           <Animated.View style={animatedCardStyles} {...this._panResponder.panHandlers}>
             <View style={styles.row}>
-              <Text style={styles.title}>{this.props.title}</Text>
-              <Text style={styles.points}>{this.props.points} Points</Text>
+              <TouchableOpacity style={styles.check} onPress={() => this.props._toggle()}>
+                <CheckCircle checked={this.props.complete} />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.text} onPress={() => this.props._edit()}>
+                <Text style={styles.title}>{this.props.title}</Text>
+                <Text style={styles.points}>{this.props.points} Points</Text>
+              </TouchableOpacity>
             </View>
-            <View style={styles.separator} />
           </Animated.View>
         </View>
       </Animated.View>
@@ -96,14 +102,21 @@ export default class Item extends Component {
 
 const styles = StyleSheet.create({
   row: {
+    flexDirection: 'row',
     justifyContent: 'center',
-    padding: 10,
+    alignItems: 'center',
     backgroundColor: '#FFFFFF',
     flex: 1
   },
-  separator: {
-    height: 1,
-    backgroundColor: '#CCCCCC'
+  check: {
+    padding: 16
+  },
+  text: {
+    flex: 1,
+    padding: 16,
+    paddingLeft: 0,
+    borderBottomWidth: 1,
+    borderColor: '#ccc'
   },
   title: {
     flex: 1,
@@ -111,6 +124,7 @@ const styles = StyleSheet.create({
   },
   points: {
     flex: 1,
+    paddingTop: 5,
     fontSize: 15
   }
 })

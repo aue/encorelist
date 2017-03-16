@@ -82,7 +82,7 @@ export default class ListsRow extends Component {
       <Animated.View style={wrapperStyles}>
         <View ref="wrapper" collapsable={false}>
           <Animated.View style={animatedCardStyles} {...this._panResponder.panHandlers}>
-            <TouchableOpacity style={styles.row} onPress={() => this.props.navigateToList(this.props.id)}>
+            <TouchableOpacity style={styles.row} onPress={() => this.props.navigateToList(this.props.id, this.props.title)}>
               <Text style={styles.title}>{this.props.title}</Text>
             </TouchableOpacity>
             <View style={styles.separator} />

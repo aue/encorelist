@@ -13,7 +13,7 @@ class ListsContainer extends Component {
 
   static navigationOptions = {
     title: 'Lists',
-    header: ({ state, setParams, navigate }) => {
+    header: ({ state, navigate }) => {
       // The navigation prop has functions like setParams, goBack, and navigate.
       let right = (
         <Button
@@ -27,23 +27,16 @@ class ListsContainer extends Component {
     },
   }
 
-  navigateToList(listId) {
+  navigateToList(listId, title) {
     const { navigate } = this.props.navigation
-    navigate('Items', { listId })
+    navigate('Items', { listId, title })
   }
 
   componentWillMount() {
     this.props.getUserLists(1)
   }
 
-  componentWillReceiveProps(nextProps) {
-    /*if (this.props.lists !== nextProps.lists) {
-      this.dataSource = this.dataSource.cloneWithRows(nextProps.lists)
-    }*/
-  }
-
   render() {
-    const { navigate } = this.props.navigation;
     return (
       <ListsListing lists={this.props.lists} navigateToList={this.navigateToList.bind(this)} />
     )
