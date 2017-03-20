@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Animated, StyleSheet, Text } from 'react-native'
 
 export default class CheckCircle extends Component {
   constructor(props) {
@@ -7,10 +7,17 @@ export default class CheckCircle extends Component {
   }
 
   render() {
+    let pan = this.props.pan
+    pan.setOffset({x: 40, y: 40})
+    let style = {
+      width: pan.x
+    }
+    console.log(pan.getLayout())
+
     return (
-      <View style={[styles.circle, this.props.checked && styles.activeCircle]}>
+      <Animated.View style={[styles.circle, this.props.checked && styles.activeCircle, style]}>
         <Text style={styles.text}></Text>
-      </View>
+      </Animated.View>
     )
   }
 }
