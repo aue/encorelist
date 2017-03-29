@@ -11,6 +11,8 @@ import ItemDetailsContainer from './containers/ItemDetailsContainer'
 import RewardsContainer from './containers/RewardsContainer'
 import AccountContainer from './containers/AccountContainer'
 
+import WelcomeContainer from './containers/WelcomeContainer'
+
 const ListStack = StackNavigator({
   Lists: { screen: ListsContainer, navigationOptions: { title: 'Encore List' } },
   Items: { screen: ItemsContainer },
@@ -27,6 +29,12 @@ const RewardStack = StackNavigator({
 
 const AccountStack = StackNavigator({
   Account: { screen: AccountContainer }
+}, {
+  cardStyle: { backgroundColor: '#fff' }
+})
+
+const WelcomeStack = StackNavigator({
+  Welcome: { screen: WelcomeContainer }
 }, {
   cardStyle: { backgroundColor: '#fff' }
 })
@@ -55,9 +63,17 @@ const Tabs = TabNavigator({
         label: 'Account'
       }
     }
+  },
+  WelcomeTab: {
+    screen: WelcomeStack,
+    navigationOptions: {
+      tabBar: {
+        visible: false
+      }
+    }
   }
 }, {
-  initialRouteName: 'ListsTab',
+  initialRouteName: 'WelcomeTab',
   swipeEnabled: false,
   tabBarOptions: {
     style: {

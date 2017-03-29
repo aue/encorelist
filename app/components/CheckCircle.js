@@ -6,16 +6,12 @@ export default class CheckCircle extends Component {
     super(props)
   }
 
-  render() {
-    let pan = this.props.pan
-    pan.setOffset({x: 40, y: 40})
-    let style = {
-      width: pan.x
-    }
-    console.log(pan.getLayout())
+  componentWillMount() {
+  }
 
+  render() {
     return (
-      <Animated.View style={[styles.circle, this.props.checked && styles.activeCircle, style]}>
+      <Animated.View style={[styles.circle, this.props.checked && styles.activeCircle]}>
         <Text style={styles.text}></Text>
       </Animated.View>
     )
@@ -24,14 +20,12 @@ export default class CheckCircle extends Component {
 
 const styles = StyleSheet.create({
   circle: {
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: '#fff',
     borderWidth: 2,
     borderColor: 'darkred',
     borderRadius: 25,
     height: 40,
-    width: 40,
+    width: '100%',
     padding: 10,
   },
   activeCircle: {

@@ -80,25 +80,21 @@ export default class ItemRow extends Component {
       backgroundColor: '#00AA00',
       transform: [{scaleY}]
     }
-    //style={animatedCardStyles}
+    //
 
     return (
-      <Animated.View style={wrapperStyles}>
-        <View ref="wrapper" collapsable={false}>
-          <Animated.View {...this._panResponder.panHandlers}>
-            <View style={styles.row}>
-              <TouchableOpacity style={styles.check} onPress={() => this.props._toggle()}>
-                <CheckCircle checked={this.props.complete} pan={pan} />
-              </TouchableOpacity>
-              <View style={styles.text}>
-                <TouchableOpacity onPress={() => this.props._edit()}>
-                  <Text style={styles.title}>{this.props.title}</Text>
-                  <Text style={styles.points}>{this.props.points} Points</Text>
-                </TouchableOpacity>
-                <View style={styles.separator} />
-              </View>
-            </View>
+      <Animated.View {...this._panResponder.panHandlers} ref="wrapper" collapsable={false} style={styles.row}>
+        <TouchableOpacity style={styles.check} onPress={() => this.props._toggle()}>
+          <CheckCircle checked={this.props.complete} />
+        </TouchableOpacity>
+        <View style={styles.text}>
+          <Animated.View style={animatedCardStyles}>
+            <TouchableOpacity onPress={() => this.props._edit()}>
+              <Text style={styles.title}>{this.props.title}</Text>
+              <Text style={styles.points}>{this.props.points} Points</Text>
+            </TouchableOpacity>
           </Animated.View>
+          <View style={styles.separator} />
         </View>
       </Animated.View>
     )
@@ -111,10 +107,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#FFFFFF',
-    flex: 1
   },
   check: {
-    padding: 16
+    padding: 16,
+    width: 40,
+    flex: 0
   },
   text: {
     flex: 1,
