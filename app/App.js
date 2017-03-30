@@ -10,76 +10,65 @@ import ItemsContainer from './containers/ItemsContainer'
 import ItemDetailsContainer from './containers/ItemDetailsContainer'
 import RewardsContainer from './containers/RewardsContainer'
 import AccountContainer from './containers/AccountContainer'
+import OnboardingContainer from './containers/OnboardingContainer'
+import OnboardingFormContainer from './containers/OnboardingFormContainer'
 
-import WelcomeContainer from './containers/WelcomeContainer'
-
-const ListStack = StackNavigator({
-  Lists: { screen: ListsContainer, navigationOptions: { title: 'Encore List' } },
-  Items: { screen: ItemsContainer },
-  ItemDetails: { screen: ItemDetailsContainer }
-}, {
-  cardStyle: { backgroundColor: '#fff' }
-})
-
-const RewardStack = StackNavigator({
-  Rewards: { screen: RewardsContainer }
-}, {
-  cardStyle: { backgroundColor: '#fff' }
-})
-
-const AccountStack = StackNavigator({
-  Account: { screen: AccountContainer }
-}, {
-  cardStyle: { backgroundColor: '#fff' }
-})
-
-const WelcomeStack = StackNavigator({
-  Welcome: { screen: WelcomeContainer }
-}, {
-  cardStyle: { backgroundColor: '#fff' }
-})
-
-const Tabs = TabNavigator({
-  ListsTab: {
-    screen: ListStack,
-    navigationOptions: {
-      tabBar: {
-        label: 'Lists'
-      }
-    }
+const AppStack = StackNavigator({
+  Onboarding: {
+    screen:
+      StackNavigator({
+        WelcomeScreen: { screen: OnboardingContainer },
+        FormContainer: { screen: OnboardingFormContainer }
+      }, {
+        initialRouteName: 'WelcomeScreen',
+      })
   },
-  RewardsTab: {
-    screen: RewardStack,
-    navigationOptions: {
-      tabBar: {
-        label: 'Rewards'
-      }
-    }
-  },
-  AccountTab: {
-    screen: AccountStack,
-    navigationOptions: {
-      tabBar: {
-        label: 'Account'
-      }
-    }
-  },
-  WelcomeTab: {
-    screen: WelcomeStack,
-    navigationOptions: {
-      tabBar: {
-        visible: false
-      }
-    }
+
+  Container: {
+    screen:
+      TabNavigator({
+        ListsTab: {
+          screen: StackNavigator({
+            Lists: { screen: ListsContainer, navigationOptions: { title: 'Encore List' } },
+            Items: { screen: ItemsContainer },
+            ItemDetails: { screen: ItemDetailsContainer }
+          }),
+          navigationOptions: { tabBar: { label: 'Lists' } }
+        },
+        RewardsTab: {
+          screen: StackNavigator({
+            Rewards: { screen: RewardsContainer }
+          }),
+          navigationOptions: { tabBar: { label: 'Rewards' } }
+        },
+
+        AccountTab: {
+          screen: StackNavigator({
+            Account: { screen: AccountContainer }
+          }),
+          navigationOptions: { tabBar: { label: 'Account' } }
+        },
+
+        OnboardingTab: {
+          screen: StackNavigator({
+            WelcomeScreen: { screen: OnboardingContainer }
+          }),
+          navigationOptions: { tabBar: { label: 'Onboarding' } }
+        }
+      }, {
+        initialRouteName: 'ListsTab',
+        swipeEnabled: false,
+        tabBarOptions: {
+          style: {
+            backgroundColor: '#000',
+          }
+        },
+        tabBarPosition: 'bottom'
+      })
   }
 }, {
-  initialRouteName: 'WelcomeTab',
-  swipeEnabled: false,
-  tabBarOptions: {
-    style: {
-      backgroundColor: '#000',
-    }
-  }
+  initialRouteName: 'Onboarding',
+  headerMode: 'none'
 })
 
 const store = configureStore()
@@ -88,7 +77,7 @@ class App extends Component {
   render() {
     return (
       <Provider store={store}>
-        <Tabs />
+        <AppStack />
       </Provider>
     )
   }
