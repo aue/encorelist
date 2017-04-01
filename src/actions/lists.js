@@ -1,107 +1,105 @@
-import store from 'react-native-simple-store';
+import { auth, database, TIMESTAMP } from '../firebase'
 
-export function setupAccount() {
-  let data = {
-    name: 'Jason',
-    points: 0,
-    listsIds: ['c4ltz3k7g3g5p32z9f6r', 'aufu0n3k5jri787d5cdi']
-  };
-  let list1 = {
-    id: 'c4ltz3k7g3g5p32z9f6r',
-    title: 'Today',
-    activePoints: 2,
-    inactivePoints: 1,
-    items: {
-      active: [{
-        title: 'Pet a cat',
-        points: 2,
-      }, {
-        title: 'Go to work',
-        points: 0,
-      }, {
-        title: 'Adopt a cat',
-        points: 0,
-      }],
-      inactive: [{
-        title: 'Give the cat a treat',
-        points: 1,
-      }]
-    }
-  };
-  let list2 = {
-    id: 'aufu0n3k5jri787d5cdi',
-    title: 'Tommorrow',
-    activePoints: 2,
-    inactivePoints: 1,
-    items: {
-      active: [{
-        title: 'Pet a cat',
-        points: 2,
-      }, {
-        title: 'Go to work',
-        points: 0,
-      }, {
-        title: 'Adopt a cat',
-        points: 0,
-      }],
-      inactive: [{
-        title: 'Give the cat a treat',
-        points: 1,
-      }]
-    }
-  };
+export const GET_USER_LIST_IDS_REQUEST = 'GET_USER_LIST_IDS_REQUEST'
+export const GET_USER_LIST_IDS_SUCCESS = 'GET_USER_LIST_IDS_SUCCESS'
+export const GET_USER_LIST_IDS_FAILURE = 'GET_USER_LIST_IDS_FAILURE'
 
-  return Promise
-    .all([
-      store.save('account', data),
-      store.save('c4ltz3k7g3g5p32z9f6r', list1),
-      store.save('aufu0n3k5jri787d5cdi', list2)
-    ])
+export const GET_LISTS_REQUEST = 'GET_LISTS_REQUEST'
+export const GET_LISTS_SUCCESS = 'GET_LISTS_SUCCESS'
+export const GET_LISTS_FAILURE = 'GET_LISTS_FAILURE'
+
+export const ADD_LIST_REQUEST = 'ADD_LIST_REQUEST'
+export const ADD_LIST_SUCCESS = 'ADD_LIST_SUCCESS'
+export const ADD_LIST_FAILURE = 'ADD_LIST_FAILURE'
+
+/*
+* Fetch lists ids in user's account
+*/
+export function getUserListIds(userId) {
+  return dispatch => {
+    dispatch({ type: GET_USER_LIST_IDS_REQUEST, userId })
+
+    return database.ref(`/users/${userId}/lists`).once('value', snapshot => {
+      let data = snapshot.val()
+      let listIds
+      if (data == null) listIds = []
+      else listIds = Object.keys(data)
+
+      dispatch({ type: GET_USER_LIST_IDS_SUCCESS, userId, listIds })
+    })
     .catch(error => {
-      console.error(error.message);
-    });
-}
-
-export function getAccount() {
-  return store
-    .get('account')
-    .catch(error => {
-      console.error(error.message);
-    });
-}
-
-export function addList(title) {
-  const id = Math.random().toString(36).substring(7);
-
-  let data = {
-    id,
-    title: title,
-    time: new Date().getTime(),
-    activePoints: 0,
-    inactivePoints: 0,
-    items: {
-      active: [],
-      inactive: []
-    }
+      dispatch({ type: GET_USER_LIST_IDS_FAILURE, userId, error: error.message })
+    })
   }
-
-  return Promise
-    .all([
-      store.save(id, data),
-      store.get('account').then((account) => {
-        let listsIds = account.listsIds;
-        return store.update('account', {listsIds: [...listsIds, id]});
-      })
-    ])
-    .catch(error => {
-      console.error(error.message);
-    });
 }
 
-export function getList(id) {
-  return store
-    .get(id)
+/*
+* Fetch lists from ids
+*/
+export function getLists(listIds) {
+  if (listIds.length <= 0) return
+
+  return dispatch => {
+    dispatch({ type: GET_LISTS_REQUEST, listIds })
+
+    let promises = listIds.map(listId => {
+      return database.ref('/lists/').child(listId).once('value')
+    })
+
+    return Promise.all(promises).then(snapshots => {
+      let lists = snapshots
+        .map(snapshot => snapshot.val())
+        .filter(value => value !== null)
+      dispatch({ type: GET_LISTS_SUCCESS, listIds, lists })
+    })
     .catch(error => {
-      console.error(error.message);
-    });
+      dispatch({ type: GET_LISTS_FAILURE, listIds, error })
+      throw error
+    })
+  }
+}
+
+/*
+* Fetch all lists in a given user's account
+*/
+export function getUserLists(userId) {
+  return (dispatch, getState) => {
+    return dispatch(getUserListIds(userId)).then(() => {
+      const listIds = getState().lists.listIds
+      if (listIds.length > 0)
+        return dispatch(getLists(listIds))
+      else
+        return
+    })
+  }
+}
+
+/*
+* Adding a list
+*/
+export function addList(data) {
+  return dispatch => {
+    let newListId = database.ref().child('lists').push().key
+    const userId = auth.currentUser.uid
+    let newList = {
+      id: newListId,
+      title: data.title || '',
+      time: TIMESTAMP,
+      totalPoints: 0,
+      completedPoints: 0,
+      userId: userId
+    }
+    let updates = {}
+    updates[`/lists/${newListId}`] = newList
+    updates[`/users/${userId}/lists/${newListId}`] = true
+
+    dispatch({ type: ADD_LIST_REQUEST, updates })
+
+    return database.ref().update(updates).then(() => {
+      dispatch({ type: ADD_LIST_SUCCESS, listId: newListId, list: newList })
+    })
+    .catch(error => {
+      dispatch({ type: ADD_LIST_FAILURE, error: error.message })
+    })
+  }
 }

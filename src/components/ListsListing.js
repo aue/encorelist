@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { ListView, StyleSheet, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
+
+import ListsHeader from './ListsHeader'
 import ListsRow from './ListsRow'
 
 export default class ListsListing extends Component {
@@ -23,7 +25,7 @@ export default class ListsListing extends Component {
     if (this.props.lists.length === 0) {
       header = (
         <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#A54348', '#E4598C']}>
-          <Text style={styles.container}>
+          <Text style={styles.header}>
             No lists :(
           </Text>
         </LinearGradient>
@@ -31,11 +33,7 @@ export default class ListsListing extends Component {
     }
     else {
       header = (
-        <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#E85B91', '#9D3838']}>
-          <Text style={styles.header}>
-            Welcome
-          </Text>
-        </LinearGradient>
+        <ListsHeader/>
       )
     }
 

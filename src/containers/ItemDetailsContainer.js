@@ -17,7 +17,7 @@ class ItemDetailsContainer extends Component {
 
   static navigationOptions = {
     title: ({ state }) => {
-      return `${(!state.params.itemId)? 'Add':'Edit'} Item`
+      return `${(!state.params.id)? 'Add':'Edit'} Item`
     },
   }
 
@@ -30,13 +30,13 @@ class ItemDetailsContainer extends Component {
 
   _update(data) {
     const { goBack } = this.props.navigation
-    this.props.changeListItem(this.state.data.itemId, data).then(() => {
+    this.props.changeListItem(this.state.data.id, data).then(() => {
       goBack()
     })
   }
 
   componentWillMount() {
-    if (this.state.data.itemId) this.setState({mode: 'edit'})
+    if (this.state.data.id) this.setState({mode: 'edit'})
   }
 
   render() {

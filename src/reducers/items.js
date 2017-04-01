@@ -29,6 +29,7 @@ const initialState = {
 }
 
 export default function reducer(state = initialState, action) {
+  console.log(action)
   switch (action.type) {
     case GET_LIST_ITEM_IDS_REQUEST:
       return {

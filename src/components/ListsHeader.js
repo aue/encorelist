@@ -1,21 +1,19 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import LinearGradient from 'react-native-linear-gradient';
+import React, { Component } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
-export default class ListsHeader extends Component {
+export default class ListHeader extends Component {
   constructor(props) {
-    super(props);
+    super(props)
   }
 
   render() {
     return (
-      <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#DDD', '#EEE']} style={styles.header}>
-        <Text style={styles.title}>Hi {this.props.name}! At a glance</Text>
+      <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#A54348', '#E4598C']} style={styles.header}>
+        <Text style={styles.title}>Progress</Text>
         <Text style={styles.text}>{this.props.points} points</Text>
-        <Text style={styles.title}>Your next item</Text>
-        <Text style={styles.text}>Some item/task</Text>
       </LinearGradient>
-    );
+    )
   }
 }
 
@@ -28,10 +26,10 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: 'bold',
     paddingTop: 10,
-    color: '#363636',
+    color: '#FFF',
   },
   text: {
     fontSize: 25,
-    color: '#363636',
+    color: '#FFF',
   },
-});
+})

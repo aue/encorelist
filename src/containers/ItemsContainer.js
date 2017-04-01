@@ -43,7 +43,7 @@ class ItemsContainer extends Component {
     const { navigate } = this.props.navigation
     navigate('ItemDetails', {
       listId: this.props.listId,
-      itemId: data.id,
+      id: data.id,
       title: data.title,
       points: data.points
     })
