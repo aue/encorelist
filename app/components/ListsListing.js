@@ -18,13 +18,20 @@ export default class ListsListing extends Component {
   }
 
   render() {
-    console.log('PROPS!')
-    console.log(this.props)
+    let header = null
+    if (this.props.lists.length === 0) {
+      header = (
+        <Text style={styles.container}>
+          No lists :(
+        </Text>
+      )
+    }
 
     return (
       <ListView
         dataSource={this.dataSource}
         enableEmptySections={true}
+        renderHeader={() => header}
         renderRow={(rowData) => <ListsRow {...rowData} navigateToList={this.props.navigateToList} />}
       />
     )

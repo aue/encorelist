@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import { StyleSheet, TouchableOpacity, TextInput, Text, View, ScrollView } from 'react-native'
+import { bindActionCreators } from 'redux'
+import { connect } from 'react-redux'
+import { NavigationActions } from 'react-navigation'
 
-export default class OnboardingFormContainer extends Component {
+import * as AccountActions from '../actions/account'
+
+class OnboardingFormContainer extends Component {
   constructor(props) {
     super(props)
     const { state } = this.props.navigation
@@ -27,12 +32,42 @@ export default class OnboardingFormContainer extends Component {
     return false
   }
 
-  signup() {
+  submit() {
+    if (this.state.mode === 'login') {
+      this.props.login(this.state.email, this.state.password).then(() => {
+        const navigateAction = NavigationActions.navigate({
+          routeName: 'Container',
+          action: NavigationActions.navigate({ routeName: 'ListsTab' })
+        })
+        this.props.navigation.dispatch(navigateAction)
 
-  }
 
-  login() {
+        /*const resetAction = NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Container' })
+          ]
+        })
+        this.props.navigation.dispatch(resetAction)*/
+      })
+    }
+    else if (this.state.mode === 'signup') {
+      this.props.signup(this.state.email, this.state.password).then(() => {
+        const navigateAction = NavigationActions.navigate({
+          routeName: 'Container',
+          action: NavigationActions.navigate({ routeName: 'ListsTab' })
+        })
+        this.props.navigation.dispatch(navigateAction)
 
+        /*const resetAction = NavigationActions.reset({
+          index: 0,
+          actions: [
+            NavigationActions.navigate({ routeName: 'Container' })
+          ]
+        })
+        this.props.navigation.dispatch(resetAction)*/
+      })
+    }
   }
 
   render() {
@@ -42,12 +77,16 @@ export default class OnboardingFormContainer extends Component {
     return (
       <ScrollView style={styles.container}>
         <View style={styles.form}>
+          <Text style={styles.error}>{this.props.error}</Text>
+
           <TextInput
             style={styles.input}
             placeholder="Email"
             keyboardType="email-address"
+            autoCapitalize="none"
             returnKeyType="next"
             underlineColorAndroid="#A21B35"
+            disabled={this.props.waitingForResponse}
             onChangeText={(email) => this.setState({email})}
             onSubmitEditing={() => this.refs.password.focus()}
           />
@@ -57,14 +96,17 @@ export default class OnboardingFormContainer extends Component {
             secureTextEntry={true}
             underlineColorAndroid="#A21B35"
             ref='password'
+            disabled={this.props.waitingForResponse}
             onChangeText={(password) => this.setState({password})}
           />
         </View>
 
-        <TouchableOpacity onPress={() => this.login()} disabled={this.formCheck()}>
-          <Text style={buttonStyle}>
-            { (this.state.mode === 'login')? 'Log In' : 'Sign Up' }
-          </Text>
+        <TouchableOpacity onPress={() => this.submit()} disabled={this.formCheck() || this.props.waitingForResponse}>
+          <View style={buttonStyle}>
+            <Text style={styles.buttonText}>
+              {(this.state.mode === 'login')? 'Log In' : 'Sign Up'}
+            </Text>
+          </View>
         </TouchableOpacity>
       </ScrollView>
     )
@@ -79,19 +121,44 @@ const styles = StyleSheet.create({
   form: {
     marginBottom: 8
   },
+  error: {
+
+  },
   input: {
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 20,
+    paddingLeft: 16,
+    fontSize: 16,
     height: 40,
     marginBottom: 8
   },
   button: {
     backgroundColor: '#A21B35',
-    color: '#fff',
     padding: 8,
-    textAlign: 'center',
-    fontWeight: 'bold',
     borderRadius: 40
+  },
+  buttonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontWeight: 'bold'
   },
   disabled: {
     opacity: 0.5
   }
 })
+
+const mapStateToProps = (state) => {
+  return {
+    error: state.account.error,
+    user: state.account.user,
+    waitingForResponse: state.account.waitingForResponse
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return bindActionCreators(AccountActions, dispatch)
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OnboardingFormContainer)

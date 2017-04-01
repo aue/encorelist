@@ -1,4 +1,4 @@
-import database from '../database'
+import { auth } from '../firebase'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -19,12 +19,11 @@ export function login(email, password) {
   return dispatch => {
     dispatch({ type: LOGIN_REQUEST })
 
-    return database.auth().signInWithEmailAndPassword(email, password).then(user => {
+    return auth.signInWithEmailAndPassword(email, password).then(user => {
       dispatch({ type: LOGIN_SUCCESS, user })
     })
     .catch(error => {
-      dispatch({ type: LOGIN_FAILURE, error })
-      throw error
+      dispatch({ type: LOGIN_FAILURE, error: error.message })
     })
   }
 }
@@ -36,12 +35,11 @@ export function logout() {
   return dispatch => {
     dispatch({ type: LOGOUT_REQUEST })
 
-    return database.auth().signOut().then(user => {
+    return auth.signOut().then(user => {
       dispatch({ type: LOGOUT_SUCCESS, user })
     })
     .catch(error => {
-      dispatch({ type: LOGOUT_FAILURE, error })
-      throw error
+      dispatch({ type: LOGOUT_FAILURE, error: error.message })
     })
   }
 }
@@ -53,12 +51,11 @@ export function signup(email, password) {
   return dispatch => {
     dispatch({ type: SIGNUP_REQUEST })
 
-    return database.auth().createUserWithEmailAndPassword(email, password).then(user => {
+    return auth.createUserWithEmailAndPassword(email, password).then(user => {
       dispatch({ type: SIGNUP_SUCCESS, user })
     })
     .catch(error => {
-      dispatch({ type: SIGNUP_FAILURE, error })
-      throw error
+      dispatch({ type: SIGNUP_FAILURE, error: error.message })
     })
   }
 }

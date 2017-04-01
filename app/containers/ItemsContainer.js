@@ -24,7 +24,7 @@ class ItemsContainer extends Component {
         />
       )
       return { right }
-    },
+    }
   }
 
   _add(title, points) {

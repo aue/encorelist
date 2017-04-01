@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { auth } from '../firebase'
 
 import ListsListing from '../components/ListsListing'
 import * as ListsActions from '../actions/lists'
@@ -13,14 +14,11 @@ class ListsContainer extends Component {
 
   static navigationOptions = {
     title: 'Lists',
-    header: ({ state, navigate }) => {
-      // The navigation prop has functions like setParams, goBack, and navigate.
+    header: ({ navigate }) => {
       let right = (
         <Button
           title="Add"
-          onPress={() => navigate('ListAdd', {
-            state,
-          })}
+          onPress={() => navigate('ListDetails')}
         />
       )
       return { right }
@@ -33,7 +31,7 @@ class ListsContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.getUserLists(1)
+    this.props.getUserLists(auth.currentUser.uid)
   }
 
   render() {

@@ -1,4 +1,4 @@
-import database from '../database'
+import { database } from '../firebase'
 
 export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST'
 export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS'

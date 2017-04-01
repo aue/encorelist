@@ -5,7 +5,9 @@ import { StackNavigator, TabNavigator } from 'react-navigation'
 
 import configureStore from './store/configureStore'
 
+import LoadingContainer from './containers/LoadingContainer'
 import ListsContainer from './containers/ListsContainer'
+import ListDetailsContainer from './containers/ListDetailsContainer'
 import ItemsContainer from './containers/ItemsContainer'
 import ItemDetailsContainer from './containers/ItemDetailsContainer'
 import RewardsContainer from './containers/RewardsContainer'
@@ -14,11 +16,13 @@ import OnboardingContainer from './containers/OnboardingContainer'
 import OnboardingFormContainer from './containers/OnboardingFormContainer'
 
 const AppStack = StackNavigator({
+  Loading: { screen: LoadingContainer },
+
   Onboarding: {
     screen:
       StackNavigator({
         WelcomeScreen: { screen: OnboardingContainer },
-        FormContainer: { screen: OnboardingFormContainer }
+        FormScreen: { screen: OnboardingFormContainer }
       }, {
         initialRouteName: 'WelcomeScreen',
       })
@@ -30,6 +34,7 @@ const AppStack = StackNavigator({
         ListsTab: {
           screen: StackNavigator({
             Lists: { screen: ListsContainer, navigationOptions: { title: 'Encore List' } },
+            ListDetails: { screen: ListDetailsContainer },
             Items: { screen: ItemsContainer },
             ItemDetails: { screen: ItemDetailsContainer }
           }),
@@ -41,19 +46,11 @@ const AppStack = StackNavigator({
           }),
           navigationOptions: { tabBar: { label: 'Rewards' } }
         },
-
         AccountTab: {
           screen: StackNavigator({
             Account: { screen: AccountContainer }
           }),
           navigationOptions: { tabBar: { label: 'Account' } }
-        },
-
-        OnboardingTab: {
-          screen: StackNavigator({
-            WelcomeScreen: { screen: OnboardingContainer }
-          }),
-          navigationOptions: { tabBar: { label: 'Onboarding' } }
         }
       }, {
         initialRouteName: 'ListsTab',
@@ -67,7 +64,7 @@ const AppStack = StackNavigator({
       })
   }
 }, {
-  initialRouteName: 'Onboarding',
+  initialRouteName: 'Loading',
   headerMode: 'none'
 })
 

@@ -19,13 +19,15 @@ export default class OnboardingContainer extends Component {
           <Text style={styles.tagline}>Turn to-do lists into reality.</Text>
         </View>
 
-        <TouchableOpacity onPress={() => navigate('FormContainer', {mode: 'signup'})}>
-          <Text style={styles.signup}>Sign Up</Text>
+        <TouchableOpacity onPress={() => navigate('FormScreen', {mode: 'signup'})}>
+          <View style={styles.signup}>
+            <Text style={styles.signuptext}>Sign Up</Text>
+          </View>
         </TouchableOpacity>
 
         <View style={styles.signin}>
           <Text>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigate('FormContainer', {mode: 'login'})}>
+          <TouchableOpacity onPress={() => navigate('FormScreen', {mode: 'login'})}>
             <Text style={styles.login}>Log In</Text>
           </TouchableOpacity>
         </View>
@@ -47,11 +49,13 @@ const styles = StyleSheet.create({
   },
   signup: {
     backgroundColor: '#A21B35',
-    color: '#fff',
     padding: 16,
+    borderRadius: 40
+  },
+  signuptext: {
     textAlign: 'center',
     fontWeight: 'bold',
-    borderRadius: 40
+    color: '#fff'
   },
   signin: {
     flexDirection: 'row',
