@@ -1,4 +1,4 @@
-import { auth, database } from '../firebase'
+import { auth, database, TIMESTAMP } from '../firebase'
 
 export const GET_USER_LIST_IDS_REQUEST = 'GET_USER_LIST_IDS_REQUEST'
 export const GET_USER_LIST_IDS_SUCCESS = 'GET_USER_LIST_IDS_SUCCESS'
@@ -84,7 +84,7 @@ export function addList(data) {
     let newList = {
       id: newListId,
       title: data.title || '',
-      time: new Date().getTime(),
+      time: TIMESTAMP,
       userId: userId
     }
     let updates = {}

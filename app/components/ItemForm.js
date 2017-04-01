@@ -27,7 +27,7 @@ export default class ItemForm extends Component {
         <TextInput
           placeholder="Add item"
           multiline={true}
-          style={[styles.title, {height: Math.max(35, this.state.height)}]}
+          style={[styles.title, {height: Math.max(40, this.state.height)}]}
           value={this.state.itemTitle}
           onChangeText={(value) => this.setState({itemTitle: value})}
           onContentSizeChange={(event) => {
@@ -58,10 +58,12 @@ const styles = StyleSheet.create({
     padding: 16
   },
   title: {
-    fontSize: 20
+    fontSize: 20,
+    height: 40
   },
   points: {
-    fontSize: 20
+    fontSize: 20,
+    height: 40
   },
   button: {
     marginTop: 16

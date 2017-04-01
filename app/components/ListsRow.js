@@ -40,7 +40,7 @@ export default class ListsRow extends Component {
             duration: 0
           })
         ]).start(() => {
-          this.props.navigateToList()
+          this.goToList()
         })
       })
     } else {
@@ -68,6 +68,10 @@ export default class ListsRow extends Component {
     })
   }
 
+  goToList() {
+    this.props.navigateToList(this.props.id, this.props.title)
+  }
+
   render() {
     const { pan, scaleY } = this.state
     const translateX = pan.x
@@ -82,7 +86,7 @@ export default class ListsRow extends Component {
       <Animated.View style={wrapperStyles}>
         <View ref="wrapper" collapsable={false}>
           <Animated.View style={animatedCardStyles} {...this._panResponder.panHandlers}>
-            <TouchableOpacity style={styles.row} onPress={() => this.props.navigateToList(this.props.id, this.props.title)}>
+            <TouchableOpacity style={styles.row} onPress={() => this.goToList()}>
               <Text style={styles.title}>{this.props.title}</Text>
             </TouchableOpacity>
             <View style={styles.separator} />

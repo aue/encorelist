@@ -1,4 +1,4 @@
-import { database } from '../firebase'
+import { auth, database, TIMESTAMP } from '../firebase'
 
 export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST'
 export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS'
@@ -82,13 +82,15 @@ export function addListItem(listId, data) {
   return dispatch => {
     let newItemId = database.ref().child('items').push().key
     dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId, data })
+    const userId = auth.currentUser.uid
 
     let newItem = {
       id: newItemId,
+      userId,
       title: data.title || '',
       points: parseInt(data.points, 10) || 0,
       complete: false,
-      time: new Date().getTime()
+      time: TIMESTAMP
     }
     let updates = {}
     updates[`/items/${newItemId}`] = newItem

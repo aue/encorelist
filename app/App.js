@@ -33,7 +33,7 @@ const AppStack = StackNavigator({
       TabNavigator({
         ListsTab: {
           screen: StackNavigator({
-            Lists: { screen: ListsContainer, navigationOptions: { title: 'Encore List' } },
+            Lists: { screen: ListsContainer },
             ListDetails: { screen: ListDetailsContainer },
             Items: { screen: ItemsContainer },
             ItemDetails: { screen: ItemDetailsContainer }

@@ -12,3 +12,4 @@ const firebaseApp = {
 firebase.initializeApp(firebaseApp)
 export const database = firebase.database()
 export const auth = firebase.auth()
+export const TIMESTAMP = firebase.database.ServerValue.TIMESTAMP
