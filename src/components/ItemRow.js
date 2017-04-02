@@ -1,53 +1,32 @@
 import React, { Component } from 'react'
-import { Animated, PanResponder, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Dimensions, Animated, PanResponder, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
 import CheckCircle from './CheckCircle'
 
 export default class ItemRow extends Component {
   constructor(props) {
     super(props)
-
+    const screen = Dimensions.get('window')
     this.state = {
-      scaleY: new Animated.Value(1),
-      pan: new Animated.ValueXY()
+      width: 0,
+      height: 0,
+      screenWidth: screen.width,
+      screenHeight: screen.height,
+      buttonPan: new Animated.Value(40),
+      textPan: new Animated.Value(0)
     }
   }
 
   _reset() {
-    Animated.timing(this.state.pan, {
-      toValue: {x: 0, y: 0},
+    Animated.timing(this.state.buttonPan, {
+      toValue: 0,
       duration: 250
     }).start()
-  }
 
-  _checkForRemoval() {
-    this.state.pan.flattenOffset()
-    let x = this.state.pan.x._value
-    if (Math.abs(x) > 50) {
-      this.refs.wrapper.measure((ox, oy, width) => {
-        let newX
-        if (x > 0) {
-          newX = width
-        } else {
-          newX = -2 * width
-        }
-
-        Animated.sequence([
-          Animated.timing(this.state.pan, {
-            toValue: {x: newX, y: 0},
-            duration: 250
-          }),
-          Animated.timing(this.state.pan, {
-            toValue: {x: 0, y: 0},
-            duration: 0
-          })
-        ]).start(() => {
-          this.props._remove()
-        })
-      })
-    } else {
-      this._reset()
-    }
+    Animated.timing(this.state.textPan, {
+      toValue: 0,
+      duration: 250
+    }).start()
   }
 
   componentWillMount() {
@@ -55,48 +34,51 @@ export default class ItemRow extends Component {
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
       onPanResponderGrant: () => {
-        this.state.pan.setOffset({x: this.state.pan.x._value})
-        this.state.pan.setValue({x: 0})
+        this.state.buttonPan.setOffset(40)
+        this.state.buttonPan.setValue(0)
+        this.state.textPan.setOffset(0)
+        this.state.textPan.setValue(0)
       },
-      onPanResponderMove: Animated.event([null, {
-        dx: this.state.pan.x,
-        dy: this.state.pan.y
-      }]),
-      onPanResponderRelease: () => this._reset(),
+      onPanResponderMove: (evt, gestureState) => {
+        //console.log(gestureState.vx)
+        let dx = gestureState.dx
+        if (dx < 0) dx = 0
+
+        // Text width
+        this.state.textPan.setValue(dx)
+
+        // Button width
+        if (dx > this.state.screenWidth/2) dx = this.state.screenWidth/2
+        this.state.buttonPan.setValue(dx)
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        this._reset()
+
+        // Toggle if fits
+        if (this.state.buttonPan._value > (this.state.screenWidth/2)*0.7 || gestureState.vx > 1) {
+          this.props._toggle()
+        }
+      },
       onPanResponderTerminate: () => this._reset()
-
-      //onPanResponderRelease: () => this._checkForRemoval(),
-
-      //onPanResponderTerminate: () => this._checkForRemoval()
     })
   }
 
   render() {
-    const { pan, scaleY } = this.state
-    const translateX = pan.x
-
-    const animatedCardStyles = {transform: [{translateX}, {scaleY}]}
-    const wrapperStyles = {
-      backgroundColor: '#00AA00',
-      transform: [{scaleY}]
-    }
-    //
-
     return (
-      <Animated.View {...this._panResponder.panHandlers} ref="wrapper" collapsable={false} style={styles.row}>
+      <View {...this._panResponder.panHandlers} ref="wrapper" collapsable={false} style={styles.row}>
         <TouchableOpacity style={styles.check} onPress={() => this.props._toggle()}>
-          <CheckCircle checked={this.props.complete} />
-        </TouchableOpacity>
-        <View style={styles.text}>
-          <Animated.View style={animatedCardStyles}>
-            <TouchableOpacity onPress={() => this.props._edit()}>
-              <Text style={styles.title}>{this.props.title}</Text>
-              <Text style={styles.points}>{this.props.points} Points</Text>
-            </TouchableOpacity>
+          <Animated.View style={{ width: this.state.buttonPan }}>
+            <CheckCircle checked={this.props.complete} />
           </Animated.View>
-          <View style={styles.separator} />
-        </View>
-      </Animated.View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.text} onPress={() => this.props._edit()}>
+          <Animated.View style={{ transform: [{ translateX: this.state.textPan }] }}>
+            <Text style={styles.title}>{this.props.title}</Text>
+            <Text style={styles.points}>{this.props.points} Points</Text>
+          </Animated.View>
+        </TouchableOpacity>
+      </View>
     )
   }
 }
@@ -109,28 +91,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
   },
   check: {
-    padding: 16,
-    width: 40,
-    flex: 0
+    margin: 8,
+    padding: 8,
+    position: 'absolute',
+    left: 0,
+    zIndex: 1
   },
   text: {
     flex: 1,
+    margin: 8,
+    padding: 8,
+    paddingRight: 16,
+    marginLeft: 16 + 40 + 8,
+    marginRight: 0
   },
   title: {
-    flex: 1,
     fontSize: 20,
-    paddingTop: 16,
-    paddingRight: 16
   },
   points: {
-    flex: 1,
-    paddingTop: 5,
-    paddingBottom: 16,
-    paddingRight: 16,
-    fontSize: 15
-  },
-  separator: {
-    height: 1,
-    backgroundColor: '#CCCCCC'
+    paddingTop: 4,
+    fontSize: 15,
+    fontWeight: 'bold'
   }
 })

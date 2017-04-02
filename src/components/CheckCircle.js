@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Animated, StyleSheet, Text } from 'react-native'
+import { View, StyleSheet, Text } from 'react-native'
 
 export default class CheckCircle extends Component {
   constructor(props) {
@@ -11,9 +11,9 @@ export default class CheckCircle extends Component {
 
   render() {
     return (
-      <Animated.View style={[styles.circle, this.props.checked && styles.activeCircle]}>
+      <View style={[styles.circle, this.props.checked && styles.activeCircle]}>
         <Text style={styles.text}></Text>
-      </Animated.View>
+      </View>
     )
   }
 }
