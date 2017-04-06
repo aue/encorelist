@@ -13,13 +13,22 @@ export default class LoadingContainer extends Component {
       let navigateAction
 
       if (user) {
-        navigateAction = NavigationActions.navigate({ routeName: 'Container' })
+        //navigateAction = NavigationActions.navigate({ routeName: 'Container' })
+
+        const resetAction = NavigationActions.reset({
+          index: 0,
+          key: 'Init',
+          actions: [
+            NavigationActions.navigate({ routeName: 'Container' })
+          ]
+        })
+        this.props.navigation.dispatch(resetAction)
       }
       else {
         navigateAction = NavigationActions.navigate({ routeName: 'Onboarding' })
       }
 
-      this.props.navigation.dispatch(navigateAction)
+      //this.props.navigation.dispatch(navigateAction)
     })
   }
 

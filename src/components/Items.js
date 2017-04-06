@@ -32,6 +32,7 @@ export default class Items extends Component {
   render() {
     return (
       <ListView
+        style={{ backgroundColor: '#fff' }}
         dataSource={this.dataSource}
         enableEmptySections={true}
         renderRow={this.renderRow.bind(this)}
