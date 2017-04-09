@@ -4,6 +4,7 @@ import LinearGradient from 'react-native-linear-gradient'
 
 import ListsHeader from './ListsHeader'
 import ListsRow from './ListsRow'
+import ListsRowPlaceholder from '../components/ListsRowPlaceholder'
 
 export default class Lists extends Component {
   constructor(props) {
@@ -21,6 +22,8 @@ export default class Lists extends Component {
   }
 
   render() {
+    if (this.props.loading) return <ListsRowPlaceholder />
+
     let header = null
     if (this.props.lists.length === 0) {
       header = (

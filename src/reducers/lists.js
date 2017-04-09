@@ -11,8 +11,8 @@ import {
 } from '../actions/lists'
 
 const initialState = {
-  listIds: [],
-  lists: [],
+  listIds: {},
+  lists: {},
   loadingListIds: false,
   loadingLists: false,
   error: null,
@@ -21,7 +21,6 @@ const initialState = {
 }
 
 export default function reducer(state = initialState, action) {
-  console.log(action)
   switch (action.type) {
     case GET_USER_LIST_IDS_REQUEST:
       return {
@@ -31,7 +30,10 @@ export default function reducer(state = initialState, action) {
     case GET_USER_LIST_IDS_SUCCESS:
       return {
         ...state,
-        listIds: action.listIds,
+        listIds: {
+          ...state.listIds,
+          ...action.listIds
+        },
         loadingListIds: false
       }
     case GET_USER_LIST_IDS_FAILURE:
@@ -49,7 +51,10 @@ export default function reducer(state = initialState, action) {
     case GET_LISTS_SUCCESS:
       return {
         ...state,
-        lists: action.lists,
+        lists: {
+          ...state.lists,
+          ...action.lists
+        },
         loadingLists: false
       }
     case GET_LISTS_FAILURE:
@@ -66,8 +71,11 @@ export default function reducer(state = initialState, action) {
         adding: true,
       }
     case ADD_LIST_SUCCESS: {
-      let listIds = state.listIds.concat([action.listId])
-      let lists = state.lists.concat([action.list])
+      let listIds = { ...state.listIds }
+      listIds[action.listId] = true
+
+      let lists = { ...state.lists }
+      lists[action.listId] = action.list
 
       return {
         ...state,

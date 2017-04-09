@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { AppRegistry } from 'react-native'
 import { Provider } from 'react-redux'
 import { StackNavigator, TabNavigator } from 'react-navigation'
+import './reactotron'
 
 import configureStore from './store/configureStore'
 

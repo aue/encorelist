@@ -2,9 +2,9 @@ import {
   GET_LIST_ITEM_IDS_REQUEST,
   GET_LIST_ITEM_IDS_SUCCESS,
   GET_LIST_ITEM_IDS_FAILURE,
-  GET_ITEMS_REQUEST,
-  GET_ITEMS_SUCCESS,
-  GET_ITEMS_FAILURE,
+  LOAD_ITEMS_REQUEST,
+  LOAD_ITEMS_SUCCESS,
+  LOAD_ITEMS_FAILURE,
   ADD_LIST_ITEM_REQUEST,
   ADD_LIST_ITEM_SUCCESS,
   ADD_LIST_ITEM_FAILURE,
@@ -18,8 +18,7 @@ import {
 
 const initialState = {
   listId: '',
-  itemIds: [],
-  items: [],
+  items: {},
   loadingItemIds: false,
   loadingItems: false,
   error: false,
@@ -29,7 +28,6 @@ const initialState = {
 }
 
 export default function reducer(state = initialState, action) {
-  console.log(action)
   switch (action.type) {
     case GET_LIST_ITEM_IDS_REQUEST:
       return {
@@ -50,18 +48,18 @@ export default function reducer(state = initialState, action) {
         error: true
       }
 
-    case GET_ITEMS_REQUEST:
+    case LOAD_ITEMS_REQUEST:
       return {
         ...state,
         loadingItems: true
       }
-    case GET_ITEMS_SUCCESS:
+    case LOAD_ITEMS_SUCCESS:
       return {
         ...state,
         items: action.items,
         loadingItems: false
       }
-    case GET_ITEMS_FAILURE:
+    case LOAD_ITEMS_FAILURE:
       return {
         ...state,
         loadingItems: false,

@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, Text, ListView } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
+import ItemRowPlaceholder from './ItemRowPlaceholder'
 import ItemsHeader from './ItemsHeader'
 import ItemsRow from './ItemsRow'
 
@@ -33,6 +34,8 @@ export default class Items extends Component {
   }
 
   render() {
+    if (this.props.loading) return <ItemRowPlaceholder />
+
     let header = null
     if (this.props.items.length === 0) {
       header = (

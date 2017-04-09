@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
 import Items from '../components/Items'
-import ItemRowPlaceholder from '../components/ItemRowPlaceholder'
+
 import * as ItemsActions from '../actions/items'
 
 class ItemsContainer extends Component {
@@ -50,7 +50,6 @@ class ItemsContainer extends Component {
   }
 
   componentWillMount() {
-    //const { setParams } = this.props.navigation
     let listId = this.props.navigation.state.params.listId || ''
     this.props.getListItems(listId).then(() => {
       //setParams({title: this.props.title})
@@ -58,7 +57,6 @@ class ItemsContainer extends Component {
   }
 
   render() {
-    if (this.props.loadingItemIds || this.props.loadingItems) return <ItemRowPlaceholder />
     return (
       <Items
         {...this.props}
@@ -76,8 +74,7 @@ const mapStateToProps = (state) => {
     listId: state.items.listId,
     itemIds: state.items.itemIds,
     items: state.items.items,
-    loadingItemIds: state.items.loadingItemIds,
-    loadingItems: state.items.loadingItems,
+    loading: state.items.loadingItemIds || state.items.loadingItems,
     error: state.items.error,
     addingItem: state.items.addingItem,
     removingItem: state.items.removingItem,

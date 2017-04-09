@@ -36,17 +36,23 @@ class ListsContainer extends Component {
 
   render() {
     return (
-      <Lists lists={this.props.lists} navigateToList={this.navigateToList.bind(this)} />
+      <Lists
+        lists={this.props.lists}
+        loading={this.props.loading}
+        navigateToList={this.navigateToList.bind(this)}
+      />
     )
   }
 }
 
 const mapStateToProps = (state) => {
+  let lists = Object.keys(state.lists.listIds)
+    .map(listId => state.lists.lists[listId])
+    .filter(value => value !== null)
+
   return {
-    listIds: state.lists.listIds,
-    lists: state.lists.lists,
-    loadingListIds: state.lists.loadingListIds,
-    loadingLists: state.lists.loadingLists,
+    lists: lists,
+    loading: state.lists.loadingListIds || state.lists.loadingLists,
     error: state.lists.error,
   }
 }

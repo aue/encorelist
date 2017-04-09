@@ -20,10 +20,8 @@ export function getUserListIds(userId) {
     dispatch({ type: GET_USER_LIST_IDS_REQUEST, userId })
 
     return database.ref(`/users/${userId}/lists`).once('value', snapshot => {
-      let data = snapshot.val()
-      let listIds
-      if (data == null) listIds = []
-      else listIds = Object.keys(data)
+      let listIds = snapshot.val()
+      if (listIds == null) listIds = {}
 
       dispatch({ type: GET_USER_LIST_IDS_SUCCESS, userId, listIds })
     })
@@ -47,9 +45,16 @@ export function getLists(listIds) {
     })
 
     return Promise.all(promises).then(snapshots => {
-      let lists = snapshots
+      snapshots = snapshots
         .map(snapshot => snapshot.val())
         .filter(value => value !== null)
+
+      let lists = {}
+      for (let list of snapshots) {
+        if (!list.items) list.items = {}
+        lists[list.id] = list
+      }
+
       dispatch({ type: GET_LISTS_SUCCESS, listIds, lists })
     })
     .catch(error => {
@@ -65,7 +70,7 @@ export function getLists(listIds) {
 export function getUserLists(userId) {
   return (dispatch, getState) => {
     return dispatch(getUserListIds(userId)).then(() => {
-      const listIds = getState().lists.listIds
+      const listIds = Object.keys(getState().lists.listIds)
       if (listIds.length > 0)
         return dispatch(getLists(listIds))
       else
