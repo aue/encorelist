@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
-import { Text, View, Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
+import { auth } from '../firebase'
+
 import * as AccountActions from '../actions/account'
+import AccountForm from '../components/AccountForm'
 
 class AccountContainer extends Component {
   constructor(props) {
@@ -18,18 +20,16 @@ class AccountContainer extends Component {
   }
 
   render() {
-    return (
-      <View>
-        <Text>Profile</Text>
-        <Text>Name</Text>
-        <Text>Number of points</Text>
-        <Text>Notifications</Text>
-        <Button
-          title="Logout"
-          onPress={() => this.logout()}
+    if (auth.currentUser)
+      return (
+        <AccountForm
+          displayName={auth.currentUser.displayName}
+          email={auth.currentUser.email}
+          logout={this.logout.bind(this)}
         />
-      </View>
-    )
+      )
+    else
+      return null
   }
 }
 

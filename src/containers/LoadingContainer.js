@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
 import { Actions } from 'react-native-router-flux'
 import { auth } from '../firebase'
+import Reactotron from 'reactotron-react-native'
 
 export default class LoadingContainer extends Component {
   constructor(props) {
@@ -10,7 +11,10 @@ export default class LoadingContainer extends Component {
 
   componentWillMount() {
     auth.onAuthStateChanged((user) => {
-      if (user) Actions.app()
+      if (user) {
+        Reactotron.log(user)
+        Actions.app()
+      }
       else Actions.onboarding()
     })
   }

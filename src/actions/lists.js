@@ -123,6 +123,7 @@ export function addList(data) {
     })
     .catch(error => {
       dispatch({ type: ADD_LIST_FAILURE, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }

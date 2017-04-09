@@ -37,8 +37,8 @@ export default class Items extends Component {
   render() {
     if (this.props.loading) return <ItemRowPlaceholder />
 
-    let header = null
-    if (this.props.items.length === 0) {
+    let header
+    if (this.props.items.length < 1) {
       header = (
         <Text style={styles.header}>
           No items in this list :(

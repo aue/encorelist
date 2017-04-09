@@ -88,8 +88,8 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         error: null,
-        listIds: listIds,
-        lists: lists,
+        listIds,
+        lists,
         adding: false
       }
     }
@@ -115,8 +115,8 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         error: null,
-        listIds: listIds,
-        lists: lists
+        listIds,
+        lists
       }
     }
     case REMOVE_LIST_FAILURE: {

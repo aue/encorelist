@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-export default class ListsRowPlaceholder extends Component {
+export default class RewardsRowPlaceholder extends Component {
   constructor(props) {
     super(props)
   }

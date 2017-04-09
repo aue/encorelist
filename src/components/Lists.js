@@ -23,17 +23,26 @@ export default class Lists extends Component {
 
   render() {
     if (this.props.loading) return <ListsRowPlaceholder />
-    else if (this.props.lists.length < 1) return (
-      <Text style={styles.message}>
-        No lists :(
-      </Text>
-    )
+
+    let header
+    if (this.props.lists.length < 1) {
+      header = (
+        <Text style={styles.message}>
+          No list :(
+        </Text>
+      )
+    }
+    else {
+      header = (
+        <ListsHeader/>
+      )
+    }
 
     return (
       <ListView
         dataSource={this.dataSource}
         enableEmptySections={true}
-        renderHeader={() => <ListsHeader />}
+        renderHeader={() => header}
         renderFooter={() => <ListsAddRow gotoAddList={this.props.gotoAddList} />}
         renderRow={(rowData) => <ListsRow {...rowData} gotoList={this.props.gotoList} gotoRemoveList={this.props.gotoRemoveList} />}
       />
