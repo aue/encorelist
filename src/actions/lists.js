@@ -109,7 +109,8 @@ export function addList(data) {
       time: TIMESTAMP,
       totalPoints: 0,
       completedPoints: 0,
-      userId: userId
+      userId: userId,
+      items: {}
     }
     let updates = {}
     updates[`/lists/${newListId}`] = newList

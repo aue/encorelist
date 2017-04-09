@@ -12,7 +12,7 @@ import {
 
 const initialState = {
   error: null,
-  user: {},
+  user: null,
   waitingForResponse: false
 }
 
@@ -27,6 +27,7 @@ export default function reducer(state = initialState, action) {
     case LOGIN_SUCCESS:
       return {
         ...state,
+        user: action.user,
         waitingForResponse: false,
         error: null
       }
@@ -36,6 +37,7 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
     case LOGOUT_REQUEST:
       return {
         ...state,
@@ -45,6 +47,7 @@ export default function reducer(state = initialState, action) {
     case LOGOUT_SUCCESS:
       return {
         ...state,
+        user: null,
         waitingForResponse: false,
         error: null
       }
@@ -54,6 +57,7 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
     case SIGNUP_REQUEST:
       return {
         ...state,
@@ -63,6 +67,7 @@ export default function reducer(state = initialState, action) {
     case SIGNUP_SUCCESS:
       return {
         ...state,
+        user: action.user,
         waitingForResponse: false,
         error: null
       }

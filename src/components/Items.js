@@ -5,6 +5,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import ItemRowPlaceholder from './ItemRowPlaceholder'
 import ItemsHeader from './ItemsHeader'
 import ItemsRow from './ItemsRow'
+import ItemsAddRow from './ItemsAddRow'
 
 export default class Items extends Component {
   constructor(props) {
@@ -39,11 +40,9 @@ export default class Items extends Component {
     let header = null
     if (this.props.items.length === 0) {
       header = (
-        <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#A54348', '#E4598C']}>
-          <Text style={styles.header}>
-            No items in this list :(
-          </Text>
-        </LinearGradient>
+        <Text style={styles.header}>
+          No items in this list :(
+        </Text>
       )
     }
     else {
@@ -58,6 +57,7 @@ export default class Items extends Component {
         dataSource={this.dataSource}
         enableEmptySections={true}
         renderHeader={() => header}
+        renderFooter={() => <ItemsAddRow addItem={this.props.addItem.bind(this)} />}
         renderRow={this.renderRow.bind(this)}
       />
     )

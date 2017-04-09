@@ -3,6 +3,7 @@ import { ListView, StyleSheet, Text } from 'react-native'
 
 import ListsHeader from './ListsHeader'
 import ListsRow from './ListsRow'
+import ListsAddRow from './ListsAddRow'
 import ListsRowPlaceholder from '../components/ListsRowPlaceholder'
 
 export default class Lists extends Component {
@@ -33,8 +34,8 @@ export default class Lists extends Component {
         dataSource={this.dataSource}
         enableEmptySections={true}
         renderHeader={() => <ListsHeader />}
-        renderFooter={() => <ListsHeader />}
-        renderRow={(rowData) => <ListsRow {...rowData} navigateToList={this.props.navigateToList} removeList={this.props.removeList} />}
+        renderFooter={() => <ListsAddRow gotoAddList={this.props.gotoAddList} />}
+        renderRow={(rowData) => <ListsRow {...rowData} gotoList={this.props.gotoList} gotoRemoveList={this.props.gotoRemoveList} />}
       />
     )
   }

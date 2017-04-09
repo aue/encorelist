@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Alert, Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 import { auth } from '../firebase'
 
 import Lists from '../components/Lists'
@@ -12,25 +13,15 @@ class ListsContainer extends Component {
     super(props)
   }
 
-  static navigationOptions = {
-    title: 'Lists',
-    header: ({ navigate }) => {
-      let right = (
-        <Button
-          title="Add"
-          onPress={() => navigate('ListDetails')}
-        />
-      )
-      return { right }
-    },
+  gotoList(listId, title) {
+    Actions.items({ params: { listId, title }, title })
   }
 
-  navigateToList(listId, title) {
-    const { navigate } = this.props.navigation
-    navigate('Items', { listId, title })
+  gotoAddList() {
+    Actions.listDetails({ params: {}, title: 'Add List' })
   }
 
-  removeList(listId) {
+  gotoRemoveList(listId) {
     Alert.alert(
       'Delete this list?',
       'All items will be removed',
@@ -42,15 +33,17 @@ class ListsContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.getUserLists(auth.currentUser.uid)
+    if (auth.currentUser)
+      this.props.getUserLists(auth.currentUser.uid)
   }
 
   render() {
     return (
       <Lists
         { ...this.props }
-        navigateToList={this.navigateToList.bind(this)}
-        removeList={this.removeList.bind(this)}
+        gotoList={this.gotoList.bind(this)}
+        gotoAddList={this.gotoAddList.bind(this)}
+        gotoRemoveList={this.gotoRemoveList.bind(this)}
       />
     )
   }

@@ -3,26 +3,22 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
 import PointCircle from './PointCircle'
 
-export default class ListsRow extends Component {
+export default class ListsAddRow extends Component {
   constructor(props) {
     super(props)
   }
 
   render() {
-    let numberOfItems = 0
-    if (this.props.items) numberOfItems = Object.keys(this.props.items).length
     return (
       <TouchableOpacity
         style={styles.row}
-        onPress={() => this.props.gotoList(this.props.id, this.props.title)}
-        onLongPress={() => this.props.gotoRemoveList(this.props.id)}
+        onPress={() => this.props.gotoAddList()}
       >
         <View style={styles.circle}>
           <PointCircle />
         </View>
         <View style={styles.text}>
-          <Text style={styles.title}>{this.props.title}</Text>
-          <Text style={styles.items}>{numberOfItems} {(numberOfItems == 1)? 'Item':'Items'}</Text>
+          <Text style={styles.title}>Create list</Text>
         </View>
       </TouchableOpacity>
     )

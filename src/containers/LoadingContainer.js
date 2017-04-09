@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
-import { NavigationActions } from 'react-navigation'
+import { Actions } from 'react-native-router-flux'
 import { auth } from '../firebase'
 
 export default class LoadingContainer extends Component {
@@ -10,26 +10,8 @@ export default class LoadingContainer extends Component {
 
   componentWillMount() {
     auth.onAuthStateChanged((user) => {
-      let resetAction
-
-      if (user) {
-        resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Container' })
-          ]
-        })
-      }
-      else {
-        resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Onboarding' })
-          ]
-        })
-      }
-
-      this.props.navigation.dispatch(resetAction)
+      if (user) Actions.app()
+      else Actions.onboarding()
     })
   }
 

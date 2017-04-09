@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
 import ListForm from '../components/ListForm'
 import * as ListsActions from '../actions/lists'
@@ -8,35 +9,23 @@ import * as ListsActions from '../actions/lists'
 class ListDetailsContainer extends Component {
   constructor(props) {
     super(props)
-    const { state } = this.props.navigation
+
     this.state = {
-      data: state.params || {},
-      mode: 'add'
+      data: this.props.params || {},
+      mode: (this.props.params.listId)? 'edit':'add'
     }
   }
 
-  static navigationOptions = {
-    title: ({ state }) => {
-      return 'Add List'
-    },
-  }
-
   _add(data) {
-    const { goBack } = this.props.navigation
     this.props.addList(data).then(() => {
-      goBack()
+      Actions.pop()
     })
   }
 
   _update(data) {
-    const { goBack } = this.props.navigation
     this.props.changeList(this.state.data.listId, data).then(() => {
-      goBack()
+      Actions.pop()
     })
-  }
-
-  componentWillMount() {
-    if (this.state.data.listId) this.setState({mode: 'edit'})
   }
 
   render() {

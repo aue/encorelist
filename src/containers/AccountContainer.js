@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Text, View, Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
+import { Actions } from 'react-native-router-flux'
 
 import * as AccountActions from '../actions/account'
 
@@ -11,20 +11,9 @@ class AccountContainer extends Component {
     super(props)
   }
 
-  static navigationOptions = {
-    title: 'Account'
-  }
-
   logout() {
     this.props.logout().then(() => {
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        key: 'Init',
-        actions: [
-          NavigationActions.navigate({ routeName: 'Onboarding' })
-        ]
-      })
-      this.props.navigation.dispatch(resetAction)
+      Actions.onboarding()
     })
   }
 

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
-import { Alert, Button } from 'react-native'
+import { Alert } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
+import { Actions } from 'react-native-router-flux'
 import Items from '../components/Items'
 
 import * as ItemsActions from '../actions/items'
@@ -12,19 +12,8 @@ class ItemsContainer extends Component {
     super(props)
   }
 
-  static navigationOptions = {
-    title: ({ state }) => {
-      return state.params.title || 'List'
-    },
-    header: ({ state, navigate }) => {
-      let right = (
-        <Button
-          title="Add"
-          onPress={() => navigate('ItemDetails', { listId: state.params.listId })}
-        />
-      )
-      return { right }
-    }
+  addItem() {
+    Actions.itemDetails({ params: { listId: this.props.listId }, title: 'Add Item' })
   }
 
   _add(title, points) {
@@ -47,17 +36,16 @@ class ItemsContainer extends Component {
   }
 
   _edit(data) {
-    const { navigate } = this.props.navigation
-    navigate('ItemDetails', {
+    Actions.itemDetails({ params: {
       listId: this.props.listId,
       id: data.id,
       title: data.title,
       points: data.points
-    })
+    }, title: 'Edit Item' })
   }
 
   componentWillMount() {
-    let listId = this.props.navigation.state.params.listId || null
+    let listId = this.props.params.listId || null
     if (listId) {
       this.props.getListItems(listId).then(() => {
         //setParams({title: this.props.title})
@@ -69,6 +57,7 @@ class ItemsContainer extends Component {
     return (
       <Items
         {...this.props}
+        addItem={this.addItem.bind(this)}
         _add={this._add.bind(this)}
         _remove={this._remove.bind(this)}
         _toggle={this._toggle.bind(this)}
