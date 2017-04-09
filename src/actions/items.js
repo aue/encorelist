@@ -9,6 +9,8 @@ export const LOAD_ITEMS_REQUEST = 'GET_ITEMS_REQUEST'
 export const LOAD_ITEMS_SUCCESS = 'GET_ITEMS_SUCCESS'
 export const LOAD_ITEMS_FAILURE = 'GET_ITEMS_FAILURE'
 
+export const GET_LIST_ITEMS_REQUEST = 'GET_LIST_ITEMS_REQUEST'
+
 export const ADD_LIST_ITEM_REQUEST = 'ADD_LIST_ITEM_REQUEST'
 export const ADD_LIST_ITEM_SUCCESS = 'ADD_LIST_ITEM_SUCCESS'
 export const ADD_LIST_ITEM_FAILURE = 'ADD_LIST_ITEM_FAILURE'
@@ -41,8 +43,10 @@ export function getListItemIds(listId) {
           let itemIds = getState().lists.lists[listId].items
           dispatch({ type: GET_LIST_ITEM_IDS_SUCCESS, listId, itemIds: itemIds })
         }
-        else
+        else {
           dispatch({ type: GET_LIST_ITEM_IDS_FAILURE, listId, error: 'Could not fetch list items' })
+          if (__DEV__) throw new Error('Could not fetch list items')
+        }
       })
     }
   }
@@ -59,7 +63,7 @@ export function loadItems(itemIds) {
     let itemsToFetch = []
 
     for (let itemId of itemIds) {
-      if (!state.items[itemId]) itemsToFetch.push(itemId)
+      if (!state.items.items[itemId]) itemsToFetch.push(itemId)
     }
 
     // fetch from online if not found in store
@@ -81,8 +85,8 @@ export function loadItems(itemIds) {
         dispatch({ type: LOAD_ITEMS_SUCCESS, itemIds, items })
       })
       .catch(error => {
-        dispatch({ type: LOAD_ITEMS_FAILURE, itemIds, error })
-        throw error
+        dispatch({ type: LOAD_ITEMS_FAILURE, itemIds, error: error.message })
+        if (__DEV__) throw error
       })
     }
     else {
@@ -96,6 +100,8 @@ export function loadItems(itemIds) {
 */
 export function getListItems(listId) {
   return (dispatch, getState) => {
+    dispatch({ type: GET_LIST_ITEMS_REQUEST, listId })
+
     return dispatch(getListItemIds(listId)).then(() => {
       const itemIds = Object.keys(getState().lists.lists[listId].items)
       if (itemIds.length > 0)
@@ -111,28 +117,28 @@ export function getListItems(listId) {
 */
 export function addListItem(listId, data) {
   return dispatch => {
-    let newItemId = database.ref().child('items').push().key
-    dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId, data })
-    const userId = auth.currentUser.uid
-
     let newItem = {
-      id: newItemId,
-      userId,
+      id: database.ref().child('items').push().key,
+      userId: auth.currentUser.uid,
       title: data.title || '',
       points: parseInt(data.points, 10) || 0,
       complete: false,
-      time: TIMESTAMP
+      created: TIMESTAMP,
+      lastUpdated: TIMESTAMP
     }
+
+    dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId: newItem.id, data })
+
     let updates = {}
-    updates[`/items/${newItemId}`] = newItem
-    updates[`/lists/${listId}/items/${newItemId}`] = true
+    updates[`/items/${newItem.id}`] = newItem
+    updates[`/lists/${listId}/items/${newItem.id}`] = true
 
     return database.ref().update(updates).then(() => {
-      dispatch({ type: ADD_LIST_ITEM_SUCCESS, listId, itemId: newItemId, item: newItem })
+      dispatch({ type: ADD_LIST_ITEM_SUCCESS, listId, itemId: newItem.id, item: newItem })
     })
     .catch(error => {
-      dispatch({ type: ADD_LIST_ITEM_FAILURE, listId, newItemId, data, error })
-      throw error
+      dispatch({ type: ADD_LIST_ITEM_FAILURE, listId, newItemId: newItem.id, data, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
@@ -152,8 +158,8 @@ export function removeListItem(itemId, listId) {
       dispatch({ type: REMOVE_LIST_ITEM_SUCCESS, itemId, listId })
     })
     .catch(error => {
-      dispatch({ type: REMOVE_LIST_ITEM_FAILURE, itemId, listId, error })
-      throw error
+      dispatch({ type: REMOVE_LIST_ITEM_FAILURE, itemId, listId, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
@@ -169,8 +175,8 @@ export function changeListItem(itemId, data) {
       dispatch({ type: CHANGE_LIST_ITEM_SUCCESS, itemId, data })
     })
     .catch(error => {
-      dispatch({ type: CHANGE_LIST_ITEM_FAILURE, itemId, error })
-      throw error
+      dispatch({ type: CHANGE_LIST_ITEM_FAILURE, itemId, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }

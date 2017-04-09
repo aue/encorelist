@@ -7,8 +7,16 @@ import {
   GET_LISTS_FAILURE,
   ADD_LIST_REQUEST,
   ADD_LIST_SUCCESS,
-  ADD_LIST_FAILURE
+  ADD_LIST_FAILURE,
+  REMOVE_LIST_REQUEST,
+  REMOVE_LIST_SUCCESS,
+  REMOVE_LIST_FAILURE
 } from '../actions/lists'
+
+import {
+  ADD_LIST_ITEM_SUCCESS,
+  REMOVE_LIST_ITEM_SUCCESS
+} from '../actions/items'
 
 const initialState = {
   listIds: {},
@@ -91,6 +99,51 @@ export default function reducer(state = initialState, action) {
         error: action.error,
         adding: false
       }
+
+    case REMOVE_LIST_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case REMOVE_LIST_SUCCESS: {
+      let listIds = { ...state.listIds }
+      delete listIds[action.listId]
+
+      let lists = { ...state.lists }
+      delete lists[action.listId]
+
+      return {
+        ...state,
+        error: null,
+        listIds: listIds,
+        lists: lists
+      }
+    }
+    case REMOVE_LIST_FAILURE: {
+      return {
+        ...state,
+        error: action.error,
+      }
+    }
+
+    case ADD_LIST_ITEM_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId].items[action.itemId] = true
+
+      return {
+        ...state,
+        lists
+      }
+    }
+    case REMOVE_LIST_ITEM_SUCCESS:{
+      let lists = { ...state.lists }
+      delete lists[action.listId].items[action.itemId]
+
+      return {
+        ...state,
+        lists
+      }
+    }
 
     default:
       return state

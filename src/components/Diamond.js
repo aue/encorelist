@@ -1,22 +1,5 @@
 import React, { Component } from 'react'
-import { View } from 'react-native'
-import Svg,{
-    Circle,
-    Ellipse,
-    G,
-    LinearGradient,
-    RadialGradient,
-    Line,
-    Path,
-    Polygon,
-    Polyline,
-    Rect,
-    Symbol,
-    Text,
-    Use,
-    Defs,
-    Stop
-} from 'react-native-svg'
+import Svg, { Rect } from 'react-native-svg'
 
 export default class Diamond extends Component {
   constructor(props) {

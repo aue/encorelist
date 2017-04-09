@@ -8,22 +8,21 @@ export default class ListsRow extends Component {
     super(props)
   }
 
-  componentWillMount() {
-  }
-
-  goToList() {
-    this.props.navigateToList(this.props.id, this.props.title)
-  }
-
   render() {
+    let numberOfItems = 0
+    if (this.props.items) numberOfItems = Object.keys(this.props.items).length
     return (
-      <TouchableOpacity style={styles.row} onPress={() => this.goToList()}>
+      <TouchableOpacity
+        style={styles.row}
+        onPress={() => this.props.navigateToList(this.props.id, this.props.title)}
+        onLongPress={() => this.props.removeList(this.props.id)}
+      >
         <View style={styles.circle}>
           <PointCircle />
         </View>
         <View style={styles.text}>
           <Text style={styles.title}>{this.props.title}</Text>
-          <Text style={styles.items}>0 Items</Text>
+          <Text style={styles.items}>{numberOfItems} {(numberOfItems == 1)? 'Item':'Items'}</Text>
         </View>
       </TouchableOpacity>
     )

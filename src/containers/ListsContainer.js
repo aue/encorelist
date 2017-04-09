@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'react-native'
+import { Alert, Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { auth } from '../firebase'
@@ -30,6 +30,17 @@ class ListsContainer extends Component {
     navigate('Items', { listId, title })
   }
 
+  removeList(listId) {
+    Alert.alert(
+      'Delete this list?',
+      'All items will be removed',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'OK', onPress: () => this.props.removeList(listId), style: 'destructive'},
+      ]
+    )
+  }
+
   componentWillMount() {
     this.props.getUserLists(auth.currentUser.uid)
   }
@@ -37,18 +48,21 @@ class ListsContainer extends Component {
   render() {
     return (
       <Lists
-        lists={this.props.lists}
-        loading={this.props.loading}
+        { ...this.props }
         navigateToList={this.navigateToList.bind(this)}
+        removeList={this.removeList.bind(this)}
       />
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  let lists = Object.keys(state.lists.listIds)
-    .map(listId => state.lists.lists[listId])
-    .filter(value => value !== null)
+  let lists = []
+  if (!(state.lists.loadingListIds || state.lists.loadingLists)) {
+    lists = Object.keys(state.lists.listIds)
+      .map(listId => state.lists.lists[listId])
+      .filter(value => value !== null)
+  }
 
   return {
     lists: lists,

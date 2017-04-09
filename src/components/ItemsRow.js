@@ -2,8 +2,9 @@ import React, { Component } from 'react'
 import { Dimensions, Animated, PanResponder, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
 import CheckCircle from './CheckCircle'
+import Diamond from './Diamond'
 
-export default class ItemRow extends Component {
+export default class ItemsRow extends Component {
   constructor(props) {
     super(props)
     const screen = Dimensions.get('window')
@@ -72,10 +73,17 @@ export default class ItemRow extends Component {
           </Animated.View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.text} onPress={() => this.props._edit()}>
+        <TouchableOpacity
+          style={styles.text}
+          onPress={() => this.props._edit()}
+          onLongPress={() => this.props._remove()}
+        >
           <Animated.View style={{ transform: [{ translateX: this.state.textPan }] }}>
             <Text style={styles.title}>{this.props.title}</Text>
-            <Text style={styles.points}>{this.props.points} Points</Text>
+            <View style={styles.points}>
+              <Text style={styles.pointsText}>{this.props.points}</Text>
+              <Diamond style={styles.diamond} color="#777" size={13} />
+            </View>
           </Animated.View>
         </TouchableOpacity>
       </View>
@@ -109,8 +117,16 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   points: {
-    paddingTop: 4,
+    paddingTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pointsText: {
     fontSize: 15,
-    fontWeight: 'bold'
-  }
+    fontWeight: 'bold',
+    marginRight: 4,
+    marginTop: -2
+  },
+  diamond: {
+  },
 })

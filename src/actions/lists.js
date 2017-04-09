@@ -12,6 +12,10 @@ export const ADD_LIST_REQUEST = 'ADD_LIST_REQUEST'
 export const ADD_LIST_SUCCESS = 'ADD_LIST_SUCCESS'
 export const ADD_LIST_FAILURE = 'ADD_LIST_FAILURE'
 
+export const REMOVE_LIST_REQUEST = 'REMOVE_LIST_REQUEST'
+export const REMOVE_LIST_SUCCESS = 'REMOVE_LIST_SUCCESS'
+export const REMOVE_LIST_FAILURE = 'REMOVE_LIST_FAILURE'
+
 /*
 * Fetch lists ids in user's account
 */
@@ -27,6 +31,7 @@ export function getUserListIds(userId) {
     })
     .catch(error => {
       dispatch({ type: GET_USER_LIST_IDS_FAILURE, userId, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
@@ -51,15 +56,27 @@ export function getLists(listIds) {
 
       let lists = {}
       for (let list of snapshots) {
-        if (!list.items) list.items = {}
-        lists[list.id] = list
+        let listTemplate = {
+          id: '',
+          title: '',
+          time: 0,
+          totalPoints: 0,
+          completedPoints: 0,
+          userId: '',
+          items: {}
+        }
+
+        lists[list.id] = {
+          ...listTemplate,
+          ...list
+        }
       }
 
       dispatch({ type: GET_LISTS_SUCCESS, listIds, lists })
     })
     .catch(error => {
-      dispatch({ type: GET_LISTS_FAILURE, listIds, error })
-      throw error
+      dispatch({ type: GET_LISTS_FAILURE, listIds, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
@@ -105,6 +122,33 @@ export function addList(data) {
     })
     .catch(error => {
       dispatch({ type: ADD_LIST_FAILURE, error: error.message })
+    })
+  }
+}
+
+/*
+* Removing a list
+*/
+export function removeList(listId) {
+  return (dispatch, getState) => {
+    dispatch({ type: REMOVE_LIST_REQUEST, listId })
+
+    let updates = {}
+    updates[`/lists/${listId}`] = null // remove from lists
+    updates[`/users/${auth.currentUser.uid}/lists/${listId}`] = null // remove from user account
+
+    // remove every item in list
+    let itemIds = Object.keys(getState().lists.lists[listId].items)
+    for (let itemId of itemIds) {
+      updates[`/items/${itemId}`] = null
+    }
+
+    return database.ref().update(updates).then(() => {
+      dispatch({ type: REMOVE_LIST_SUCCESS, listId, itemIds })
+    })
+    .catch(error => {
+      dispatch({ type: REMOVE_LIST_FAILURE, listId, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button } from 'react-native'
+import { Alert, Button } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 
@@ -32,7 +32,14 @@ class ItemsContainer extends Component {
   }
 
   _remove(itemId) {
-    this.props.removeListItem(itemId, this.props.listId)
+    Alert.alert(
+      'Delete this item?',
+      'Points from this item will be removed',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'OK', onPress: () => this.props.removeListItem(itemId, this.props.listId), style: 'destructive'},
+      ]
+    )
   }
 
   _toggle(itemId, complete) {
@@ -50,10 +57,12 @@ class ItemsContainer extends Component {
   }
 
   componentWillMount() {
-    let listId = this.props.navigation.state.params.listId || ''
-    this.props.getListItems(listId).then(() => {
-      //setParams({title: this.props.title})
-    })
+    let listId = this.props.navigation.state.params.listId || null
+    if (listId) {
+      this.props.getListItems(listId).then(() => {
+        //setParams({title: this.props.title})
+      })
+    }
   }
 
   render() {
@@ -70,10 +79,16 @@ class ItemsContainer extends Component {
 }
 
 const mapStateToProps = (state) => {
+  let items = []
+  if (state.items.activeListId && !(state.items.loadingItemIds || state.items.loadingItems)) {
+    items = Object.keys(state.lists.lists[state.items.activeListId].items)
+      .map(itemId => state.items.items[itemId])
+      .filter(value => value !== null)
+  }
+
   return {
-    listId: state.items.listId,
-    itemIds: state.items.itemIds,
-    items: state.items.items,
+    listId: state.items.activeListId,
+    items: items,
     loading: state.items.loadingItemIds || state.items.loadingItems,
     error: state.items.error,
     addingItem: state.items.addingItem,

@@ -5,6 +5,7 @@ import {
   LOAD_ITEMS_REQUEST,
   LOAD_ITEMS_SUCCESS,
   LOAD_ITEMS_FAILURE,
+  GET_LIST_ITEMS_REQUEST,
   ADD_LIST_ITEM_REQUEST,
   ADD_LIST_ITEM_SUCCESS,
   ADD_LIST_ITEM_FAILURE,
@@ -16,8 +17,12 @@ import {
   CHANGE_LIST_ITEM_FAILURE
 } from '../actions/items'
 
+import {
+  REMOVE_LIST_SUCCESS
+} from '../actions/lists'
+
 const initialState = {
-  listId: '',
+  activeListId: null,
   items: {},
   loadingItemIds: false,
   loadingItems: false,
@@ -32,20 +37,18 @@ export default function reducer(state = initialState, action) {
     case GET_LIST_ITEM_IDS_REQUEST:
       return {
         ...state,
-        listId: action.listId,
         loadingItemIds: true
       }
     case GET_LIST_ITEM_IDS_SUCCESS:
       return {
         ...state,
-        itemIds: action.itemIds,
         loadingItemIds: false
       }
     case GET_LIST_ITEM_IDS_FAILURE:
       return {
         ...state,
         loadingItemIds: false,
-        error: true
+        error: action.error
       }
 
     case LOAD_ITEMS_REQUEST:
@@ -56,14 +59,23 @@ export default function reducer(state = initialState, action) {
     case LOAD_ITEMS_SUCCESS:
       return {
         ...state,
-        items: action.items,
+        items: {
+          ...state.items,
+          ...action.items
+        },
         loadingItems: false
       }
     case LOAD_ITEMS_FAILURE:
       return {
         ...state,
         loadingItems: false,
-        error: true
+        error: action.error
+      }
+
+    case GET_LIST_ITEMS_REQUEST:
+      return {
+        ...state,
+        activeListId: action.listId
       }
 
     case ADD_LIST_ITEM_REQUEST:
@@ -72,21 +84,20 @@ export default function reducer(state = initialState, action) {
         addingItem: true
       }
     case ADD_LIST_ITEM_SUCCESS: {
-      let itemIds = state.itemIds.concat([action.itemId])
-      let items = state.items.concat([action.item])
+      let items = { ...state.items }
+      items[action.itemId] = action.item
 
       return {
         ...state,
-        addingItem: false,
-        itemIds: itemIds,
-        items: items
+        items,
+        addingItem: false
       }
     }
     case ADD_LIST_ITEM_FAILURE:
       return {
         ...state,
         addingItem: false,
-        error: true
+        error: action.error
       }
 
     case REMOVE_LIST_ITEM_REQUEST:
@@ -95,24 +106,20 @@ export default function reducer(state = initialState, action) {
         removingItem: true
       }
     case REMOVE_LIST_ITEM_SUCCESS: {
-      let itemIds = state.itemIds.slice()
-      let items = state.items.slice()
-      const index = itemIds.indexOf(action.itemId)
-      itemIds.splice(index, 1)
-      items.splice(index, 1)
+      let items = { ...state.items }
+      delete items[action.itemId]
 
       return {
         ...state,
-        removingItem: false,
-        itemIds: itemIds,
-        items: items
+        items,
+        removingItem: false
       }
     }
     case REMOVE_LIST_ITEM_FAILURE:
       return {
         ...state,
         removingItem: false,
-        error: true
+        error: action.error
       }
 
     case CHANGE_LIST_ITEM_REQUEST:
@@ -121,10 +128,9 @@ export default function reducer(state = initialState, action) {
         changingItem: true
       }
     case CHANGE_LIST_ITEM_SUCCESS: {
-      const index = state.itemIds.indexOf(action.itemId)
-      let items = state.items.slice()
-      items[index] = {
-        ...items[index],
+      let items = { ...state.items }
+      items[action.itemId] = {
+        ...items[action.itemId],
         ...action.data
       }
 
@@ -139,6 +145,18 @@ export default function reducer(state = initialState, action) {
         ...state,
         changingItem: false
       }
+
+    case REMOVE_LIST_SUCCESS: {
+      let items = { ...state.items }
+      for (let itemId of action.itemIds) {
+        delete items[itemId]
+      }
+
+      return {
+        ...state,
+        items
+      }
+    }
 
     default:
       return state

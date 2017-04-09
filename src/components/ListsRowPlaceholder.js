@@ -29,8 +29,8 @@ const styles = StyleSheet.create({
   check: {
     margin: 16,
     borderRadius: 25,
-    height: 40,
-    width: 40,
+    height: 60,
+    width: 60,
     backgroundColor: '#ccc'
   },
   text: {
