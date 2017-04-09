@@ -17,26 +17,24 @@ class AccountContainer extends Component {
 
   logout() {
     this.props.logout().then(() => {
-      const navigateAction = NavigationActions.navigate({
-        routeName: 'Onboarding',
-        action: NavigationActions.navigate({ routeName: 'WelcomeScreen' })
+      const resetAction = NavigationActions.reset({
+        index: 0,
+        key: 'Init',
+        actions: [
+          NavigationActions.navigate({ routeName: 'Onboarding' })
+        ]
       })
-      this.props.navigation.dispatch(navigateAction)
+      this.props.navigation.dispatch(resetAction)
     })
-
-    /*const resetAction = NavigationActions.reset({
-      index: 0,
-      actions: [
-        NavigationActions.navigate({ routeName: 'Welcome' })
-      ]
-    })
-    this.props.navigation.dispatch(resetAction)*/
   }
 
   render() {
     return (
       <View>
-        <Text>My account here Coming Soon</Text>
+        <Text>Profile</Text>
+        <Text>Name</Text>
+        <Text>Number of points</Text>
+        <Text>Notifications</Text>
         <Button
           title="Logout"
           onPress={() => this.logout()}

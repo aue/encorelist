@@ -4,7 +4,7 @@ import LinearGradient from 'react-native-linear-gradient'
 
 import Diamond from './Diamond'
 
-export default class ListsHeader extends Component {
+export default class ItemsHeader extends Component {
   constructor(props) {
     super(props)
   }
@@ -12,16 +12,12 @@ export default class ListsHeader extends Component {
   render() {
     return (
       <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#A54348', '#E4598C']} style={styles.header}>
-        <Text style={styles.title}>At a glance</Text>
+        <Text style={styles.title}>Points earned</Text>
         <View style={styles.points}>
-          <Text style={[styles.text, styles.pointsCount]}>{this.props.points|| 0}</Text>
+          <Text style={[styles.text, styles.pointsCount]}>{this.props.points|| 0} of {this.props.points|| 0}</Text>
           <Diamond style={styles.diamond} size={27} />
           <Text style={[styles.text, styles.pts]}>pts</Text>
         </View>
-
-        <View style={styles.spacer} />
-        <Text style={styles.title}>Your next to-do</Text>
-        <Text style={styles.text}>Pet a cat</Text>
       </LinearGradient>
     )
   }

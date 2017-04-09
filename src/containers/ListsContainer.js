@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { auth } from '../firebase'
 
-import ListsListing from '../components/ListsListing'
+import Lists from '../components/Lists'
 import * as ListsActions from '../actions/lists'
 
 class ListsContainer extends Component {
@@ -36,7 +36,7 @@ class ListsContainer extends Component {
 
   render() {
     return (
-      <ListsListing lists={this.props.lists} navigateToList={this.navigateToList.bind(this)} />
+      <Lists lists={this.props.lists} navigateToList={this.navigateToList.bind(this)} />
     )
   }
 }

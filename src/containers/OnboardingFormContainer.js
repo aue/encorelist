@@ -12,8 +12,8 @@ class OnboardingFormContainer extends Component {
     const { state } = this.props.navigation
     this.state = {
       mode: state.params.mode || 'login',
-      email: '',
-      password: ''
+      email: 'test@example.com',
+      password: 'testing'
     }
   }
 
@@ -35,20 +35,14 @@ class OnboardingFormContainer extends Component {
   submit() {
     if (this.state.mode === 'login') {
       this.props.login(this.state.email, this.state.password).then(() => {
-        const navigateAction = NavigationActions.navigate({
-          routeName: 'Container',
-          action: NavigationActions.navigate({ routeName: 'ListsTab' })
-        })
-        this.props.navigation.dispatch(navigateAction)
-
-
-        /*const resetAction = NavigationActions.reset({
+        const resetAction = NavigationActions.reset({
           index: 0,
+          key: 'Onboarding',
           actions: [
-            NavigationActions.navigate({ routeName: 'Container' })
+            NavigationActions.navigate({ routeName: 'Onboarding' })
           ]
         })
-        this.props.navigation.dispatch(resetAction)*/
+        this.props.navigation.dispatch(resetAction)
       })
     }
     else if (this.state.mode === 'signup') {
@@ -86,6 +80,7 @@ class OnboardingFormContainer extends Component {
             autoCapitalize="none"
             returnKeyType="next"
             underlineColorAndroid="#A21B35"
+            value={this.state.email}
             disabled={this.props.waitingForResponse}
             onChangeText={(email) => this.setState({email})}
             onSubmitEditing={() => this.refs.password.focus()}
@@ -96,6 +91,7 @@ class OnboardingFormContainer extends Component {
             secureTextEntry={true}
             underlineColorAndroid="#A21B35"
             ref='password'
+            value={this.state.password}
             disabled={this.props.waitingForResponse}
             onChangeText={(password) => this.setState({password})}
           />

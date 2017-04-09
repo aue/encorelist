@@ -5,7 +5,7 @@ import LinearGradient from 'react-native-linear-gradient'
 import ListsHeader from './ListsHeader'
 import ListsRow from './ListsRow'
 
-export default class ListsListing extends Component {
+export default class Lists extends Component {
   constructor(props) {
     super(props)
   }
