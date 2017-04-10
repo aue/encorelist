@@ -19,6 +19,10 @@ export const REMOVE_LIST_ITEM_REQUEST = 'REMOVE_LIST_ITEM_REQUEST'
 export const REMOVE_LIST_ITEM_SUCCESS = 'REMOVE_LIST_ITEM_SUCCESS'
 export const REMOVE_LIST_ITEM_FAILURE = 'REMOVE_LIST_ITEM_FAILURE'
 
+export const TOGGLE_LIST_ITEM_REQUEST = 'TOGGLE_LIST_ITEM_REQUEST'
+export const TOGGLE_LIST_ITEM_SUCCESS = 'TOGGLE_LIST_ITEM_SUCCESS'
+export const TOGGLE_LIST_ITEM_FAILURE = 'TOGGLE_LIST_ITEM_FAILURE'
+
 export const CHANGE_LIST_ITEM_REQUEST = 'CHANGE_LIST_ITEM_REQUEST'
 export const CHANGE_LIST_ITEM_SUCCESS = 'CHANGE_LIST_ITEM_SUCCESS'
 export const CHANGE_LIST_ITEM_FAILURE = 'CHANGE_LIST_ITEM_FAILURE'
@@ -116,7 +120,7 @@ export function getListItems(listId) {
 * Adding an item to a list
 */
 export function addListItem(listId, data) {
-  return dispatch => {
+  return (dispatch, getState) => {
     let newItem = {
       id: database.ref().child('items').push().key,
       userId: auth.currentUser.uid,
@@ -126,12 +130,14 @@ export function addListItem(listId, data) {
       created: TIMESTAMP,
       lastUpdated: TIMESTAMP
     }
+    const totalPoints = getState().lists.lists[listId].totalPoints
 
     dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId: newItem.id, data })
 
     let updates = {}
     updates[`/items/${newItem.id}`] = newItem
     updates[`/lists/${listId}/items/${newItem.id}`] = true
+    updates[`/lists/${listId}/totalPoints`] = totalPoints + newItem.points
 
     return database.ref().update(updates).then(() => {
       dispatch({ type: ADD_LIST_ITEM_SUCCESS, listId, itemId: newItem.id, item: newItem })
@@ -159,6 +165,30 @@ export function removeListItem(itemId, listId) {
     })
     .catch(error => {
       dispatch({ type: REMOVE_LIST_ITEM_FAILURE, itemId, listId, error: error.message })
+      if (__DEV__) throw error
+    })
+  }
+}
+
+/*
+ * Toggle an item in a list
+ */
+export function toggleListItem(listId, itemId, complete = false, points = 0) {
+  return (dispatch, getState) => {
+    dispatch({ type: TOGGLE_LIST_ITEM_REQUEST, listId, itemId, complete, points })
+
+    const completedPoints = getState().lists.lists[listId].completedPoints
+    let signedPoints = (complete)? points : -points
+
+    let updates = {}
+    updates[`/items/${itemId}/complete`] = complete
+    if (points !== 0) updates[`/lists/${listId}/completedPoints`] = completedPoints + signedPoints
+
+    return database.ref().update(updates).then(() => {
+      dispatch({ type: TOGGLE_LIST_ITEM_SUCCESS, listId, itemId, complete, points: signedPoints })
+    })
+    .catch(error => {
+      dispatch({ type: TOGGLE_LIST_ITEM_FAILURE, listId, itemId, complete, points, error: error.message })
       if (__DEV__) throw error
     })
   }

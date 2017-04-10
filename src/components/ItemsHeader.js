@@ -14,7 +14,7 @@ export default class ItemsHeader extends Component {
       <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={['#A54348', '#E4598C']} style={styles.header}>
         <Text style={styles.title}>Points earned</Text>
         <View style={styles.points}>
-          <Text style={[styles.text, styles.pointsCount]}>{this.props.points|| 0} of {this.props.points|| 0}</Text>
+          <Text style={[styles.text, styles.pointsCount]}>{this.props.completedPoints || 0} of {this.props.totalPoints || 0}</Text>
           <Diamond style={styles.diamond} size={27} />
           <Text style={[styles.text, styles.pts]}>pts</Text>
         </View>

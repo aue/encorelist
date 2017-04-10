@@ -15,7 +15,8 @@ import {
 
 import {
   ADD_LIST_ITEM_SUCCESS,
-  REMOVE_LIST_ITEM_SUCCESS
+  REMOVE_LIST_ITEM_SUCCESS,
+  TOGGLE_LIST_ITEM_SUCCESS
 } from '../actions/items'
 
 const initialState = {
@@ -25,7 +26,8 @@ const initialState = {
   loadingLists: false,
   error: null,
   adding: false,
-  changing: false
+  changing: false,
+  init: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -63,6 +65,7 @@ export default function reducer(state = initialState, action) {
           ...state.lists,
           ...action.lists
         },
+        init: true,
         loadingLists: false
       }
     case GET_LISTS_FAILURE:
@@ -129,15 +132,26 @@ export default function reducer(state = initialState, action) {
     case ADD_LIST_ITEM_SUCCESS: {
       let lists = { ...state.lists }
       lists[action.listId].items[action.itemId] = true
+      lists[action.listId].totalPoints += action.item.points
 
       return {
         ...state,
         lists
       }
     }
-    case REMOVE_LIST_ITEM_SUCCESS:{
+    case REMOVE_LIST_ITEM_SUCCESS: {
       let lists = { ...state.lists }
       delete lists[action.listId].items[action.itemId]
+
+      return {
+        ...state,
+        lists
+      }
+    }
+    case TOGGLE_LIST_ITEM_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId].items[action.itemId] = true
+      lists[action.listId].completedPoints += action.points
 
       return {
         ...state,

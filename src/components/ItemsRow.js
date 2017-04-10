@@ -83,6 +83,7 @@ export default class ItemsRow extends Component {
             <View style={styles.points}>
               <Text style={styles.pointsText}>{this.props.points}</Text>
               <Diamond style={styles.diamond} color="#777" size={13} />
+              <Text style={styles.pointsText}>pts</Text>
             </View>
           </Animated.View>
         </TouchableOpacity>

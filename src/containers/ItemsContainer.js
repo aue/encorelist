@@ -31,8 +31,8 @@ class ItemsContainer extends Component {
     )
   }
 
-  _toggle(itemId, complete) {
-    this.props.changeListItem(itemId, { complete: !complete })
+  _toggle(itemId, complete, points) {
+    this.props.toggleListItem(this.props.listId, itemId, !complete, points)
   }
 
   _edit(data) {
@@ -69,13 +69,27 @@ class ItemsContainer extends Component {
 
 const mapStateToProps = (state) => {
   let items = []
+  let activeList = {
+    title: '',
+    totalPoints: 0,
+    completedPoints: 0
+  }
   if (state.items.activeListId && !(state.items.loadingItemIds || state.items.loadingItems)) {
-    items = Object.keys(state.lists.lists[state.items.activeListId].items)
-      .map(itemId => state.items.items[itemId])
-      .filter(value => value !== null)
+    if (Object.keys(state.lists.lists[state.items.activeListId].items).length > 0)
+      items = Object.keys(state.lists.lists[state.items.activeListId].items)
+        .map(itemId => state.items.items[itemId])
+        .filter(value => value !== null)
+
+    activeList = {
+      ...activeList,
+      ...state.lists.lists[state.items.activeListId]
+    }
   }
 
   return {
+    title: activeList.title,
+    totalPoints: activeList.totalPoints,
+    completedPoints: activeList.completedPoints,
     listId: state.items.activeListId,
     items: items,
     loading: state.items.loadingItemIds || state.items.loadingItems,

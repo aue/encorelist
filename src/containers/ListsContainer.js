@@ -59,6 +59,7 @@ const mapStateToProps = (state) => {
 
   return {
     lists: lists,
+    init: state.lists.init,
     loading: state.lists.loadingListIds || state.lists.loadingLists,
     error: state.lists.error,
   }

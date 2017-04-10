@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, ListView } from 'react-native'
-import LinearGradient from 'react-native-linear-gradient'
 
 import ItemRowPlaceholder from './ItemRowPlaceholder'
 import ItemsHeader from './ItemsHeader'
@@ -16,7 +15,7 @@ export default class Items extends Component {
     return (
       <ItemsRow
         {...rowData}
-        _toggle={() => this.props._toggle(rowData.id, rowData.complete)}
+        _toggle={() => this.props._toggle(rowData.id, rowData.complete, rowData.points)}
         _edit={() => this.props._edit(rowData)}
         _remove={() => this.props._remove(rowData.id)}
       />
@@ -47,7 +46,10 @@ export default class Items extends Component {
     }
     else {
       header = (
-        <ItemsHeader/>
+        <ItemsHeader
+          totalPoints={this.props.totalPoints}
+          completedPoints={this.props.completedPoints}
+        />
       )
     }
 

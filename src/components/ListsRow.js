@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
 import PointCircle from './PointCircle'
+import Diamond from './Diamond'
 
 export default class ListsRow extends Component {
   constructor(props) {
@@ -18,11 +19,15 @@ export default class ListsRow extends Component {
         onLongPress={() => this.props.gotoRemoveList(this.props.id)}
       >
         <View style={styles.circle}>
-          <PointCircle />
+          <PointCircle value={this.props.completedPoints} />
         </View>
         <View style={styles.text}>
           <Text style={styles.title}>{this.props.title}</Text>
-          <Text style={styles.items}>{numberOfItems} {(numberOfItems == 1)? 'Item':'Items'}</Text>
+          <View style={styles.points}>
+            <Text style={styles.pointsText}>{numberOfItems} {(numberOfItems == 1)? 'Item':'Items'}, {this.props.totalPoints}</Text>
+            <Diamond style={styles.diamond} color="#777" size={13} />
+            <Text style={styles.pointsText}>pts</Text>
+          </View>
         </View>
       </TouchableOpacity>
     )
@@ -50,9 +55,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
   },
-  items: {
-    paddingTop: 4,
+  points: {
+    paddingTop: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pointsText: {
     fontSize: 15,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginRight: 4,
+    marginTop: -2
   }
 })

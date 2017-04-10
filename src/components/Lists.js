@@ -16,9 +16,7 @@ export default class Lists extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (this.props.lists !== nextProps.lists) {
-      this.dataSource = this.dataSource.cloneWithRows(nextProps.lists)
-    }
+    this.dataSource = this.dataSource.cloneWithRows(nextProps.lists)
   }
 
   render() {
