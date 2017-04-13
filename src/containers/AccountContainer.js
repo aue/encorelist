@@ -25,6 +25,7 @@ class AccountContainer extends Component {
         <AccountForm
           displayName={auth.currentUser.displayName}
           email={auth.currentUser.email}
+          { ...this.props }
           logout={this.logout.bind(this)}
         />
       )
@@ -35,6 +36,8 @@ class AccountContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    points: state.account.points,
+    redeemedPoints: state.account.redeemedPoints,
     error: state.account.error,
     user: state.account.user,
     waitingForResponse: state.account.waitingForResponse

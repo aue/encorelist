@@ -7,10 +7,16 @@ import {
   LOGOUT_FAILURE,
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
-  SIGNUP_FAILURE
+  SIGNUP_FAILURE,
+  UPDATE_POINTS_IN_USER_REQUEST,
+  UPDATE_POINTS_IN_USER_SUCCESS,
+  UPDATE_POINTS_IN_USER_FAILURE
 } from '../actions/account'
 
 const initialState = {
+  name: '',
+  points: 0,
+  redeemedPoints: 0,
   error: null,
   user: null,
   waitingForResponse: false
@@ -77,6 +83,26 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
+    case UPDATE_POINTS_IN_USER_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case UPDATE_POINTS_IN_USER_SUCCESS: {
+      return {
+        ...state,
+        points: action.points,
+        redeemedPoints: action.redeemedPoints
+      }
+    }
+    case UPDATE_POINTS_IN_USER_FAILURE: {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
+
     default:
       return state
   }

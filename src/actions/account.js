@@ -1,4 +1,4 @@
-import { auth } from '../firebase'
+import { auth, database } from '../firebase'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -11,6 +11,10 @@ export const LOGOUT_FAILURE = 'LOGOUT_FAILURE'
 export const SIGNUP_REQUEST = 'SIGNUP_REQUEST'
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
+
+export const UPDATE_POINTS_IN_USER_REQUEST = 'UPDATE_POINTS_IN_USER_REQUEST'
+export const UPDATE_POINTS_IN_USER_SUCCESS = 'UPDATE_POINTS_IN_USER_SUCCESS'
+export const UPDATE_POINTS_IN_USER_FAILURE = 'UPDATE_POINTS_IN_USER_FAILURE'
 
 /*
 * Login user
@@ -56,6 +60,38 @@ export function signup(email, password) {
     })
     .catch(error => {
       dispatch({ type: SIGNUP_FAILURE, error: error.message })
+    })
+  }
+}
+
+/*
+* Update points for user
+*/
+export function updatePointsInUser(points = 0, redeemedPoints = 0) {
+  return dispatch => {
+    dispatch({ type: UPDATE_POINTS_IN_USER_REQUEST, points, redeemedPoints })
+
+    database.ref(`/users/${auth.currentUser.uid}`).transaction((user) => {
+      if (user) {
+        if (user.points == null) user.points = 0
+        if (user.redeemedPoints == null) user.redeemedPoints = 0
+
+        user.points += points
+        user.redeemedPoints += redeemedPoints
+
+        if (user.points < 0) user.points = 0
+        if (user.redeemedPoints < 0) user.redeemedPoints = 0
+      }
+      return user
+    }, (error, success, result) => {
+      if (error) {
+        dispatch({ type: UPDATE_POINTS_IN_USER_FAILURE, error: error.message })
+        if (__DEV__) throw error
+      }
+      else if (success) {
+        const user = result.val()
+        dispatch({ type: UPDATE_POINTS_IN_USER_SUCCESS, points: user.points, redeemedPoints: user.redeemedPoints })
+      }
     })
   }
 }

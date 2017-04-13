@@ -185,7 +185,7 @@ export function updatePointsInList(listId, totalPoints = 0, completedPoints = 0)
       }
       else if (success) {
         const item = result.val()
-        dispatch({ type: UPDATE_POINTS_IN_LIST_SUCCESS, listId, result, totalPoints: item.totalPoints, completedPoints: item.completedPoints })
+        dispatch({ type: UPDATE_POINTS_IN_LIST_SUCCESS, listId, totalPoints: item.totalPoints, completedPoints: item.completedPoints })
       }
     })
   }

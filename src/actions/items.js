@@ -1,5 +1,6 @@
 import { auth, database, TIMESTAMP } from '../firebase'
 import { getLists, updatePointsInList } from './lists'
+import { updatePointsInUser } from './account'
 
 export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST'
 export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS'
@@ -185,6 +186,7 @@ export function toggleListItem(listId, itemId, complete = false, points = 0) {
     return database.ref().update(updates).then(() => {
       dispatch({ type: TOGGLE_LIST_ITEM_SUCCESS, listId, itemId, complete, points })
       dispatch(updatePointsInList(listId, 0, (complete)? points:-points))
+      dispatch(updatePointsInUser((complete)? points:-points, 0))
     })
     .catch(error => {
       dispatch({ type: TOGGLE_LIST_ITEM_FAILURE, listId, itemId, complete, points, error: error.message })

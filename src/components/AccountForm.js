@@ -11,8 +11,8 @@ export default class AccountForm extends Component {
       <ScrollView style={styles.container}>
         <Text>{this.props.displayName}</Text>
         <Text>{this.props.email}</Text>
-        <Text>Name</Text>
-        <Text>Number of points</Text>
+        <Text>Points Earned: {this.props.points}</Text>
+        <Text>Points Redeemed: {this.props.redeemedPoints}</Text>
         <Text>Notifications</Text>
         <Button
           title="Logout"
