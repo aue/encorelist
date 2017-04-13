@@ -10,7 +10,10 @@ import {
   ADD_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
-  REMOVE_LIST_FAILURE
+  REMOVE_LIST_FAILURE,
+  UPDATE_POINTS_IN_LIST_REQUEST,
+  UPDATE_POINTS_IN_LIST_FAILURE,
+  UPDATE_POINTS_IN_LIST_SUCCESS
 } from '../actions/lists'
 
 import {
@@ -129,10 +132,31 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case UPDATE_POINTS_IN_LIST_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case UPDATE_POINTS_IN_LIST_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId].totalPoints = action.totalPoints
+      lists[action.listId].completedPoints = action.completedPoints
+
+      return {
+        ...state,
+        lists
+      }
+    }
+    case UPDATE_POINTS_IN_LIST_FAILURE: {
+      return {
+        ...state,
+        error: action.error,
+      }
+    }
+
     case ADD_LIST_ITEM_SUCCESS: {
       let lists = { ...state.lists }
       lists[action.listId].items[action.itemId] = true
-      lists[action.listId].totalPoints += action.item.points
 
       return {
         ...state,
@@ -151,7 +175,6 @@ export default function reducer(state = initialState, action) {
     case TOGGLE_LIST_ITEM_SUCCESS: {
       let lists = { ...state.lists }
       lists[action.listId].items[action.itemId] = true
-      lists[action.listId].completedPoints += action.points
 
       return {
         ...state,

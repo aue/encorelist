@@ -16,6 +16,10 @@ export const REMOVE_LIST_REQUEST = 'REMOVE_LIST_REQUEST'
 export const REMOVE_LIST_SUCCESS = 'REMOVE_LIST_SUCCESS'
 export const REMOVE_LIST_FAILURE = 'REMOVE_LIST_FAILURE'
 
+export const UPDATE_POINTS_IN_LIST_REQUEST = 'UPDATE_POINTS_IN_LIST_REQUEST'
+export const UPDATE_POINTS_IN_LIST_SUCCESS = 'UPDATE_POINTS_IN_LIST_SUCCESS'
+export const UPDATE_POINTS_IN_LIST_FAILURE = 'UPDATE_POINTS_IN_LIST_FAILURE'
+
 /*
 * Fetch lists ids in user's account
 */
@@ -151,6 +155,38 @@ export function removeList(listId) {
     .catch(error => {
       dispatch({ type: REMOVE_LIST_FAILURE, listId, error: error.message })
       if (__DEV__) throw error
+    })
+  }
+}
+
+/*
+* Update points of a list
+*/
+export function updatePointsInList(listId, totalPoints = 0, completedPoints = 0) {
+  return dispatch => {
+    dispatch({ type: UPDATE_POINTS_IN_LIST_REQUEST, listId })
+
+    database.ref(`/lists/${listId}`).transaction((list) => {
+      if (list) {
+        if (list.totalPoints == null) list.totalPoints = 0
+        if (list.completedPoints == null) list.completedPoints = 0
+
+        list.totalPoints += totalPoints
+        list.completedPoints += completedPoints
+
+        if (list.totalPoints < 0) list.totalPoints = 0
+        if (list.completedPoints < 0) list.completedPoints = 0
+      }
+      return list
+    }, (error, success, result) => {
+      if (error) {
+        dispatch({ type: UPDATE_POINTS_IN_LIST_FAILURE, listId, error: error.message })
+        if (__DEV__) throw error
+      }
+      else if (success) {
+        const item = result.val()
+        dispatch({ type: UPDATE_POINTS_IN_LIST_SUCCESS, listId, result, totalPoints: item.totalPoints, completedPoints: item.completedPoints })
+      }
     })
   }
 }
