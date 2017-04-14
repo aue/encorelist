@@ -30,7 +30,7 @@ class RewardsContainer extends Component {
   }
 
   componentWillMount() {
-    if (auth.currentUser)
+    if (auth.currentUser && !this.props.init)
       this.props.getUserRewards(auth.currentUser.uid)
   }
 
@@ -42,7 +42,8 @@ class RewardsContainer extends Component {
         object="reward"
         loading={this.props.loading}
         onRowPress={() => null}
-        onRowLongPress={this.gotoRemoveReward.bind(this)}
+        onEditPress={() => null}
+        onDeletePress={this.gotoRemoveReward.bind(this)}
         onAddPress={this.gotoAddReward.bind(this)}
       />
     )

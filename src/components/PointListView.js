@@ -16,7 +16,8 @@ export default class PointListView extends Component {
     data
     loading
     onRowPress
-    onRowLongPress
+    onEditPress
+    onDeletePress
     onAddPress
     */
   }
@@ -44,7 +45,10 @@ export default class PointListView extends Component {
 
   renderFooter() {
     return (
-      <PointRowAdd object={this.props.object} onPress={this.props.onAddPress} />
+      <PointRowAdd
+        object={this.props.object}
+        onPress={this.props.onAddPress}
+      />
     )
   }
 
@@ -53,7 +57,8 @@ export default class PointListView extends Component {
       <PointRow
         {...rowData}
         onPress={() => this.props.onRowPress(rowData.id)}
-        onLongPress={() => this.props.onRowLongPress(rowData.id)}
+        onEditPress={() => this.props.onEditPress(rowData.id)}
+        onDeletePress={() => this.props.onDeletePress(rowData.id)}
       />
     )
   }

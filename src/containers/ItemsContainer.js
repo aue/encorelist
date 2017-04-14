@@ -53,6 +53,15 @@ class ItemsContainer extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    let listId = nextProps.params.listId
+    if (this.props.params.listId != listId && listId != null) {
+      this.props.getListItems(listId).then(() => {
+        //setParams({title: this.props.title})
+      })
+    }
+  }
+
   render() {
     return (
       <Items

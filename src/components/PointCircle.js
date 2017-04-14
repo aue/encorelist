@@ -12,18 +12,11 @@ export default class PointCircle extends Component {
   }
 
   render() {
-    console.log(`${100 * (1 - this.props.percentage)}%`)
     return (
       <View>
         <View style={styles.circle}>
           <Text style={styles.text}>{this.props.value}</Text>
           <Diamond style={styles.diamond} size={16} />
-        </View>
-        <View style={styles.circleTop}>
-          <View style={[styles.circle, styles.circleGray]}>
-            <Text style={styles.text}>{this.props.value}</Text>
-            <Diamond style={styles.diamond} size={16} />
-          </View>
         </View>
       </View>
     )
@@ -51,8 +44,11 @@ const styles = StyleSheet.create({
     marginTop: 1
   },
   circleTop: {
+    flex: 1,
     position: 'absolute',
-    height: 0
+    width: 10,
+    height: 10,
+    overflow: 'hidden'
   },
   circleGray: {
     backgroundColor: 'gray'

@@ -47,7 +47,8 @@ class ListsContainer extends Component {
         object="list"
         loading={this.props.loading}
         onRowPress={this.gotoList.bind(this)}
-        onRowLongPress={this.gotoRemoveList.bind(this)}
+        onEditPress={this.gotoList.bind(this)}
+        onDeletePress={this.gotoRemoveList.bind(this)}
         onAddPress={this.gotoAddList.bind(this)}
       />
     )
