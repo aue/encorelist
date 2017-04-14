@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Animated, Dimensions, PanResponder, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import common from '../styles/common'
 
-//import styles from '../styles'
 import PointCircle from './PointCircle'
 
 export default class PointRow extends Component {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff'
+    backgroundColor: common.lightBackground
   },
   pointRowCircle: {
     margin: 8,
@@ -188,8 +188,12 @@ const styles = StyleSheet.create({
     margin: 4
   },
   pointRowSlideinButtonText: {
-    backgroundColor: 'red',
-    padding: 12,
+    backgroundColor: common.mediumGrey,
+    color: common.white,
+    fontWeight: 'bold',
+    padding: 10,
+    paddingLeft: 15,
+    paddingRight: 15,
     borderRadius: 30
   }
 })

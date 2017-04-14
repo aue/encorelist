@@ -1,18 +1,15 @@
 import React, { Component } from 'react'
-import { ListView, Text } from 'react-native'
+import { ListView } from 'react-native'
 
-import styles from '../styles'
+import HeaderItems from './HeaderItems'
+import ItemRowLoading from './ItemRowLoading'
+import ItemRow from './ItemRow'
+import ItemRowAdd from './ItemRowAdd'
 
-import HeaderLists from './HeaderLists'
-import PointRow from './PointRow'
-import PointRowLoading from './PointRowLoading'
-import PointRowAdd from './PointRowAdd'
-
-export default class PointListView extends Component {
+export default class ItemListView extends Component {
   constructor(props) {
     super(props)
     /*
-    object
     data
     loading
     onRowPress
@@ -32,9 +29,9 @@ export default class PointListView extends Component {
 
   renderHeader() {
     return (
-      <HeaderLists
-        points={this.props.accountPoints}
-        object={this.props.object}
+      <HeaderItems
+        totalPoints={this.props.totalPoints}
+        completedPoints={this.props.completedPoints}
         empty={this.props.data.length < 1}
       />
     )
@@ -42,8 +39,7 @@ export default class PointListView extends Component {
 
   renderFooter() {
     return (
-      <PointRowAdd
-        object={this.props.object}
+      <ItemRowAdd
         onPress={this.props.onAddPress}
       />
     )
@@ -51,17 +47,17 @@ export default class PointListView extends Component {
 
   renderRow(rowData) {
     return (
-      <PointRow
+      <ItemRow
         {...rowData}
-        onPress={() => this.props.onRowPress(rowData.id)}
-        onEditPress={() => this.props.onEditPress(rowData.id)}
-        onDeletePress={() => this.props.onDeletePress(rowData.id)}
+        _toggle={() => this.props.onRowPress(rowData.id, rowData.complete, rowData.points)}
+        _edit={() => this.props.onEditPress(rowData)}
+        _remove={() => this.props.onDeletePress(rowData.id)}
       />
     )
   }
 
   render() {
-    if (this.props.loading) return <PointRowLoading />
+    if (this.props.loading) return <ItemRowLoading />
 
     return (
       <ListView

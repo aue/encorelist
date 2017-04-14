@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import Svg, { Rect } from 'react-native-svg'
+import common from '../styles/common'
 
 export default class Diamond extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      color: this.props.color || '#ffffff',
+      color: this.props.color || common.darkText,
       size: this.props.size || 100
     }
   }
@@ -23,7 +24,7 @@ export default class Diamond extends Component {
           width={this.state.size/2}
           height={this.state.size/2}
           stroke={this.state.color}
-          strokeWidth={this.state.size/5}
+          strokeWidth={this.state.size/5.5}
           fill="transparent"
           rotate="45"
         />

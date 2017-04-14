@@ -18,19 +18,23 @@ class ListsContainer extends Component {
     Actions.items({ params: { listId, title }, title })
   }
 
-  gotoAddList() {
-    Actions.listDetails({ params: {}, title: 'Add List' })
+  gotoEditList(listId) {
+    Actions.listDetails({ params: { listId }, title: 'Edit List' })
   }
 
-  gotoRemoveList(listId) {
+  gotoDeleteList(listId) {
     Alert.alert(
       'Delete this list?',
-      'All items will be removed',
+      'All items in this list will be deleted.',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => this.props.removeList(listId), style: 'destructive'},
       ]
     )
+  }
+
+  gotoAddList() {
+    Actions.listDetails({ params: {}, title: 'Add List' })
   }
 
   componentWillMount() {
@@ -47,8 +51,8 @@ class ListsContainer extends Component {
         object="list"
         loading={this.props.loading}
         onRowPress={this.gotoList.bind(this)}
-        onEditPress={this.gotoList.bind(this)}
-        onDeletePress={this.gotoRemoveList.bind(this)}
+        onEditPress={this.gotoEditList.bind(this)}
+        onDeletePress={this.gotoDeleteList.bind(this)}
         onAddPress={this.gotoAddList.bind(this)}
       />
     )

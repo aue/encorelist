@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import { View, StyleSheet, Text } from 'react-native'
+import LinearGradient from 'react-native-linear-gradient'
 
+import common from '../styles/common'
 import Diamond from './Diamond'
 
 export default class PointCircle extends Component {
@@ -8,24 +10,18 @@ export default class PointCircle extends Component {
     super(props)
   }
 
-  componentWillMount() {
-  }
-
   render() {
     return (
-      <View>
-        <View style={styles.circle}>
-          <Text style={styles.text}>{this.props.value}</Text>
-          <Diamond style={styles.diamond} size={16} />
-        </View>
-      </View>
+      <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 1}} colors={[common.brandPrimary, common.brandSecondary]} style={styles.circle}>
+        <Text style={styles.text}>{this.props.value}</Text>
+        <Diamond color={common.lightText} size={16} />
+      </LinearGradient>
     )
   }
 }
 
 const styles = StyleSheet.create({
   circle: {
-    backgroundColor: 'darkred',
     borderRadius: 30,
     height: 60,
     width: 60,
@@ -35,22 +31,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   text: {
-    color: '#fff',
+    color: common.lightText,
     fontSize: 20,
     fontWeight: '700',
-    marginRight: 2,
-  },
-  diamond: {
-    marginTop: 1
-  },
-  circleTop: {
-    flex: 1,
-    position: 'absolute',
-    width: 10,
-    height: 10,
-    overflow: 'hidden'
-  },
-  circleGray: {
-    backgroundColor: 'gray'
+    marginRight: 4,
   }
 })

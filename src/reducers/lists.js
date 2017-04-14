@@ -14,6 +14,9 @@ import {
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
   REMOVE_LIST_FAILURE,
+  CHANGE_LIST_REQUEST,
+  CHANGE_LIST_SUCCESS,
+  CHANGE_LIST_FAILURE,
   UPDATE_POINTS_IN_LIST_REQUEST,
   UPDATE_POINTS_IN_LIST_FAILURE,
   UPDATE_POINTS_IN_LIST_SUCCESS
@@ -24,6 +27,10 @@ import {
   REMOVE_LIST_ITEM_SUCCESS,
   TOGGLE_LIST_ITEM_SUCCESS
 } from '../actions/items'
+
+import {
+  GET_USER_DATA_SUCCESS
+} from '../actions/account'
 
 const initialState = {
   listIds: {},
@@ -156,6 +163,30 @@ export default function reducer(state = initialState, action) {
       }
     }
 
+    case CHANGE_LIST_REQUEST:
+      return {
+        ...state,
+        changing: true
+      }
+    case CHANGE_LIST_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId] = {
+        ...lists[action.listId],
+        ...action.data
+      }
+
+      return {
+        ...state,
+        lists,
+        changing: false
+      }
+    }
+    case CHANGE_LIST_FAILURE:
+      return {
+        ...state,
+        changing: false
+      }
+
     case UPDATE_POINTS_IN_LIST_REQUEST: {
       return {
         ...state
@@ -203,6 +234,17 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         lists
+      }
+    }
+
+    case GET_USER_DATA_SUCCESS: {
+      return {
+        ...state,
+        listIds: {
+          ...state.listIds,
+          ...action.listIds
+        },
+        loadingListIds: false
       }
     }
 

@@ -3,9 +3,10 @@ import { Alert } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
-import Items from '../components/Items'
 
 import * as ItemsActions from '../actions/items'
+
+import ItemListView from '../components/ItemListView'
 
 class ItemsContainer extends Component {
   constructor(props) {
@@ -14,10 +15,6 @@ class ItemsContainer extends Component {
 
   addItem() {
     Actions.itemDetails({ params: { listId: this.props.listId }, title: 'Add Item' })
-  }
-
-  _add(title, points) {
-    this.props.addListItem(title, points, this.props.listId)
   }
 
   _remove(itemId) {
@@ -64,13 +61,15 @@ class ItemsContainer extends Component {
 
   render() {
     return (
-      <Items
-        {...this.props}
-        addItem={this.addItem.bind(this)}
-        _add={this._add.bind(this)}
-        _remove={this._remove.bind(this)}
-        _toggle={this._toggle.bind(this)}
-        _edit={this._edit.bind(this)}
+      <ItemListView
+        data={this.props.items}
+        totalPoints={this.props.totalPoints}
+        completedPoints={this.props.completedPoints}
+        loading={this.props.loading}
+        onRowPress={this._toggle.bind(this)}
+        onEditPress={this._edit.bind(this)}
+        onDeletePress={this._remove.bind(this)}
+        onAddPress={this.addItem.bind(this)}
       />
     )
   }

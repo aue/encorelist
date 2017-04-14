@@ -11,7 +11,8 @@ class ListDetailsContainer extends Component {
     super(props)
 
     this.state = {
-      data: this.props.params || {},
+      title: '',
+      listId: '',
       mode: (this.props.params.listId)? 'edit':'add'
     }
   }
@@ -23,15 +24,25 @@ class ListDetailsContainer extends Component {
   }
 
   _update(data) {
-    this.props.changeList(this.state.data.listId, data).then(() => {
+    this.props.changeList(this.state.listId, data).then(() => {
       Actions.pop()
     })
+  }
+
+  componentWillMount() {
+    if (this.props.lists[this.props.params.listId]) {
+      let list = this.props.lists[this.props.params.listId]
+      this.setState({
+        title: list.title,
+        listId: this.props.params.listId
+      })
+    }
   }
 
   render() {
     return (
       <ListForm
-        { ...this.state.data }
+        title={this.state.title}
         mode={this.state.mode}
         error={this.props.error}
         adding={this.props.adding}
@@ -45,6 +56,7 @@ class ListDetailsContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    lists: state.lists.lists,
     error: state.lists.error,
     adding: state.lists.adding,
     changing: state.lists.changing

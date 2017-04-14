@@ -41,7 +41,7 @@ class AccountContainer extends Component {
           <Text style={styles.title}>Points Available</Text>
           <View style={styles.pointsDisplay}>
             <Text style={styles.pointsDisplayText}>{this.props.points}</Text>
-            <Diamond color="#777" size={27} />
+            <Diamond size={27} />
             <Text style={[styles.pointsDisplayText, styles.pointsDisplayBold]}>pts</Text>
           </View>
         </View>
@@ -50,7 +50,7 @@ class AccountContainer extends Component {
           <Text style={styles.title}>Points Redeemed</Text>
           <View style={styles.pointsDisplay}>
             <Text style={styles.pointsDisplayText}>{this.props.redeemedPoints}</Text>
-            <Diamond color="#777" size={27} />
+            <Diamond size={27} />
             <Text style={[styles.pointsDisplayText, styles.pointsDisplayBold]}>pts</Text>
           </View>
         </View>

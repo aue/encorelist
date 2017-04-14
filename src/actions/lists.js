@@ -20,6 +20,10 @@ export const REMOVE_LIST_REQUEST = 'REMOVE_LIST_REQUEST'
 export const REMOVE_LIST_SUCCESS = 'REMOVE_LIST_SUCCESS'
 export const REMOVE_LIST_FAILURE = 'REMOVE_LIST_FAILURE'
 
+export const CHANGE_LIST_REQUEST = 'CHANGE_LIST_REQUEST'
+export const CHANGE_LIST_SUCCESS = 'CHANGE_LIST_SUCCESS'
+export const CHANGE_LIST_FAILURE = 'CHANGE_LIST_FAILURE'
+
 export const UPDATE_POINTS_IN_LIST_REQUEST = 'UPDATE_POINTS_IN_LIST_REQUEST'
 export const UPDATE_POINTS_IN_LIST_SUCCESS = 'UPDATE_POINTS_IN_LIST_SUCCESS'
 export const UPDATE_POINTS_IN_LIST_FAILURE = 'UPDATE_POINTS_IN_LIST_FAILURE'
@@ -166,6 +170,23 @@ export function removeList(listId) {
     })
     .catch(error => {
       dispatch({ type: REMOVE_LIST_FAILURE, listId, error: error.message })
+      if (__DEV__) throw error
+    })
+  }
+}
+
+/*
+ * Change an list
+ */
+export function changeList(listId, data) {
+  return dispatch => {
+    dispatch({ type: CHANGE_LIST_REQUEST, listId, data })
+
+    return database.ref('/lists/').child(listId).update(data).then(() => {
+      dispatch({ type: CHANGE_LIST_SUCCESS, listId, data })
+    })
+    .catch(error => {
+      dispatch({ type: CHANGE_LIST_FAILURE, listId, error: error.message })
       if (__DEV__) throw error
     })
   }

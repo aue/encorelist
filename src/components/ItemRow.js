@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Dimensions, Animated, PanResponder, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
 
-import CheckCircle from './CheckCircle'
+import common from '../styles/common'
 import Diamond from './Diamond'
 
-export default class ItemsRow extends Component {
+export default class ItemRow extends Component {
   constructor(props) {
     super(props)
     const screen = Dimensions.get('window')
@@ -14,20 +14,15 @@ export default class ItemsRow extends Component {
       screenWidth: screen.width,
       screenHeight: screen.height,
       buttonPan: new Animated.Value(40),
+      buttonOpacityPan: new Animated.Value(0),
       textPan: new Animated.Value(0)
     }
   }
 
   _reset() {
-    Animated.timing(this.state.buttonPan, {
-      toValue: 0,
-      duration: 250
-    }).start()
-
-    Animated.timing(this.state.textPan, {
-      toValue: 0,
-      duration: 250
-    }).start()
+    Animated.timing(this.state.buttonPan, { toValue: 0, duration: 250 }).start()
+    Animated.timing(this.state.buttonOpacityPan, { toValue: 0, duration: 250 }).start()
+    Animated.timing(this.state.textPan, { toValue: 0, duration: 250 }).start()
   }
 
   componentWillMount() {
@@ -41,16 +36,22 @@ export default class ItemsRow extends Component {
         this.state.textPan.setValue(0)
       },
       onPanResponderMove: (evt, gestureState) => {
-        //console.log(gestureState.vx)
         let dx = gestureState.dx
         if (dx < 0) dx = 0
+        const max = this.state.screenWidth/2
 
         // Text width
         this.state.textPan.setValue(dx)
 
         // Button width
-        if (dx > this.state.screenWidth/2) dx = this.state.screenWidth/2
+        if (dx > max) dx = max
         this.state.buttonPan.setValue(dx)
+
+        // Button opacity on width
+        let opacity = 1.5*dx/max
+        if (opacity > 1) opacity = 1
+        else if (opacity < 0) opacity = 0
+        this.state.buttonOpacityPan.setValue(opacity)
       },
       onPanResponderRelease: (evt, gestureState) => {
         this._reset()
@@ -66,10 +67,12 @@ export default class ItemsRow extends Component {
 
   render() {
     return (
-      <View {...this._panResponder.panHandlers} ref="wrapper" collapsable={false} style={styles.row}>
+      <View {...this._panResponder.panHandlers} collapsable={false} style={styles.row}>
         <TouchableOpacity style={styles.check} onPress={() => this.props._toggle()}>
-          <Animated.View style={{ width: this.state.buttonPan }}>
-            <CheckCircle checked={this.props.complete} />
+          <Animated.View style={[styles.circle, this.props.complete && styles.circleActive, { width: this.state.buttonPan }]}>
+            <Animated.Text style={[styles.circleText, this.props.complete && styles.circleTextActive, { opacity: this.state.buttonOpacityPan }]}>
+              {(this.props.complete)? '✕' : '✓'}
+            </Animated.Text>
           </Animated.View>
         </TouchableOpacity>
 
@@ -128,6 +131,27 @@ const styles = StyleSheet.create({
     marginRight: 4,
     marginTop: -2
   },
-  diamond: {
+
+  circle: {
+    backgroundColor: common.lightBackground,
+    borderWidth: 2,
+    borderColor: common.altPrimary,
+    borderRadius: 25,
+    height: 40,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center'
   },
+  circleActive: {
+    backgroundColor: common.brandPrimary,
+    borderColor: common.brandPrimary,
+  },
+  circleText: {
+    color: common.mediumGrey,
+    fontSize: 18,
+    lineHeight: 29
+  },
+  circleTextActive: {
+    color: common.lightText
+  }
 })

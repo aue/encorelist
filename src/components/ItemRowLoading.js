@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
+import common from '../styles/common'
 
-export default class ItemRowPlaceholder extends Component {
+export default class ItemRowLoading extends Component {
   constructor(props) {
     super(props)
   }
@@ -23,32 +24,29 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF'
+    alignItems: 'center'
   },
   check: {
     margin: 16,
     borderRadius: 25,
     height: 40,
     width: 40,
-    backgroundColor: '#ccc'
+    backgroundColor: common.lightGrey
   },
   text: {
     flex: 1,
     padding: 16,
-    paddingLeft: 0,
-    borderBottomWidth: 1,
-    borderColor: '#ccc'
+    paddingLeft: 0
   },
   title: {
     height: 20,
     width: 200,
-    backgroundColor: '#ccc'
+    backgroundColor: common.lightGrey
   },
   points: {
     marginTop: 5,
     height: 15,
     width: 50,
-    backgroundColor: '#ccc'
+    backgroundColor: common.lightGrey
   }
 })

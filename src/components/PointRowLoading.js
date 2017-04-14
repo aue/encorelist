@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
+import common from '../styles/common'
 
 export default class PointRowLoading extends Component {
   constructor(props) {
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     height: 60,
     width: 60,
-    backgroundColor: '#ccc'
+    backgroundColor: common.lightGrey
   },
   text: {
     flex: 1,
@@ -40,12 +41,12 @@ const styles = StyleSheet.create({
   title: {
     height: 20,
     width: 200,
-    backgroundColor: '#ccc'
+    backgroundColor: common.lightGrey
   },
   points: {
     marginTop: 5,
     height: 15,
     width: 50,
-    backgroundColor: '#ccc'
+    backgroundColor: common.lightGrey
   }
 })
