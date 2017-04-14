@@ -5,8 +5,9 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { auth } from '../firebase'
 
-import Lists from '../components/Lists'
 import * as ListsActions from '../actions/lists'
+
+import PointListView from '../components/PointListView'
 
 class ListsContainer extends Component {
   constructor(props) {
@@ -34,37 +35,43 @@ class ListsContainer extends Component {
 
   componentWillMount() {
     if (auth.currentUser && !this.props.init) {
-      console.log('fetching userlists')
       this.props.getUserLists(auth.currentUser.uid)
     }
   }
 
-  componentWillUnmount() {
-    console.log('unmounting ListsContainer')
-  }
-
   render() {
     return (
-      <Lists
-        { ...this.props }
-        gotoList={this.gotoList.bind(this)}
-        gotoAddList={this.gotoAddList.bind(this)}
-        gotoRemoveList={this.gotoRemoveList.bind(this)}
+      <PointListView
+        data={this.props.lists}
+        accountPoints={this.props.accountPoints}
+        object="list"
+        loading={this.props.loading}
+        onRowPress={this.gotoList.bind(this)}
+        onRowLongPress={this.gotoRemoveList.bind(this)}
+        onAddPress={this.gotoAddList.bind(this)}
       />
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  let lists = []
-  if (!(state.lists.loadingListIds || state.lists.loadingLists)) {
-    lists = Object.keys(state.lists.listIds)
-      .map(listId => state.lists.lists[listId])
-      .filter(value => value !== null)
+  let lists = Object.values(state.lists.lists)
+  if (lists.length > 0) {
+    lists = lists.map(list => {
+      let numberOfItems = Object.keys(list.items).length
+      return {
+        id: list.id,
+        title: list.title,
+        subtitle: `${numberOfItems} ${(numberOfItems == 1)? 'Item' : 'Items'}`,
+        value: list.completedPoints,
+        outOfValue: list.totalPoints
+      }
+    })
   }
 
   return {
     lists: lists,
+    accountPoints: state.account.points,
     init: state.lists.init,
     loading: state.lists.loadingListIds || state.lists.loadingLists,
     error: state.lists.error,

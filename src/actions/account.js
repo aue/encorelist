@@ -12,6 +12,10 @@ export const SIGNUP_REQUEST = 'SIGNUP_REQUEST'
 export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
 
+export const GET_USER_DATA_REQUEST = 'GET_USER_DATA_REQUEST'
+export const GET_USER_DATA_SUCCESS = 'GET_USER_DATA_SUCCESS'
+export const GET_USER_DATA_FAILURE = 'GET_USER_DATA_FAILURE'
+
 export const UPDATE_POINTS_IN_USER_REQUEST = 'UPDATE_POINTS_IN_USER_REQUEST'
 export const UPDATE_POINTS_IN_USER_SUCCESS = 'UPDATE_POINTS_IN_USER_SUCCESS'
 export const UPDATE_POINTS_IN_USER_FAILURE = 'UPDATE_POINTS_IN_USER_FAILURE'
@@ -60,6 +64,30 @@ export function signup(email, password) {
     })
     .catch(error => {
       dispatch({ type: SIGNUP_FAILURE, error: error.message })
+    })
+  }
+}
+
+/*
+* Get info from user's account
+*/
+export function getUserData() {
+  return dispatch => {
+    dispatch({ type: GET_USER_DATA_REQUEST })
+
+    return database.ref(`/users/${auth.currentUser.uid}`).once('value', snapshot => {
+      let user = {
+        name: auth.currentUser.displayName || 'Listmaker',
+        email: auth.currentUser.email || '',
+        points: 0,
+        redeemedPoints: 0,
+        ...snapshot.val()
+      }
+      dispatch({ type: GET_USER_DATA_SUCCESS, user })
+    })
+    .catch(error => {
+      dispatch({ type: GET_USER_DATA_FAILURE, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }

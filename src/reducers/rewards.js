@@ -20,7 +20,8 @@ const initialState = {
   loadingRewards: false,
   error: null,
   adding: false,
-  changing: false
+  changing: false,
+  init: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -58,7 +59,8 @@ export default function reducer(state = initialState, action) {
           ...state.rewards,
           ...action.rewards
         },
-        loadingRewards: false
+        loadingRewards: false,
+        init: true
       }
     case GET_REWARDS_FAILURE:
       return {

@@ -5,8 +5,9 @@ import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 import { auth } from '../firebase'
 
-import Rewards from '../components/Rewards'
 import * as RewardsActions from '../actions/rewards'
+
+import PointListView from '../components/PointListView'
 
 class RewardsContainer extends Component {
   constructor(props) {
@@ -35,25 +36,40 @@ class RewardsContainer extends Component {
 
   render() {
     return (
-      <Rewards
-        { ...this.props }
-        gotoAddReward={this.gotoAddReward.bind(this)}
-        gotoRemoveReward={this.gotoRemoveReward.bind(this)}
+      <PointListView
+        data={this.props.rewards}
+        accountPoints={this.props.accountPoints}
+        object="reward"
+        loading={this.props.loading}
+        onRowPress={() => null}
+        onRowLongPress={this.gotoRemoveReward.bind(this)}
+        onAddPress={this.gotoAddReward.bind(this)}
       />
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  let rewards = []
-  if (!(state.rewards.loadingRewardIds || state.rewards.loadingRewards)) {
-    rewards = Object.keys(state.rewards.rewardIds)
-      .map(rewardId => state.rewards.rewards[rewardId])
-      .filter(value => value !== null)
+  let rewards = Object.values(state.rewards.rewards)
+  if (rewards.length > 0) {
+    rewards = rewards.map(reward => {
+      let percentage = state.account.points/reward.pointCost
+      if (percentage > 1) percentage = 1
+
+      return {
+        id: reward.id,
+        title: reward.title,
+        subtitle: `${reward.pointCost} Points`,
+        value: reward.pointCost,
+        percentage: percentage
+      }
+    })
   }
 
   return {
-    rewards,
+    rewards: rewards,
+    accountPoints: state.account.points,
+    init: state.rewards.init,
     loading: state.rewards.loadingRewardIds || state.rewards.loadingRewards,
     error: state.rewards.error,
   }

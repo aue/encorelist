@@ -8,17 +8,20 @@ import {
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
   SIGNUP_FAILURE,
+  GET_USER_DATA_REQUEST,
+  GET_USER_DATA_SUCCESS,
+  GET_USER_DATA_FAILURE,
   UPDATE_POINTS_IN_USER_REQUEST,
   UPDATE_POINTS_IN_USER_SUCCESS,
   UPDATE_POINTS_IN_USER_FAILURE
 } from '../actions/account'
 
 const initialState = {
-  name: '',
+  name: 'Listmaker',
+  email: '',
   points: 0,
   redeemedPoints: 0,
   error: null,
-  user: null,
   waitingForResponse: false
 }
 
@@ -83,6 +86,27 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
+    case GET_USER_DATA_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case GET_USER_DATA_SUCCESS: {
+      return {
+        ...state,
+        name: action.user.name,
+        email: action.user.email,
+        points: action.user.points,
+        redeemedPoints: action.user.redeemedPoints
+      }
+    }
+    case GET_USER_DATA_FAILURE: {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
 
     case UPDATE_POINTS_IN_USER_REQUEST: {
       return {
