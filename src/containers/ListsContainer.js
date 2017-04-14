@@ -33,8 +33,14 @@ class ListsContainer extends Component {
   }
 
   componentWillMount() {
-    if (auth.currentUser)
+    if (auth.currentUser && !this.props.init) {
+      console.log('fetching userlists')
       this.props.getUserLists(auth.currentUser.uid)
+    }
+  }
+
+  componentWillUnmount() {
+    console.log('unmounting ListsContainer')
   }
 
   render() {

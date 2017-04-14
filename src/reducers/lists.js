@@ -5,6 +5,9 @@ import {
   GET_LISTS_REQUEST,
   GET_LISTS_SUCCESS,
   GET_LISTS_FAILURE,
+  GET_USER_LISTS_REQUEST,
+  GET_USER_LISTS_SUCCESS,
+  GET_USER_LISTS_FAILURE,
   ADD_LIST_REQUEST,
   ADD_LIST_SUCCESS,
   ADD_LIST_FAILURE,
@@ -68,7 +71,6 @@ export default function reducer(state = initialState, action) {
           ...state.lists,
           ...action.lists
         },
-        init: true,
         loadingLists: false
       }
     case GET_LISTS_FAILURE:
@@ -77,6 +79,28 @@ export default function reducer(state = initialState, action) {
         loadingLists: false,
         error: true
       }
+
+    case GET_USER_LISTS_REQUEST: {
+      return {
+        ...state,
+        init: true,
+        loadingLists: true,
+      }
+    }
+    case GET_USER_LISTS_SUCCESS: {
+      return {
+        ...state,
+        loadingLists: false,
+      }
+    }
+    case GET_USER_LISTS_FAILURE: {
+      return {
+        ...state,
+        error: action.error,
+        init: false,
+        loadingLists: false,
+      }
+    }
 
     case ADD_LIST_REQUEST:
       return {

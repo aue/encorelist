@@ -8,6 +8,10 @@ export const GET_LISTS_REQUEST = 'GET_LISTS_REQUEST'
 export const GET_LISTS_SUCCESS = 'GET_LISTS_SUCCESS'
 export const GET_LISTS_FAILURE = 'GET_LISTS_FAILURE'
 
+export const GET_USER_LISTS_REQUEST = 'GET_USER_LISTS_REQUEST'
+export const GET_USER_LISTS_SUCCESS = 'GET_USER_LISTS_SUCCESS'
+export const GET_USER_LISTS_FAILURE = 'GET_USER_LISTS_FAILURE'
+
 export const ADD_LIST_REQUEST = 'ADD_LIST_REQUEST'
 export const ADD_LIST_SUCCESS = 'ADD_LIST_SUCCESS'
 export const ADD_LIST_FAILURE = 'ADD_LIST_FAILURE'
@@ -90,12 +94,20 @@ export function getLists(listIds) {
 */
 export function getUserLists(userId) {
   return (dispatch, getState) => {
+    dispatch({ type: GET_USER_LISTS_REQUEST })
+
     return dispatch(getUserListIds(userId)).then(() => {
       const listIds = Object.keys(getState().lists.listIds)
       if (listIds.length > 0)
-        return dispatch(getLists(listIds))
+        return dispatch(getLists(listIds)).then(() => {
+          dispatch({ type: GET_USER_LISTS_SUCCESS })
+        })
       else
         return
+    })
+    .catch(error => {
+      dispatch({ type: GET_USER_LISTS_FAILURE, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
