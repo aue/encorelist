@@ -1,9 +1,9 @@
-import { Navigator, StyleSheet } from 'react-native'
+import { StyleSheet } from 'react-native'
 import common from './common'
 
 export default StyleSheet.create({
   scene: {
-    paddingTop: Navigator.NavigationBar.Styles.General.NavBarHeight
+    paddingTop: 54
   },
   sceneTabs: {
     paddingTop: 54,
@@ -73,7 +73,7 @@ export default StyleSheet.create({
   },
 
   rowTitle: {
-    fontSize: 20,
+    fontSize: 18,
     color: common.darkText
   },
   rowSubtitle: {
@@ -112,6 +112,9 @@ export default StyleSheet.create({
     borderRadius: 30
   },
 
+  pointRowContainer: {
+    zIndex: 0
+  },
   pointRow: {
     flexDirection: 'row',
     justifyContent: 'center',
@@ -220,5 +223,58 @@ export default StyleSheet.create({
     marginBottom: 32,
     fontSize: 35,
     color: common.darkText
+  },
+
+  formInput: {
+    fontSize: 16,
+    height: 40,
+    marginBottom: 8
+  },
+
+  button: {
+    backgroundColor: common.brandPrimary,
+    padding: 8,
+    borderRadius: 40
+  },
+  buttonAlt: {
+    padding: 8,
+    borderRadius: 40
+  },
+  buttonText: {
+    color: common.lightText,
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  disabled: {
+    opacity: 0.5
+  },
+
+  welcome: {
+    flex: 1
+  },
+  welcomeImage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 16
+  },
+  welcomeTagline: {
+    paddingTop: 16
+  },
+
+  welcomeBottom: {
+    flex: 0
+  },
+  signin: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 8,
+    paddingTop: 16
+  },
+  login: {
+    fontWeight: 'bold',
+    color: common.brandPrimary,
+    padding: 8
   }
 })

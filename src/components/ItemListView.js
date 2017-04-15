@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { ListView } from 'react-native'
 
 import HeaderItems from './HeaderItems'
-import ItemRowLoading from './ItemRowLoading'
 import ItemRow from './ItemRow'
 import ItemRowAdd from './ItemRowAdd'
 
@@ -57,8 +56,6 @@ export default class ItemListView extends Component {
   }
 
   render() {
-    if (this.props.loading) return <ItemRowLoading />
-
     return (
       <ListView
         dataSource={this.dataSource}

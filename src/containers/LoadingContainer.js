@@ -7,6 +7,9 @@ import { auth } from '../firebase'
 
 import * as AccountActions from '../actions/account'
 
+import common from '../styles/common'
+import Diamond from '../components/Diamond'
+
 class LoadingContainer extends Component {
   constructor(props) {
     super(props)
@@ -25,7 +28,8 @@ class LoadingContainer extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.text}>Loading</Text>
+        <Diamond color={common.mediumGrey} size={50} />
+        <Text style={styles.text}>Encore List</Text>
       </View>
     )
   }
@@ -33,24 +37,19 @@ class LoadingContainer extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: common.lightGrey,
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center'
   },
   text: {
-    color: '#777'
+    color: common.mediumGrey,
+    marginTop: 16
   }
 })
 
-const mapStateToProps = (state) => {
-  return {
-    points: state.account.points,
-    redeemedPoints: state.account.redeemedPoints,
-    error: state.account.error,
-    user: state.account.user,
-    waitingForResponse: state.account.waitingForResponse
-  }
+const mapStateToProps = () => {
+  return {}
 }
 
 const mapDispatchToProps = (dispatch) => {

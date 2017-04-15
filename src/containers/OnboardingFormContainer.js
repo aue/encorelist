@@ -1,10 +1,14 @@
 import React, { Component } from 'react'
-import { StyleSheet, TouchableOpacity, TextInput, Text, View, ScrollView } from 'react-native'
+import { TextInput, Text, View, ScrollView } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
 import * as AccountActions from '../actions/account'
+
+import common from '../styles/common'
+import styles from '../styles'
+import PillButton from '../components/PillButton'
 
 class OnboardingFormContainer extends Component {
   constructor(props) {
@@ -16,108 +20,74 @@ class OnboardingFormContainer extends Component {
     }
   }
 
-  formCheck() {
+  validateFormCheck = () => {
     if (this.state.email.length === 0
       || !this.state.email.trim()
       || this.state.password.length === 0
       || !this.state.password.trim()
-    ) return true
-    return false
+    ) return false
+    return true
   }
 
-  submit() {
+  submit = () => {
+    if (!this.validateFormCheck() || this.props.waitingForResponse) return
+
     if (this.state.mode === 'login') {
       this.props.login(this.state.email, this.state.password).then(() => {
-        if (this.props.user) Actions.app()
+        if (this.props.user && !this.props.error) Actions.app()
       })
     }
     else if (this.state.mode === 'signup') {
       this.props.signup(this.state.email, this.state.password).then(() => {
-        if (this.props.user) Actions.app()
+        if (this.props.user && !this.props.error) Actions.app()
       })
     }
   }
 
   render() {
-    let buttonStyle = [styles.button]
-    if (this.formCheck()) buttonStyle.push(styles.disabled)
-
     return (
       <ScrollView style={styles.container}>
-        <View style={styles.form}>
-          <Text style={styles.error}>{this.props.error}</Text>
+        {this.props.error &&
+          <Text style={styles.section}>{this.props.error}</Text>
+        }
 
+        <View style={styles.section}>
           <TextInput
-            style={styles.input}
+            style={styles.formInput}
             placeholder="Email"
             keyboardType="email-address"
             autoCapitalize="none"
             returnKeyType="next"
-            underlineColorAndroid="#A21B35"
+            underlineColorAndroid={common.brandPrimary}
             value={this.state.email}
             disabled={this.props.waitingForResponse}
             onChangeText={(email) => this.setState({email})}
             onSubmitEditing={() => this.refs.password.focus()}
           />
           <TextInput
-            style={styles.input}
+            style={styles.formInput}
             placeholder="Password"
             secureTextEntry={true}
-            underlineColorAndroid="#A21B35"
+            underlineColorAndroid={common.brandPrimary}
             ref='password'
             value={this.state.password}
             disabled={this.props.waitingForResponse}
             onChangeText={(password) => this.setState({password})}
+            onSubmitEditing={this.submit}
           />
         </View>
 
-        <TouchableOpacity onPress={() => this.submit()} disabled={this.formCheck() || this.props.waitingForResponse}>
-          <View style={buttonStyle}>
-            <Text style={styles.buttonText}>
-              {(this.state.mode === 'login')? 'Log In' : 'Sign Up'}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.section}>
+          <PillButton
+            onPress={this.submit}
+            title={(this.state.mode === 'login')? 'Log In' : 'Sign Up'}
+            disabled={!this.validateFormCheck() || this.props.waitingForResponse}
+          />
+        </View>
       </ScrollView>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16
-  },
-  form: {
-    marginBottom: 8
-  },
-  error: {
-
-  },
-  input: {
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 20,
-    paddingLeft: 16,
-    fontSize: 16,
-    height: 40,
-    marginBottom: 8
-  },
-  button: {
-    backgroundColor: '#A21B35',
-    padding: 8,
-    borderRadius: 40
-  },
-  buttonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  disabled: {
-    opacity: 0.5
-  }
-})
 
 const mapStateToProps = (state) => {
   return {

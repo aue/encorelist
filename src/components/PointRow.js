@@ -61,7 +61,7 @@ export default class PointRow extends Component {
         this.state.opacityPan.setValue(opacity)
       },
       onPanResponderRelease: (evt, gestureState) => {
-        if (this.state.rowPan._value < -80 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
+        if (this.state.rowPan._value < -50 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
           // Swipe <--
           this._open()
         }
@@ -76,7 +76,7 @@ export default class PointRow extends Component {
   render() {
     return (
       <View {...this._panResponder.panHandlers}>
-        <Animated.View style={{ transform: [{ translateX: this.state.rowPan }] }}>
+        <Animated.View style={[styles.pointRowContainer, { transform: [{ translateX: this.state.rowPan }] }]}>
           <TouchableOpacity
             style={styles.pointRow}
             onPress={() => { this.props.onPress(); this._reset() }}

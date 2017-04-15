@@ -89,7 +89,8 @@ export default function reducer(state = initialState, action) {
 
     case GET_USER_DATA_REQUEST: {
       return {
-        ...state
+        ...state,
+        error: action.error
       }
     }
     case GET_USER_DATA_SUCCESS: {
@@ -98,7 +99,8 @@ export default function reducer(state = initialState, action) {
         name: action.user.name,
         email: action.user.email,
         points: action.user.points,
-        redeemedPoints: action.user.redeemedPoints
+        redeemedPoints: action.user.redeemedPoints,
+        error: null
       }
     }
     case GET_USER_DATA_FAILURE: {
@@ -110,14 +112,16 @@ export default function reducer(state = initialState, action) {
 
     case UPDATE_POINTS_IN_USER_REQUEST: {
       return {
-        ...state
+        ...state,
+        error: null
       }
     }
     case UPDATE_POINTS_IN_USER_SUCCESS: {
       return {
         ...state,
         points: action.points,
-        redeemedPoints: action.redeemedPoints
+        redeemedPoints: action.redeemedPoints,
+        error: null
       }
     }
     case UPDATE_POINTS_IN_USER_FAILURE: {

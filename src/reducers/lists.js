@@ -138,9 +138,7 @@ export default function reducer(state = initialState, action) {
       }
 
     case REMOVE_LIST_REQUEST: {
-      return {
-        ...state
-      }
+      return state
     }
     case REMOVE_LIST_SUCCESS: {
       let listIds = { ...state.listIds }
@@ -178,6 +176,7 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         lists,
+        error: null,
         changing: false
       }
     }
@@ -199,6 +198,7 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
+        error: null,
         lists
       }
     }
@@ -215,6 +215,7 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
+        error: null,
         lists
       }
     }
@@ -224,6 +225,7 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
+        error: null,
         lists
       }
     }
@@ -233,6 +235,7 @@ export default function reducer(state = initialState, action) {
 
       return {
         ...state,
+        error: null,
         lists
       }
     }

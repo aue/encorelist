@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
-import { Button, ScrollView, Text, View } from 'react-native'
+import { ScrollView, Text, View } from 'react-native'
 
 import styles from '../styles'
 import common from '../styles/common'
 
 import Diamond from './Diamond'
 import PointCircle from './PointCircle'
+import PillButton from './PillButton'
 
 export default class RedeemForm extends Component {
   constructor(props) {
     super(props)
   }
 
-  onPress() {
+  onPress = () => {
     this.props.redeem()
   }
 
@@ -70,8 +71,8 @@ export default class RedeemForm extends Component {
           {content}
 
           <View style={styles.section}>
-            <Button
-              onPress={() => this.onPress()}
+            <PillButton
+              onPress={this.onPress}
               title="Redeem"
               disabled={this.props.accountPoints < this.props.pointCost}
             />

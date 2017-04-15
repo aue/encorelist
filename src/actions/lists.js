@@ -106,8 +106,9 @@ export function getUserLists(userId) {
         return dispatch(getLists(listIds)).then(() => {
           dispatch({ type: GET_USER_LISTS_SUCCESS })
         })
-      else
-        return
+      else {
+        return dispatch({ type: GET_USER_LISTS_SUCCESS })
+      }
     })
     .catch(error => {
       dispatch({ type: GET_USER_LISTS_FAILURE, error: error.message })

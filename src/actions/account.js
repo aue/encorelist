@@ -32,6 +32,7 @@ export function login(email, password) {
     })
     .catch(error => {
       dispatch({ type: LOGIN_FAILURE, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
@@ -48,6 +49,7 @@ export function logout() {
     })
     .catch(error => {
       dispatch({ type: LOGOUT_FAILURE, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }
@@ -64,6 +66,7 @@ export function signup(email, password) {
     })
     .catch(error => {
       dispatch({ type: SIGNUP_FAILURE, error: error.message })
+      if (__DEV__) throw error
     })
   }
 }

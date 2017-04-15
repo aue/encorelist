@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, TextInput, Button } from 'react-native'
+import { ScrollView, TextInput, View } from 'react-native'
 
+import common from '../styles/common'
+import styles from '../styles'
+import PillButton from './PillButton'
 import PointSelector from './PointSelector'
 
 export default class ItemForm extends Component {
@@ -9,12 +12,11 @@ export default class ItemForm extends Component {
 
     this.state = {
       title: this.props.title || '',
-      points: this.props.points || 0,
-      height: 0
+      points: this.props.points || 0
     }
   }
 
-  _press() {
+  onPress = () => {
     let data = {
       title: this.state.title,
       points: this.state.points
@@ -26,45 +28,27 @@ export default class ItemForm extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
-        <TextInput
-          placeholder="Title"
-          multiline={true}
-          style={[styles.title, {height: Math.max(40, this.state.height)}]}
-          value={this.state.title}
-          onChangeText={(value) => this.setState({title: value})}
-          onContentSizeChange={(event) => {
-            this.setState({height: event.nativeEvent.contentSize.height})
-          }}
-        />
-        <PointSelector
-          value={this.state.points}
-          set={(value) => this.setState({points: value})}
-        />
-        <Button
-          onPress={() => this._press()}
-          style={styles.button}
-          title={(this.props.mode == 'add')? 'Add' : 'Save'}
-          disabled={this.props.addingItem || this.props.changingItem}
-        />
+        <View style={styles.section}>
+          <TextInput
+            placeholder="Title"
+            underlineColorAndroid={common.brandPrimary}
+            style={styles.formInput}
+            value={this.state.title}
+            onChangeText={(value) => this.setState({title: value})}
+          />
+          <PointSelector
+            value={this.state.points}
+            set={(value) => this.setState({points: value})}
+          />
+        </View>
+        <View style={styles.section}>
+          <PillButton
+            onPress={this.onPress}
+            title={(this.props.mode == 'ADD')? 'Add' : 'Save'}
+            disabled={this.props.addingItem || this.props.changingItem}
+          />
+        </View>
       </ScrollView>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16
-  },
-  title: {
-    fontSize: 20,
-    height: 40
-  },
-  points: {
-    fontSize: 20,
-    height: 40
-  },
-  button: {
-    marginTop: 16
-  }
-})

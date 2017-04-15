@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, Button, ScrollView, Text, View } from 'react-native'
+import { Alert, ScrollView, Text, View } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -8,13 +8,14 @@ import * as AccountActions from '../actions/account'
 
 import styles from '../styles'
 import Diamond from '../components/Diamond'
+import PillButton from '../components/PillButton'
 
 class AccountContainer extends Component {
   constructor(props) {
     super(props)
   }
 
-  logout() {
+  logout = () => {
     Alert.alert(
       'Log out',
       'Do you want to log out of Encore List?',
@@ -56,9 +57,9 @@ class AccountContainer extends Component {
         </View>
 
         <View style={styles.section}>
-          <Button
+          <PillButton
+            onPress={this.logout}
             title="Log Out"
-            onPress={() => this.logout()}
           />
         </View>
       </ScrollView>

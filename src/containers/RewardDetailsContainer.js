@@ -9,13 +9,6 @@ import * as RewardsActions from '../actions/rewards'
 class RewardDetailsContainer extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      title: '',
-      pointCost: 0,
-      rewardId: '',
-      mode: (this.props.params.rewardId)? 'edit':'add'
-    }
   }
 
   _add(data) {
@@ -25,28 +18,17 @@ class RewardDetailsContainer extends Component {
   }
 
   _update(data) {
-    this.props.changeReward(this.state.rewardId, data).then(() => {
+    this.props.changeReward(this.props.rewardId, data).then(() => {
       Actions.pop()
     })
-  }
-
-  componentWillMount() {
-    if (this.props.rewards[this.props.params.rewardId]) {
-      let reward = this.props.rewards[this.props.params.rewardId]
-      this.setState({
-        title: reward.title,
-        pointCost: reward.pointCost,
-        rewardId: this.props.params.rewardId
-      })
-    }
   }
 
   render() {
     return (
       <RewardForm
-        title={this.state.title}
-        pointCost={this.state.pointCost}
-        mode={this.state.mode}
+        title={this.props.title}
+        pointCost={this.props.pointCost}
+        mode={this.props.mode}
         error={this.props.error}
         adding={this.props.adding}
         changing={this.props.changing}
@@ -57,9 +39,26 @@ class RewardDetailsContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  let activeReward = {
+    rewardId: null,
+    title: '',
+    pointCost: 0,
+    mode: 'ADD'
+  }
+
+  // if a listId has been passed in
+  let rewardId = ownProps.params.rewardId
+  if (rewardId) {
+    let reward = state.rewards.rewards[rewardId]
+    activeReward.rewardId = reward.id
+    activeReward.title = reward.title
+    activeReward.pointCost = reward.pointCost
+    activeReward.mode = 'EDIT'
+  }
+
   return {
-    rewards: state.rewards.rewards,
+    ...activeReward,
     error: state.rewards.error,
     adding: state.rewards.adding,
     changing: state.rewards.changing

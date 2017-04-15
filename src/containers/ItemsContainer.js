@@ -1,16 +1,20 @@
 import React, { Component } from 'react'
-import { Alert } from 'react-native'
+import { Alert, InteractionManager } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
 
 import * as ItemsActions from '../actions/items'
 
+import ItemRowLoading from '../components/ItemRowLoading'
 import ItemListView from '../components/ItemListView'
 
 class ItemsContainer extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      renderPlaceholderOnly: true
+    }
   }
 
   gotoToggleItem(itemId, complete, points) {
@@ -54,20 +58,20 @@ class ItemsContainer extends Component {
   }
 
   componentWillMount() {
-    let listId = this.props.params.listId || null
-    if (listId) {
-      this.props.getListItems(listId)
-    }
-  }
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({renderPlaceholderOnly: false})
 
-  componentWillReceiveProps(nextProps) {
-    let listId = nextProps.params.listId
-    if (this.props.params.listId != listId && listId != null) {
-      this.props.getListItems(listId)
-    }
+      if (this.props.listId) {
+        this.props.getListItems(this.props.listId)
+      }
+    })
   }
 
   render() {
+    if (this.state.renderPlaceholderOnly || this.props.loading) {
+      return <ItemRowLoading />
+    }
+
     return (
       <ItemListView
         data={this.props.items}
@@ -83,31 +87,38 @@ class ItemsContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  let items = []
+const mapStateToProps = (state, ownProps) => {
   let activeList = {
+    listId: null,
     title: '',
+    items: [],
     totalPoints: 0,
     completedPoints: 0
   }
-  if (state.items.activeListId && !(state.items.loadingItemIds || state.items.loadingItems)) {
-    if (Object.keys(state.lists.lists[state.items.activeListId].items).length > 0)
-      items = Object.keys(state.lists.lists[state.items.activeListId].items)
+
+  // if a listId has been passed in
+  let listId = ownProps.params.listId
+  if (listId) {
+    let list = state.lists.lists[listId]
+    activeList.listId = listId
+    activeList.title = list.title
+    activeList.totalPoints = list.totalPoints
+    activeList.completedPoints = list.completedPoints
+
+    let itemIds = Object.keys(list.items)
+    if (itemIds.length > 0) {
+      activeList.items = itemIds
         .map(itemId => state.items.items[itemId])
         .filter(value => value !== null)
-
-    activeList = {
-      ...activeList,
-      ...state.lists.lists[state.items.activeListId]
     }
   }
 
   return {
+    listId: activeList.listId,
     title: activeList.title,
+    items: activeList.items,
     totalPoints: activeList.totalPoints,
     completedPoints: activeList.completedPoints,
-    listId: state.items.activeListId,
-    items: items,
     loading: state.items.loadingItemIds || state.items.loadingItems,
     error: state.items.error,
     addingItem: state.items.addingItem,

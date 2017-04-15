@@ -80,10 +80,10 @@ export default class ItemRow extends Component {
 
         if (this.state.circlePan._value > 0.7*max || gestureState.vx > 1 && this.state.rowPan._value > 0) {
           // Swipe -->
-          this.props.onPress()
+          requestAnimationFrame(() => this.props.onPress())
           this._reset()
         }
-        else if (this.state.rowPan._value < -80 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
+        else if (this.state.rowPan._value < -50 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
           // Swipe <--
           this._open()
         }

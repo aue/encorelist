@@ -9,12 +9,6 @@ import * as ListsActions from '../actions/lists'
 class ListDetailsContainer extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      title: '',
-      listId: '',
-      mode: (this.props.params.listId)? 'edit':'add'
-    }
   }
 
   _add(data) {
@@ -24,26 +18,16 @@ class ListDetailsContainer extends Component {
   }
 
   _update(data) {
-    this.props.changeList(this.state.listId, data).then(() => {
+    this.props.changeList(this.props.listId, data).then(() => {
       Actions.pop()
     })
-  }
-
-  componentWillMount() {
-    if (this.props.lists[this.props.params.listId]) {
-      let list = this.props.lists[this.props.params.listId]
-      this.setState({
-        title: list.title,
-        listId: this.props.params.listId
-      })
-    }
   }
 
   render() {
     return (
       <ListForm
-        title={this.state.title}
-        mode={this.state.mode}
+        title={this.props.title}
+        mode={this.props.mode}
         error={this.props.error}
         adding={this.props.adding}
         changing={this.props.changing}
@@ -54,9 +38,24 @@ class ListDetailsContainer extends Component {
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  let activeList = {
+    listId: null,
+    title: '',
+    mode: 'ADD'
+  }
+
+  // if a listId has been passed in
+  let listId = ownProps.params.listId
+  if (listId) {
+    let list = state.lists.lists[listId]
+    activeList.listId = list.id
+    activeList.title = list.title
+    activeList.mode = 'EDIT'
+  }
+
   return {
-    lists: state.lists.lists,
+    ...activeList,
     error: state.lists.error,
     adding: state.lists.adding,
     changing: state.lists.changing
