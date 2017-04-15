@@ -45,6 +45,12 @@ export default StyleSheet.create({
   lightColor: {
     color: common.lightText
   },
+  mediumColor: {
+    color: common.mediumGrey
+  },
+  text20pt: {
+    fontSize: 20
+  },
 
   header: {
     flex: 1,
@@ -67,7 +73,8 @@ export default StyleSheet.create({
   },
 
   rowTitle: {
-    fontSize: 20
+    fontSize: 20,
+    color: common.darkText
   },
   rowSubtitle: {
     paddingTop: 6,
@@ -78,7 +85,8 @@ export default StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     marginRight: 4,
-    marginTop: -2
+    marginTop: -2,
+    color: common.darkText
   },
   rowSlidein: {
     position: 'absolute',
@@ -164,5 +172,53 @@ export default StyleSheet.create({
   },
   circleTextActive: {
     color: common.lightText
+  },
+
+  redeemedContainer: {
+    flex: 1
+  },
+  redeemedBackground: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0
+  },
+  redeemedTicket: {
+    margin: 36,
+    borderRadius: 16,
+    shadowColor: common.darkBackground,
+    shadowRadius: 16
+  },
+  redeemedSection: {
+    padding: 24,
+    alignItems: 'center',
+    backgroundColor: common.lightBackground
+  },
+  redeemedTopSection: {
+    backgroundColor: common.lightGrey,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16
+  },
+  redeemedBottomSection: {
+    borderBottomLeftRadius: 16,
+    borderBottomRightRadius: 16
+  },
+  redeemedTagline: {
+    fontWeight: 'bold',
+    color: common.mediumGrey,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: common.mediumGrey,
+    marginBottom: 16
+  },
+  redeemedCircle: {
+    position: 'absolute',
+    top: 0
+  },
+  redeemedTitle: {
+    marginBottom: 32,
+    fontSize: 35,
+    color: common.darkText
   }
 })

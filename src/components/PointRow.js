@@ -101,7 +101,7 @@ export default class PointRow extends Component {
             <Text style={styles.rowSlideinButtonText}>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.pointrlideinButton}
+            style={styles.rowSlideinButton}
             onPress={() => { this.props.onDeletePress(); this._reset() }}
           >
             <Text style={styles.rowSlideinButtonText}>Delete</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, StyleSheet, Text } from 'react-native'
+import { StyleSheet, Text } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import common from '../styles/common'

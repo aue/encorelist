@@ -1,4 +1,5 @@
 import { auth, database, TIMESTAMP } from '../firebase'
+import { updatePointsInUser } from './account'
 
 export const GET_USER_REWARD_IDS_REQUEST = 'GET_USER_REWARD_IDS_REQUEST'
 export const GET_USER_REWARD_IDS_SUCCESS = 'GET_USER_REWARD_IDS_SUCCESS'
@@ -19,6 +20,8 @@ export const REMOVE_REWARD_FAILURE = 'REMOVE_REWARD_FAILURE'
 export const CHANGE_REWARD_REQUEST = 'CHANGE_REWARD_REQUEST'
 export const CHANGE_REWARD_SUCCESS = 'CHANGE_REWARD_SUCCESS'
 export const CHANGE_REWARD_FAILURE = 'CHANGE_REWARD_FAILURE'
+
+export const REDEEM_REWARD = 'REDEEM_REWARD'
 
 /*
 * Fetch rewards ids in user's account
@@ -162,5 +165,18 @@ export function changeReward(rewardId, data) {
       dispatch({ type: CHANGE_REWARD_FAILURE, rewardId, error: error.message })
       if (__DEV__) throw error
     })
+  }
+}
+
+/*
+ * Redeem a reward
+ */
+export function redeemReward(rewardId) {
+  return (dispatch, getState) => {
+    const reward = getState().rewards.rewards[rewardId]
+    if (reward) {
+      dispatch({ type: REDEEM_REWARD, rewardId, pointCost: reward.pointCost })
+      dispatch(updatePointsInUser(-reward.pointCost, reward.pointCost))
+    }
   }
 }

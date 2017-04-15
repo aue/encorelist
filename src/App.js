@@ -19,6 +19,7 @@ import ItemsContainer from './containers/ItemsContainer'
 import ItemDetailsContainer from './containers/ItemDetailsContainer'
 import RewardsContainer from './containers/RewardsContainer'
 import RewardDetailsContainer from './containers/RewardDetailsContainer'
+import RewardRedeemContainer from './containers/RewardRedeemContainer'
 import AccountContainer from './containers/AccountContainer'
 import OnboardingContainer from './containers/OnboardingContainer'
 import OnboardingFormContainer from './containers/OnboardingFormContainer'
@@ -45,6 +46,7 @@ const scenes = Actions.create(
       <Scene key="rewardsTab" title="Rewards" icon={TabButton}>
         <Scene key="rewards" component={RewardsContainer} title="Rewards" sceneStyle={styles.sceneTabs} />
         <Scene key="rewardDetails" component={RewardDetailsContainer} sceneStyle={styles.scene} hideTabBar={true} />
+        <Scene key="rewardRedeem" component={RewardRedeemContainer} sceneStyle={styles.scene} hideTabBar={true} />
       </Scene>
       <Scene key="accountTab" component={AccountContainer} title="Account" icon={TabButton} sceneStyle={styles.sceneTabs} />
     </Scene>

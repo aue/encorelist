@@ -56,10 +56,12 @@ export default class ItemRow extends Component {
         if (dx <= 0) this.state.circleRowPan.setValue(dx)
 
         // Circle width
-        let circleWidth = dx + 40
-        if (circleWidth > max) circleWidth = max
-        else if (circleWidth < 40) circleWidth = 40
-        this.state.circlePan.setValue(circleWidth)
+        if (dx >= 0) {
+          let circleWidth = dx + 40
+          if (circleWidth > max) circleWidth = max
+          else if (circleWidth < 40) circleWidth = 40
+          this.state.circlePan.setValue(circleWidth)
+        }
 
         // Circle opacity
         let opacity = 1.5*dx/max
@@ -127,7 +129,7 @@ export default class ItemRow extends Component {
             <Text style={styles.rowSlideinButtonText}>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.pointrlideinButton}
+            style={styles.rowSlideinButton}
             onPress={() => { this.props.onDeletePress(); this._reset() }}
           >
             <Text style={styles.rowSlideinButtonText}>Delete</Text>

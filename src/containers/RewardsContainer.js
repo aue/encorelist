@@ -15,7 +15,11 @@ class RewardsContainer extends Component {
   }
 
   gotoReward(rewardId, title) {
-    Actions.rewards({ params: { rewardId, title }, title, backTitle: 'Rewards' })
+    Actions.rewardRedeem({
+      params: { rewardId, title },
+      title: 'Redeem',
+      backTitle: 'Rewards' 
+    })
   }
 
   gotoEditReward(rewardId) {
