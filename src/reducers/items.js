@@ -12,6 +12,9 @@ import {
   REMOVE_LIST_ITEM_REQUEST,
   REMOVE_LIST_ITEM_SUCCESS,
   REMOVE_LIST_ITEM_FAILURE,
+  TOGGLE_LIST_ITEM_REQUEST,
+  TOGGLE_LIST_ITEM_SUCCESS,
+  TOGGLE_LIST_ITEM_FAILURE,
   CHANGE_LIST_ITEM_REQUEST,
   CHANGE_LIST_ITEM_SUCCESS,
   CHANGE_LIST_ITEM_FAILURE
@@ -141,6 +144,30 @@ export default function reducer(state = initialState, action) {
       }
     }
     case CHANGE_LIST_ITEM_FAILURE:
+      return {
+        ...state,
+        changingItem: false
+      }
+
+    case TOGGLE_LIST_ITEM_REQUEST:
+      return {
+        ...state,
+        changingItem: true
+      }
+    case TOGGLE_LIST_ITEM_SUCCESS: {
+      let items = { ...state.items }
+      items[action.itemId] = {
+        ...items[action.itemId],
+        complete: action.complete
+      }
+
+      return {
+        ...state,
+        items,
+        changingItem: false
+      }
+    }
+    case TOGGLE_LIST_ITEM_FAILURE:
       return {
         ...state,
         changingItem: false

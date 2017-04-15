@@ -1,5 +1,6 @@
 import { auth, database, TIMESTAMP } from '../firebase'
-import { getLists } from './lists'
+import { getLists, updatePointsInList } from './lists'
+import { updatePointsInUser } from './account'
 
 export const GET_LIST_ITEM_IDS_REQUEST = 'GET_LIST_ITEM_IDS_REQUEST'
 export const GET_LIST_ITEM_IDS_SUCCESS = 'GET_LIST_ITEM_IDS_SUCCESS'
@@ -18,6 +19,10 @@ export const ADD_LIST_ITEM_FAILURE = 'ADD_LIST_ITEM_FAILURE'
 export const REMOVE_LIST_ITEM_REQUEST = 'REMOVE_LIST_ITEM_REQUEST'
 export const REMOVE_LIST_ITEM_SUCCESS = 'REMOVE_LIST_ITEM_SUCCESS'
 export const REMOVE_LIST_ITEM_FAILURE = 'REMOVE_LIST_ITEM_FAILURE'
+
+export const TOGGLE_LIST_ITEM_REQUEST = 'TOGGLE_LIST_ITEM_REQUEST'
+export const TOGGLE_LIST_ITEM_SUCCESS = 'TOGGLE_LIST_ITEM_SUCCESS'
+export const TOGGLE_LIST_ITEM_FAILURE = 'TOGGLE_LIST_ITEM_FAILURE'
 
 export const CHANGE_LIST_ITEM_REQUEST = 'CHANGE_LIST_ITEM_REQUEST'
 export const CHANGE_LIST_ITEM_SUCCESS = 'CHANGE_LIST_ITEM_SUCCESS'
@@ -121,7 +126,7 @@ export function addListItem(listId, data) {
       id: database.ref().child('items').push().key,
       userId: auth.currentUser.uid,
       title: data.title || '',
-      points: parseInt(data.points, 10) || 0,
+      points: data.points || 0,
       complete: false,
       created: TIMESTAMP,
       lastUpdated: TIMESTAMP
@@ -135,6 +140,7 @@ export function addListItem(listId, data) {
 
     return database.ref().update(updates).then(() => {
       dispatch({ type: ADD_LIST_ITEM_SUCCESS, listId, itemId: newItem.id, item: newItem })
+      dispatch(updatePointsInList(listId, newItem.points, 0))
     })
     .catch(error => {
       dispatch({ type: ADD_LIST_ITEM_FAILURE, listId, newItemId: newItem.id, data, error: error.message })
@@ -147,8 +153,10 @@ export function addListItem(listId, data) {
 * Removing an item from a list
 */
 export function removeListItem(itemId, listId) {
-  return dispatch => {
+  return (dispatch, getState) => {
     dispatch({ type: REMOVE_LIST_ITEM_REQUEST, itemId, listId })
+
+    let item = getState().items.items[itemId]
 
     let updates = {}
     updates[`/items/${itemId}`] = null
@@ -156,9 +164,32 @@ export function removeListItem(itemId, listId) {
 
     return database.ref().update(updates).then(() => {
       dispatch({ type: REMOVE_LIST_ITEM_SUCCESS, itemId, listId })
+      dispatch(updatePointsInList(listId, -item.points, (item.complete)? -item.points:0))
     })
     .catch(error => {
       dispatch({ type: REMOVE_LIST_ITEM_FAILURE, itemId, listId, error: error.message })
+      if (__DEV__) throw error
+    })
+  }
+}
+
+/*
+ * Toggle an item in a list
+ */
+export function toggleListItem(listId, itemId, complete = false, points = 0) {
+  return dispatch => {
+    dispatch({ type: TOGGLE_LIST_ITEM_REQUEST, listId, itemId, complete, points })
+
+    let updates = {}
+    updates[`/items/${itemId}/complete`] = complete
+
+    return database.ref().update(updates).then(() => {
+      dispatch({ type: TOGGLE_LIST_ITEM_SUCCESS, listId, itemId, complete, points })
+      dispatch(updatePointsInList(listId, 0, (complete)? points:-points))
+      dispatch(updatePointsInUser((complete)? points:-points, 0))
+    })
+    .catch(error => {
+      dispatch({ type: TOGGLE_LIST_ITEM_FAILURE, listId, itemId, complete, points, error: error.message })
       if (__DEV__) throw error
     })
   }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
 import ItemForm from '../components/ItemForm'
 import * as ItemsActions from '../actions/items'
@@ -8,35 +9,23 @@ import * as ItemsActions from '../actions/items'
 class ItemDetailsContainer extends Component {
   constructor(props) {
     super(props)
-    const { state } = this.props.navigation
+
     this.state = {
-      data: state.params || {},
-      mode: 'add'
+      data: this.props.params || {},
+      mode: (this.props.params.id)? 'edit':'add'
     }
   }
 
-  static navigationOptions = {
-    title: ({ state }) => {
-      return `${(!state.params.id)? 'Add':'Edit'} Item`
-    },
-  }
-
   _add(data) {
-    const { goBack } = this.props.navigation
     this.props.addListItem(this.state.data.listId, data).then(() => {
-      goBack()
+      Actions.pop()
     })
   }
 
   _update(data) {
-    const { goBack } = this.props.navigation
     this.props.changeListItem(this.state.data.id, data).then(() => {
-      goBack()
+      Actions.pop()
     })
-  }
-
-  componentWillMount() {
-    if (this.state.data.id) this.setState({mode: 'edit'})
   }
 
   render() {

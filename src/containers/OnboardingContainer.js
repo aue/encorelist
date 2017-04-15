@@ -1,25 +1,23 @@
 import React, { Component } from 'react'
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native'
+import { Actions } from 'react-native-router-flux'
+
+import Diamond from '../components/Diamond'
 
 export default class OnboardingContainer extends Component {
   constructor(props) {
     super(props)
   }
 
-  static navigationOptions = {
-    title: 'Welcome to Encore List'
-  }
-
   render() {
-    const { navigate } = this.props.navigation
-
     return (
       <View style={styles.container}>
         <View style={styles.image}>
+          <Diamond style={styles.diamond} color="#A21B35" size={175} />
           <Text style={styles.tagline}>Turn to-do lists into reality.</Text>
         </View>
 
-        <TouchableOpacity onPress={() => navigate('FormScreen', {mode: 'signup'})}>
+        <TouchableOpacity onPress={() => Actions.form({ params: { mode: 'signup' }, title: 'Sign Up'})}>
           <View style={styles.signup}>
             <Text style={styles.signuptext}>Sign Up</Text>
           </View>
@@ -27,7 +25,7 @@ export default class OnboardingContainer extends Component {
 
         <View style={styles.signin}>
           <Text>Already have an account?</Text>
-          <TouchableOpacity onPress={() => navigate('FormScreen', {mode: 'login'})}>
+          <TouchableOpacity onPress={() => Actions.form({ params: { mode: 'login' }, title: 'Log In'})}>
             <Text style={styles.login}>Log In</Text>
           </TouchableOpacity>
         </View>
@@ -42,10 +40,12 @@ const styles = StyleSheet.create({
     padding: 16
   },
   image: {
-    flex: 1
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   tagline: {
-    textAlign: 'center'
+    paddingTop: 16
   },
   signup: {
     backgroundColor: '#A21B35',

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 
 import ListForm from '../components/ListForm'
 import * as ListsActions from '../actions/lists'
@@ -8,41 +9,40 @@ import * as ListsActions from '../actions/lists'
 class ListDetailsContainer extends Component {
   constructor(props) {
     super(props)
-    const { state } = this.props.navigation
+
     this.state = {
-      data: state.params || {},
-      mode: 'add'
+      title: '',
+      listId: '',
+      mode: (this.props.params.listId)? 'edit':'add'
     }
   }
 
-  static navigationOptions = {
-    title: ({ state }) => {
-      return 'Add List'
-    },
-  }
-
   _add(data) {
-    const { goBack } = this.props.navigation
     this.props.addList(data).then(() => {
-      goBack()
+      Actions.pop()
     })
   }
 
   _update(data) {
-    const { goBack } = this.props.navigation
-    this.props.changeList(this.state.data.listId, data).then(() => {
-      goBack()
+    this.props.changeList(this.state.listId, data).then(() => {
+      Actions.pop()
     })
   }
 
   componentWillMount() {
-    if (this.state.data.listId) this.setState({mode: 'edit'})
+    if (this.props.lists[this.props.params.listId]) {
+      let list = this.props.lists[this.props.params.listId]
+      this.setState({
+        title: list.title,
+        listId: this.props.params.listId
+      })
+    }
   }
 
   render() {
     return (
       <ListForm
-        { ...this.state.data }
+        title={this.state.title}
         mode={this.state.mode}
         error={this.props.error}
         adding={this.props.adding}
@@ -56,6 +56,7 @@ class ListDetailsContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    lists: state.lists.lists,
     error: state.lists.error,
     adding: state.lists.adding,
     changing: state.lists.changing

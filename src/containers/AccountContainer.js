@@ -1,54 +1,74 @@
 import React, { Component } from 'react'
-import { Text, View, Button } from 'react-native'
+import { Alert, Button, ScrollView, Text, View } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
+import { Actions } from 'react-native-router-flux'
 
 import * as AccountActions from '../actions/account'
+
+import styles from '../styles'
+import Diamond from '../components/Diamond'
 
 class AccountContainer extends Component {
   constructor(props) {
     super(props)
   }
 
-  static navigationOptions = {
-    title: 'Account'
-  }
-
   logout() {
-    this.props.logout().then(() => {
-      const resetAction = NavigationActions.reset({
-        index: 0,
-        key: 'Init',
-        actions: [
-          NavigationActions.navigate({ routeName: 'Onboarding' })
-        ]
-      })
-      this.props.navigation.dispatch(resetAction)
-    })
+    Alert.alert(
+      'Log out',
+      'Do you want to log out of Encore List?',
+      [
+        {text: 'Cancel', style: 'cancel'},
+        {text: 'OK', onPress: () => {
+          this.props.logout().then(() => {
+            Actions.onboarding()
+          })
+        }}
+      ]
+    )
   }
 
   render() {
     return (
-      <View>
-        <Text>Profile</Text>
-        <Text>Name</Text>
-        <Text>Number of points</Text>
-        <Text>Notifications</Text>
-        <Button
-          title="Logout"
-          onPress={() => this.logout()}
-        />
-      </View>
+      <ScrollView style={styles.container}>
+        <View style={styles.section}>
+          <Text style={styles.title}>{this.props.name}</Text>
+          <Text>{this.props.email}</Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.title}>Points Available</Text>
+          <View style={styles.pointsDisplay}>
+            <Text style={styles.pointsDisplayText}>{this.props.points}</Text>
+            <Diamond size={27} />
+            <Text style={[styles.pointsDisplayText, styles.pointsDisplayBold]}>pts</Text>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.title}>Points Redeemed</Text>
+          <View style={styles.pointsDisplay}>
+            <Text style={styles.pointsDisplayText}>{this.props.redeemedPoints}</Text>
+            <Diamond size={27} />
+            <Text style={[styles.pointsDisplayText, styles.pointsDisplayBold]}>pts</Text>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Button
+            title="Log Out"
+            onPress={() => this.logout()}
+          />
+        </View>
+      </ScrollView>
     )
   }
 }
 
 const mapStateToProps = (state) => {
   return {
-    error: state.account.error,
-    user: state.account.user,
-    waitingForResponse: state.account.waitingForResponse
+    ...state.account
   }
 }
 

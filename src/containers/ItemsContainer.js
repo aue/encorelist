@@ -1,40 +1,41 @@
 import React, { Component } from 'react'
-import { Alert, Button } from 'react-native'
+import { Alert } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-
-import Items from '../components/Items'
+import { Actions } from 'react-native-router-flux'
 
 import * as ItemsActions from '../actions/items'
+
+import ItemListView from '../components/ItemListView'
 
 class ItemsContainer extends Component {
   constructor(props) {
     super(props)
   }
 
-  static navigationOptions = {
-    title: ({ state }) => {
-      return state.params.title || 'List'
-    },
-    header: ({ state, navigate }) => {
-      let right = (
-        <Button
-          title="Add"
-          onPress={() => navigate('ItemDetails', { listId: state.params.listId })}
-        />
-      )
-      return { right }
-    }
+  gotoToggleItem(itemId, complete, points) {
+    this.props.toggleListItem(this.props.listId, itemId, !complete, points)
   }
 
-  _add(title, points) {
-    this.props.addListItem(title, points, this.props.listId)
+  gotoEditItem(data) {
+    Actions.itemDetails({
+      params: {
+        listId: this.props.listId,
+        id: data.id,
+        title: data.title,
+        points: data.points
+      },
+      title: 'Edit Item',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
   }
 
-  _remove(itemId) {
+  gotoDeleteItem(itemId) {
     Alert.alert(
-      'Delete this item?',
-      'Points from this item will be removed',
+      'Delete this item',
+      'This item will be deleted from this list.',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => this.props.removeListItem(itemId, this.props.listId), style: 'destructive'},
@@ -42,37 +43,41 @@ class ItemsContainer extends Component {
     )
   }
 
-  _toggle(itemId, complete) {
-    this.props.changeListItem(itemId, { complete: !complete })
-  }
-
-  _edit(data) {
-    const { navigate } = this.props.navigation
-    navigate('ItemDetails', {
-      listId: this.props.listId,
-      id: data.id,
-      title: data.title,
-      points: data.points
+  gotoAddItem() {
+    Actions.itemDetails({
+      params: { listId: this.props.listId },
+      title: 'Add Item',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
     })
   }
 
   componentWillMount() {
-    let listId = this.props.navigation.state.params.listId || null
+    let listId = this.props.params.listId || null
     if (listId) {
-      this.props.getListItems(listId).then(() => {
-        //setParams({title: this.props.title})
-      })
+      this.props.getListItems(listId)
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    let listId = nextProps.params.listId
+    if (this.props.params.listId != listId && listId != null) {
+      this.props.getListItems(listId)
     }
   }
 
   render() {
     return (
-      <Items
-        {...this.props}
-        _add={this._add.bind(this)}
-        _remove={this._remove.bind(this)}
-        _toggle={this._toggle.bind(this)}
-        _edit={this._edit.bind(this)}
+      <ItemListView
+        data={this.props.items}
+        totalPoints={this.props.totalPoints}
+        completedPoints={this.props.completedPoints}
+        loading={this.props.loading}
+        onRowPress={this.gotoToggleItem.bind(this)}
+        onEditPress={this.gotoEditItem.bind(this)}
+        onDeletePress={this.gotoDeleteItem.bind(this)}
+        onAddPress={this.gotoAddItem.bind(this)}
       />
     )
   }
@@ -80,13 +85,27 @@ class ItemsContainer extends Component {
 
 const mapStateToProps = (state) => {
   let items = []
+  let activeList = {
+    title: '',
+    totalPoints: 0,
+    completedPoints: 0
+  }
   if (state.items.activeListId && !(state.items.loadingItemIds || state.items.loadingItems)) {
-    items = Object.keys(state.lists.lists[state.items.activeListId].items)
-      .map(itemId => state.items.items[itemId])
-      .filter(value => value !== null)
+    if (Object.keys(state.lists.lists[state.items.activeListId].items).length > 0)
+      items = Object.keys(state.lists.lists[state.items.activeListId].items)
+        .map(itemId => state.items.items[itemId])
+        .filter(value => value !== null)
+
+    activeList = {
+      ...activeList,
+      ...state.lists.lists[state.items.activeListId]
+    }
   }
 
   return {
+    title: activeList.title,
+    totalPoints: activeList.totalPoints,
+    completedPoints: activeList.completedPoints,
     listId: state.items.activeListId,
     items: items,
     loading: state.items.loadingItemIds || state.items.loadingItems,

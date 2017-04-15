@@ -7,12 +7,21 @@ import {
   LOGOUT_FAILURE,
   SIGNUP_REQUEST,
   SIGNUP_SUCCESS,
-  SIGNUP_FAILURE
+  SIGNUP_FAILURE,
+  GET_USER_DATA_REQUEST,
+  GET_USER_DATA_SUCCESS,
+  GET_USER_DATA_FAILURE,
+  UPDATE_POINTS_IN_USER_REQUEST,
+  UPDATE_POINTS_IN_USER_SUCCESS,
+  UPDATE_POINTS_IN_USER_FAILURE
 } from '../actions/account'
 
 const initialState = {
+  name: 'Listmaker',
+  email: '',
+  points: 0,
+  redeemedPoints: 0,
   error: null,
-  user: {},
   waitingForResponse: false
 }
 
@@ -27,6 +36,7 @@ export default function reducer(state = initialState, action) {
     case LOGIN_SUCCESS:
       return {
         ...state,
+        user: action.user,
         waitingForResponse: false,
         error: null
       }
@@ -36,6 +46,7 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
     case LOGOUT_REQUEST:
       return {
         ...state,
@@ -45,6 +56,7 @@ export default function reducer(state = initialState, action) {
     case LOGOUT_SUCCESS:
       return {
         ...state,
+        user: null,
         waitingForResponse: false,
         error: null
       }
@@ -54,6 +66,7 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
     case SIGNUP_REQUEST:
       return {
         ...state,
@@ -63,6 +76,7 @@ export default function reducer(state = initialState, action) {
     case SIGNUP_SUCCESS:
       return {
         ...state,
+        user: action.user,
         waitingForResponse: false,
         error: null
       }
@@ -72,6 +86,47 @@ export default function reducer(state = initialState, action) {
         waitingForResponse: false,
         error: action.error
       }
+
+    case GET_USER_DATA_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case GET_USER_DATA_SUCCESS: {
+      return {
+        ...state,
+        name: action.user.name,
+        email: action.user.email,
+        points: action.user.points,
+        redeemedPoints: action.user.redeemedPoints
+      }
+    }
+    case GET_USER_DATA_FAILURE: {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
+
+    case UPDATE_POINTS_IN_USER_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case UPDATE_POINTS_IN_USER_SUCCESS: {
+      return {
+        ...state,
+        points: action.points,
+        redeemedPoints: action.redeemedPoints
+      }
+    }
+    case UPDATE_POINTS_IN_USER_FAILURE: {
+      return {
+        ...state,
+        error: action.error
+      }
+    }
+
     default:
       return state
   }

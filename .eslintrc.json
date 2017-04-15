@@ -5,7 +5,9 @@
     },
     "extends": ["eslint:recommended", "plugin:react/recommended"],
     "globals": {
-        "__DEV__": false
+        "__DEV__": false,
+        "require": true,
+        "module": true
     },
     "parser": "babel-eslint",
     "parserOptions": {

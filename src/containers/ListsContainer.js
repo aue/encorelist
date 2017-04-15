@@ -1,39 +1,37 @@
 import React, { Component } from 'react'
-import { Alert, Button } from 'react-native'
+import { Alert } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
+import { Actions } from 'react-native-router-flux'
 import { auth } from '../firebase'
 
-import Lists from '../components/Lists'
 import * as ListsActions from '../actions/lists'
+
+import PointListView from '../components/PointListView'
 
 class ListsContainer extends Component {
   constructor(props) {
     super(props)
   }
 
-  static navigationOptions = {
-    title: 'Lists',
-    header: ({ navigate }) => {
-      let right = (
-        <Button
-          title="Add"
-          onPress={() => navigate('ListDetails')}
-        />
-      )
-      return { right }
-    },
+  gotoList(listId, title) {
+    Actions.items({ params: { listId, title }, title, backTitle: 'Lists' })
   }
 
-  navigateToList(listId, title) {
-    const { navigate } = this.props.navigation
-    navigate('Items', { listId, title })
+  gotoEditList(listId) {
+    Actions.listDetails({
+      params: { listId },
+      title: 'Edit List',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
   }
 
-  removeList(listId) {
+  gotoDeleteList(listId) {
     Alert.alert(
-      'Delete this list?',
-      'All items will be removed',
+      'Delete this list',
+      'All items in this list will be deleted.',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => this.props.removeList(listId), style: 'destructive'},
@@ -41,31 +39,57 @@ class ListsContainer extends Component {
     )
   }
 
+  gotoAddList() {
+    Actions.listDetails({
+      params: { },
+      title: 'Add List',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
+  }
+
   componentWillMount() {
-    this.props.getUserLists(auth.currentUser.uid)
+    if (auth.currentUser && !this.props.init) {
+      this.props.getUserLists(auth.currentUser.uid)
+    }
   }
 
   render() {
     return (
-      <Lists
-        { ...this.props }
-        navigateToList={this.navigateToList.bind(this)}
-        removeList={this.removeList.bind(this)}
+      <PointListView
+        data={this.props.lists}
+        accountPoints={this.props.accountPoints}
+        object="list"
+        loading={this.props.loading}
+        onRowPress={this.gotoList.bind(this)}
+        onEditPress={this.gotoEditList.bind(this)}
+        onDeletePress={this.gotoDeleteList.bind(this)}
+        onAddPress={this.gotoAddList.bind(this)}
       />
     )
   }
 }
 
 const mapStateToProps = (state) => {
-  let lists = []
-  if (!(state.lists.loadingListIds || state.lists.loadingLists)) {
-    lists = Object.keys(state.lists.listIds)
-      .map(listId => state.lists.lists[listId])
-      .filter(value => value !== null)
+  let lists = Object.values(state.lists.lists)
+  if (lists.length > 0) {
+    lists = lists.map(list => {
+      let numberOfItems = Object.keys(list.items).length
+      return {
+        id: list.id,
+        title: list.title,
+        subtitle: `${numberOfItems} ${(numberOfItems == 1)? 'Item' : 'Items'}`,
+        value: list.completedPoints,
+        outOfValue: list.totalPoints
+      }
+    })
   }
 
   return {
     lists: lists,
+    accountPoints: state.account.points,
+    init: state.lists.init,
     loading: state.lists.loadingListIds || state.lists.loadingLists,
     error: state.lists.error,
   }

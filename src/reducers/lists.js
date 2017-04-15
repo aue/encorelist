@@ -5,18 +5,32 @@ import {
   GET_LISTS_REQUEST,
   GET_LISTS_SUCCESS,
   GET_LISTS_FAILURE,
+  GET_USER_LISTS_REQUEST,
+  GET_USER_LISTS_SUCCESS,
+  GET_USER_LISTS_FAILURE,
   ADD_LIST_REQUEST,
   ADD_LIST_SUCCESS,
   ADD_LIST_FAILURE,
   REMOVE_LIST_REQUEST,
   REMOVE_LIST_SUCCESS,
-  REMOVE_LIST_FAILURE
+  REMOVE_LIST_FAILURE,
+  CHANGE_LIST_REQUEST,
+  CHANGE_LIST_SUCCESS,
+  CHANGE_LIST_FAILURE,
+  UPDATE_POINTS_IN_LIST_REQUEST,
+  UPDATE_POINTS_IN_LIST_FAILURE,
+  UPDATE_POINTS_IN_LIST_SUCCESS
 } from '../actions/lists'
 
 import {
   ADD_LIST_ITEM_SUCCESS,
-  REMOVE_LIST_ITEM_SUCCESS
+  REMOVE_LIST_ITEM_SUCCESS,
+  TOGGLE_LIST_ITEM_SUCCESS
 } from '../actions/items'
+
+import {
+  GET_USER_DATA_SUCCESS
+} from '../actions/account'
 
 const initialState = {
   listIds: {},
@@ -25,7 +39,8 @@ const initialState = {
   loadingLists: false,
   error: null,
   adding: false,
-  changing: false
+  changing: false,
+  init: false
 }
 
 export default function reducer(state = initialState, action) {
@@ -72,6 +87,28 @@ export default function reducer(state = initialState, action) {
         error: true
       }
 
+    case GET_USER_LISTS_REQUEST: {
+      return {
+        ...state,
+        init: true,
+        loadingLists: true,
+      }
+    }
+    case GET_USER_LISTS_SUCCESS: {
+      return {
+        ...state,
+        loadingLists: false,
+      }
+    }
+    case GET_USER_LISTS_FAILURE: {
+      return {
+        ...state,
+        error: action.error,
+        init: false,
+        loadingLists: false,
+      }
+    }
+
     case ADD_LIST_REQUEST:
       return {
         ...state,
@@ -88,8 +125,8 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         error: null,
-        listIds: listIds,
-        lists: lists,
+        listIds,
+        lists,
         adding: false
       }
     }
@@ -115,11 +152,57 @@ export default function reducer(state = initialState, action) {
       return {
         ...state,
         error: null,
-        listIds: listIds,
-        lists: lists
+        listIds,
+        lists
       }
     }
     case REMOVE_LIST_FAILURE: {
+      return {
+        ...state,
+        error: action.error,
+      }
+    }
+
+    case CHANGE_LIST_REQUEST:
+      return {
+        ...state,
+        changing: true
+      }
+    case CHANGE_LIST_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId] = {
+        ...lists[action.listId],
+        ...action.data
+      }
+
+      return {
+        ...state,
+        lists,
+        changing: false
+      }
+    }
+    case CHANGE_LIST_FAILURE:
+      return {
+        ...state,
+        changing: false
+      }
+
+    case UPDATE_POINTS_IN_LIST_REQUEST: {
+      return {
+        ...state
+      }
+    }
+    case UPDATE_POINTS_IN_LIST_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId].totalPoints = action.totalPoints
+      lists[action.listId].completedPoints = action.completedPoints
+
+      return {
+        ...state,
+        lists
+      }
+    }
+    case UPDATE_POINTS_IN_LIST_FAILURE: {
       return {
         ...state,
         error: action.error,
@@ -135,13 +218,33 @@ export default function reducer(state = initialState, action) {
         lists
       }
     }
-    case REMOVE_LIST_ITEM_SUCCESS:{
+    case REMOVE_LIST_ITEM_SUCCESS: {
       let lists = { ...state.lists }
       delete lists[action.listId].items[action.itemId]
 
       return {
         ...state,
         lists
+      }
+    }
+    case TOGGLE_LIST_ITEM_SUCCESS: {
+      let lists = { ...state.lists }
+      lists[action.listId].items[action.itemId] = true
+
+      return {
+        ...state,
+        lists
+      }
+    }
+
+    case GET_USER_DATA_SUCCESS: {
+      return {
+        ...state,
+        listIds: {
+          ...state.listIds,
+          ...action.listIds
+        },
+        loadingListIds: false
       }
     }
 

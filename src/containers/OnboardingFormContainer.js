@@ -2,24 +2,17 @@ import React, { Component } from 'react'
 import { StyleSheet, TouchableOpacity, TextInput, Text, View, ScrollView } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation'
+import { Actions } from 'react-native-router-flux'
 
 import * as AccountActions from '../actions/account'
 
 class OnboardingFormContainer extends Component {
   constructor(props) {
     super(props)
-    const { state } = this.props.navigation
     this.state = {
-      mode: state.params.mode || 'login',
+      mode: this.props.params.mode || 'login',
       email: 'test@example.com',
       password: 'testing'
-    }
-  }
-
-  static navigationOptions = {
-    title: ({ state }) => {
-      return (state.params.mode === 'login')? 'Log In' : 'Sign Up'
     }
   }
 
@@ -35,31 +28,12 @@ class OnboardingFormContainer extends Component {
   submit() {
     if (this.state.mode === 'login') {
       this.props.login(this.state.email, this.state.password).then(() => {
-        const resetAction = NavigationActions.reset({
-          index: 0,
-          key: 'Onboarding',
-          actions: [
-            NavigationActions.navigate({ routeName: 'Onboarding' })
-          ]
-        })
-        this.props.navigation.dispatch(resetAction)
+        if (this.props.user) Actions.app()
       })
     }
     else if (this.state.mode === 'signup') {
       this.props.signup(this.state.email, this.state.password).then(() => {
-        const navigateAction = NavigationActions.navigate({
-          routeName: 'Container',
-          action: NavigationActions.navigate({ routeName: 'ListsTab' })
-        })
-        this.props.navigation.dispatch(navigateAction)
-
-        /*const resetAction = NavigationActions.reset({
-          index: 0,
-          actions: [
-            NavigationActions.navigate({ routeName: 'Container' })
-          ]
-        })
-        this.props.navigation.dispatch(resetAction)*/
+        if (this.props.user) Actions.app()
       })
     }
   }
