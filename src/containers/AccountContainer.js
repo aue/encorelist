@@ -16,8 +16,8 @@ class AccountContainer extends Component {
 
   logout() {
     Alert.alert(
-      'Log Out',
-      'Do you want to log out?',
+      'Log out',
+      'Do you want to log out of Encore List?',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => {

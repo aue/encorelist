@@ -13,14 +13,29 @@ class ItemsContainer extends Component {
     super(props)
   }
 
-  addItem() {
-    Actions.itemDetails({ params: { listId: this.props.listId }, title: 'Add Item' })
+  gotoToggleItem(itemId, complete, points) {
+    this.props.toggleListItem(this.props.listId, itemId, !complete, points)
   }
 
-  _remove(itemId) {
+  gotoEditItem(data) {
+    Actions.itemDetails({
+      params: {
+        listId: this.props.listId,
+        id: data.id,
+        title: data.title,
+        points: data.points
+      },
+      title: 'Edit Item',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
+  }
+
+  gotoDeleteItem(itemId) {
     Alert.alert(
-      'Delete this item?',
-      'Points from this item will be removed',
+      'Delete this item',
+      'This item will be deleted from this list.',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => this.props.removeListItem(itemId, this.props.listId), style: 'destructive'},
@@ -28,34 +43,27 @@ class ItemsContainer extends Component {
     )
   }
 
-  _toggle(itemId, complete, points) {
-    this.props.toggleListItem(this.props.listId, itemId, !complete, points)
-  }
-
-  _edit(data) {
-    Actions.itemDetails({ params: {
-      listId: this.props.listId,
-      id: data.id,
-      title: data.title,
-      points: data.points
-    }, title: 'Edit Item' })
+  gotoAddItem() {
+    Actions.itemDetails({
+      params: { listId: this.props.listId },
+      title: 'Add Item',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
   }
 
   componentWillMount() {
     let listId = this.props.params.listId || null
     if (listId) {
-      this.props.getListItems(listId).then(() => {
-        //setParams({title: this.props.title})
-      })
+      this.props.getListItems(listId)
     }
   }
 
   componentWillReceiveProps(nextProps) {
     let listId = nextProps.params.listId
     if (this.props.params.listId != listId && listId != null) {
-      this.props.getListItems(listId).then(() => {
-        //setParams({title: this.props.title})
-      })
+      this.props.getListItems(listId)
     }
   }
 
@@ -66,10 +74,10 @@ class ItemsContainer extends Component {
         totalPoints={this.props.totalPoints}
         completedPoints={this.props.completedPoints}
         loading={this.props.loading}
-        onRowPress={this._toggle.bind(this)}
-        onEditPress={this._edit.bind(this)}
-        onDeletePress={this._remove.bind(this)}
-        onAddPress={this.addItem.bind(this)}
+        onRowPress={this.gotoToggleItem.bind(this)}
+        onEditPress={this.gotoEditItem.bind(this)}
+        onDeletePress={this.gotoDeleteItem.bind(this)}
+        onAddPress={this.gotoAddItem.bind(this)}
       />
     )
   }

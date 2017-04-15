@@ -16,6 +16,10 @@ export const REMOVE_REWARD_REQUEST = 'REMOVE_REWARD_REQUEST'
 export const REMOVE_REWARD_SUCCESS = 'REMOVE_REWARD_SUCCESS'
 export const REMOVE_REWARD_FAILURE = 'REMOVE_REWARD_FAILURE'
 
+export const CHANGE_REWARD_REQUEST = 'CHANGE_REWARD_REQUEST'
+export const CHANGE_REWARD_SUCCESS = 'CHANGE_REWARD_SUCCESS'
+export const CHANGE_REWARD_FAILURE = 'CHANGE_REWARD_FAILURE'
+
 /*
 * Fetch rewards ids in user's account
 */
@@ -139,6 +143,23 @@ export function removeReward(rewardId) {
     })
     .catch(error => {
       dispatch({ type: REMOVE_REWARD_FAILURE, rewardId, error: error.message })
+      if (__DEV__) throw error
+    })
+  }
+}
+
+/*
+ * Change a reward
+ */
+export function changeReward(rewardId, data) {
+  return dispatch => {
+    dispatch({ type: CHANGE_REWARD_REQUEST, rewardId, data })
+
+    return database.ref('/rewards/').child(rewardId).update(data).then(() => {
+      dispatch({ type: CHANGE_REWARD_SUCCESS, rewardId, data })
+    })
+    .catch(error => {
+      dispatch({ type: CHANGE_REWARD_FAILURE, rewardId, error: error.message })
       if (__DEV__) throw error
     })
   }

@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
-import { ListView, Text } from 'react-native'
-
-import styles from '../styles'
+import { ListView } from 'react-native'
 
 import HeaderLists from './HeaderLists'
 import PointRow from './PointRow'
@@ -53,7 +51,7 @@ export default class PointListView extends Component {
     return (
       <PointRow
         {...rowData}
-        onPress={() => this.props.onRowPress(rowData.id)}
+        onPress={() => this.props.onRowPress(rowData.id, rowData.title)}
         onEditPress={() => this.props.onEditPress(rowData.id)}
         onDeletePress={() => this.props.onDeletePress(rowData.id)}
       />

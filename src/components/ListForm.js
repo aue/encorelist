@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, ScrollView, TextInput, View, Button } from 'react-native'
+import { StyleSheet, ScrollView, TextInput, Button } from 'react-native'
 
 export default class ListForm extends Component {
   constructor(props) {

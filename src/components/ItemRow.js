@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Dimensions, Animated, PanResponder, StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import { Dimensions, Animated, PanResponder, Text, View, TouchableOpacity } from 'react-native'
 
+import styles from '../styles'
 import common from '../styles/common'
 import Diamond from './Diamond'
 
@@ -9,57 +10,83 @@ export default class ItemRow extends Component {
     super(props)
     const screen = Dimensions.get('window')
     this.state = {
+      open: false,
       width: 0,
       height: 0,
       screenWidth: screen.width,
       screenHeight: screen.height,
-      buttonPan: new Animated.Value(40),
-      buttonOpacityPan: new Animated.Value(0),
-      textPan: new Animated.Value(0)
+      circlePan: new Animated.Value(40),
+      circleRowPan: new Animated.Value(0),
+      circleOpacityPan: new Animated.Value(0),
+      rowPan: new Animated.Value(0),
+      opacityPan: new Animated.Value(0)
     }
   }
 
   _reset() {
-    Animated.timing(this.state.buttonPan, { toValue: 0, duration: 250 }).start()
-    Animated.timing(this.state.buttonOpacityPan, { toValue: 0, duration: 250 }).start()
-    Animated.timing(this.state.textPan, { toValue: 0, duration: 250 }).start()
+    this.setState({ open: false })
+    Animated.timing(this.state.circlePan, { toValue: 40, duration: 250 }).start()
+    Animated.timing(this.state.circleRowPan, { toValue: 0, duration: 250 }).start()
+    Animated.timing(this.state.circleOpacityPan, { toValue: 0, duration: 250 }).start()
+    Animated.timing(this.state.rowPan, { toValue: 0, duration: 250 }).start()
+    Animated.timing(this.state.opacityPan, { toValue: 0, duration: 250 }).start()
+  }
+
+  _open() {
+    this.setState({ open: true })
+    Animated.timing(this.state.circlePan, { toValue: 40, duration: 250 }).start()
+    Animated.timing(this.state.circleRowPan, { toValue: -80, duration: 250 }).start()
+    Animated.timing(this.state.circleOpacityPan, { toValue: 0, duration: 250 }).start()
+    Animated.timing(this.state.rowPan, { toValue: -80, duration: 250 }).start()
+    Animated.timing(this.state.opacityPan, { toValue: 1, duration: 250 }).start()
   }
 
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
       onMoveShouldSetPanResponderCapture: () => true,
-      onPanResponderGrant: () => {
-        this.state.buttonPan.setOffset(40)
-        this.state.buttonPan.setValue(0)
-        this.state.textPan.setOffset(0)
-        this.state.textPan.setValue(0)
-      },
+      onPanResponderGrant: () => true,
       onPanResponderMove: (evt, gestureState) => {
-        let dx = gestureState.dx
-        if (dx < 0) dx = 0
         const max = this.state.screenWidth/2
+        let dx = gestureState.dx
+        if (this.state.open) dx -= 80
 
-        // Text width
-        this.state.textPan.setValue(dx)
+        // Row sliding
+        this.state.rowPan.setValue(dx)
+        if (dx <= 0) this.state.circleRowPan.setValue(dx)
 
-        // Button width
-        if (dx > max) dx = max
-        this.state.buttonPan.setValue(dx)
+        // Circle width
+        let circleWidth = dx + 40
+        if (circleWidth > max) circleWidth = max
+        else if (circleWidth < 40) circleWidth = 40
+        this.state.circlePan.setValue(circleWidth)
 
-        // Button opacity on width
+        // Circle opacity
         let opacity = 1.5*dx/max
         if (opacity > 1) opacity = 1
         else if (opacity < 0) opacity = 0
-        this.state.buttonOpacityPan.setValue(opacity)
+        this.state.circleOpacityPan.setValue(opacity)
+
+        // Side button opacity
+        opacity = dx/-80
+        if (opacity > 1) opacity = 1
+        else if (opacity < 0) opacity = 0
+        this.state.opacityPan.setValue(opacity)
       },
       onPanResponderRelease: (evt, gestureState) => {
-        this._reset()
+        const max = this.state.screenWidth/2
 
-        // Toggle if fits
-        if (this.state.buttonPan._value > (this.state.screenWidth/2)*0.7 || gestureState.vx > 1) {
-          this.props._toggle()
+        if (this.state.circlePan._value > 0.7*max || gestureState.vx > 1 && this.state.rowPan._value > 0) {
+          // Swipe -->
+          this.props.onPress()
+          this._reset()
         }
+        else if (this.state.rowPan._value < -80 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
+          // Swipe <--
+          this._open()
+        }
+        else
+          this._reset()
       },
       onPanResponderTerminate: () => this._reset()
     })
@@ -67,91 +94,46 @@ export default class ItemRow extends Component {
 
   render() {
     return (
-      <View {...this._panResponder.panHandlers} collapsable={false} style={styles.row}>
-        <TouchableOpacity style={styles.check} onPress={() => this.props._toggle()}>
-          <Animated.View style={[styles.circle, this.props.complete && styles.circleActive, { width: this.state.buttonPan }]}>
-            <Animated.Text style={[styles.circleText, this.props.complete && styles.circleTextActive, { opacity: this.state.buttonOpacityPan }]}>
+      <View {...this._panResponder.panHandlers} style={styles.itemRow}>
+        <TouchableOpacity
+          style={styles.itemRowCheck}
+          onPress={() => { this.props.onPress(); this._reset() }}
+        >
+          <Animated.View style={[styles.circle, this.props.complete && styles.circleActive, { width: this.state.circlePan, transform: [{ translateX: this.state.circleRowPan }] }]}>
+            <Animated.Text style={[styles.circleText, this.props.complete && styles.circleTextActive, { opacity: this.state.circleOpacityPan }]}>
               {(this.props.complete)? '✕' : '✓'}
             </Animated.Text>
           </Animated.View>
         </TouchableOpacity>
 
-        <TouchableOpacity
-          style={styles.text}
-          onPress={() => this.props._edit()}
-          onLongPress={() => this.props._remove()}
-        >
-          <Animated.View style={{ transform: [{ translateX: this.state.textPan }] }}>
-            <Text style={styles.title}>{this.props.title}</Text>
-            <View style={styles.points}>
-              <Text style={styles.pointsText}>{this.props.points}</Text>
-              <Diamond style={styles.diamond} color="#777" size={13} />
-              <Text style={styles.pointsText}>pts</Text>
+        <Animated.View style={[styles.itemRowSection, { transform: [{ translateX: this.state.rowPan }] }]}>
+          <TouchableOpacity
+            onPress={() => { this.props.onEditPress(); this._reset() }}
+          >
+            <Text style={styles.rowTitle}>{this.props.title}</Text>
+            <View style={styles.rowSubtitle}>
+              <Text style={styles.rowSubtitleText}>{this.props.points}</Text>
+              <Diamond color={common.darkText} size={13} />
+              <Text style={styles.rowSubtitleText}>pts</Text>
             </View>
-          </Animated.View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        </Animated.View>
+
+        <Animated.View style={[styles.rowSlidein, { opacity: this.state.opacityPan }]} pointerEvents={(this.state.open)? 'auto' : 'none'}>
+          <TouchableOpacity
+            style={styles.rowSlideinButton}
+            onPress={() => { this.props.onEditPress(); this._reset() }}
+          >
+            <Text style={styles.rowSlideinButtonText}>Edit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.pointrlideinButton}
+            onPress={() => { this.props.onDeletePress(); this._reset() }}
+          >
+            <Text style={styles.rowSlideinButtonText}>Delete</Text>
+          </TouchableOpacity>
+        </Animated.View>
       </View>
     )
   }
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-  },
-  check: {
-    margin: 8,
-    padding: 8,
-    position: 'absolute',
-    left: 0,
-    zIndex: 1
-  },
-  text: {
-    flex: 1,
-    margin: 8,
-    padding: 8,
-    paddingRight: 16,
-    marginLeft: 16 + 40 + 8,
-    marginRight: 0
-  },
-  title: {
-    fontSize: 20,
-  },
-  points: {
-    paddingTop: 6,
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  pointsText: {
-    fontSize: 15,
-    fontWeight: 'bold',
-    marginRight: 4,
-    marginTop: -2
-  },
-
-  circle: {
-    backgroundColor: common.lightBackground,
-    borderWidth: 2,
-    borderColor: common.altPrimary,
-    borderRadius: 25,
-    height: 40,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'center'
-  },
-  circleActive: {
-    backgroundColor: common.brandPrimary,
-    borderColor: common.brandPrimary,
-  },
-  circleText: {
-    color: common.mediumGrey,
-    fontSize: 18,
-    lineHeight: 29
-  },
-  circleTextActive: {
-    color: common.lightText
-  }
-})

@@ -49,9 +49,9 @@ export default class ItemListView extends Component {
     return (
       <ItemRow
         {...rowData}
-        _toggle={() => this.props.onRowPress(rowData.id, rowData.complete, rowData.points)}
-        _edit={() => this.props.onEditPress(rowData)}
-        _remove={() => this.props.onDeletePress(rowData.id)}
+        onPress={() => this.props.onRowPress(rowData.id, rowData.complete, rowData.points)}
+        onEditPress={() => this.props.onEditPress(rowData)}
+        onDeletePress={() => this.props.onDeletePress(rowData.id)}
       />
     )
   }

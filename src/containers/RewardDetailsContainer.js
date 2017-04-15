@@ -11,7 +11,9 @@ class RewardDetailsContainer extends Component {
     super(props)
 
     this.state = {
-      data: this.props.params || {},
+      title: '',
+      pointCost: 0,
+      rewardId: '',
       mode: (this.props.params.rewardId)? 'edit':'add'
     }
   }
@@ -23,15 +25,27 @@ class RewardDetailsContainer extends Component {
   }
 
   _update(data) {
-    this.props.changeReward(this.state.data.rewardId, data).then(() => {
+    this.props.changeReward(this.state.rewardId, data).then(() => {
       Actions.pop()
     })
+  }
+
+  componentWillMount() {
+    if (this.props.rewards[this.props.params.rewardId]) {
+      let reward = this.props.rewards[this.props.params.rewardId]
+      this.setState({
+        title: reward.title,
+        pointCost: reward.pointCost,
+        rewardId: this.props.params.rewardId
+      })
+    }
   }
 
   render() {
     return (
       <RewardForm
-        { ...this.state.data }
+        title={this.state.title}
+        pointCost={this.state.pointCost}
         mode={this.state.mode}
         error={this.props.error}
         adding={this.props.adding}
@@ -45,6 +59,7 @@ class RewardDetailsContainer extends Component {
 
 const mapStateToProps = (state) => {
   return {
+    rewards: state.rewards.rewards,
     error: state.rewards.error,
     adding: state.rewards.adding,
     changing: state.rewards.changing

@@ -10,7 +10,10 @@ import {
   ADD_REWARD_FAILURE,
   REMOVE_REWARD_REQUEST,
   REMOVE_REWARD_SUCCESS,
-  REMOVE_REWARD_FAILURE
+  REMOVE_REWARD_FAILURE,
+  CHANGE_REWARD_REQUEST,
+  CHANGE_REWARD_SUCCESS,
+  CHANGE_REWARD_FAILURE,
 } from '../actions/rewards'
 
 const initialState = {
@@ -122,6 +125,30 @@ export default function reducer(state = initialState, action) {
         error: action.error,
       }
     }
+
+    case CHANGE_REWARD_REQUEST:
+      return {
+        ...state,
+        changing: true
+      }
+    case CHANGE_REWARD_SUCCESS: {
+      let rewards = { ...state.rewards }
+      rewards[action.rewardId] = {
+        ...rewards[action.rewardId],
+        ...action.data
+      }
+
+      return {
+        ...state,
+        rewards,
+        changing: false
+      }
+    }
+    case CHANGE_REWARD_FAILURE:
+      return {
+        ...state,
+        changing: false
+      }
 
     default:
       return state

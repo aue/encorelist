@@ -15,16 +15,22 @@ class ListsContainer extends Component {
   }
 
   gotoList(listId, title) {
-    Actions.items({ params: { listId, title }, title })
+    Actions.items({ params: { listId, title }, title, backTitle: 'Lists' })
   }
 
   gotoEditList(listId) {
-    Actions.listDetails({ params: { listId }, title: 'Edit List' })
+    Actions.listDetails({
+      params: { listId },
+      title: 'Edit List',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
   }
 
   gotoDeleteList(listId) {
     Alert.alert(
-      'Delete this list?',
+      'Delete this list',
       'All items in this list will be deleted.',
       [
         {text: 'Cancel', style: 'cancel'},
@@ -34,7 +40,13 @@ class ListsContainer extends Component {
   }
 
   gotoAddList() {
-    Actions.listDetails({ params: {}, title: 'Add List' })
+    Actions.listDetails({
+      params: { },
+      title: 'Add List',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
   }
 
   componentWillMount() {

@@ -176,7 +176,7 @@ export function removeList(listId) {
 }
 
 /*
- * Change an list
+ * Change a list
  */
 export function changeList(listId, data) {
   return dispatch => {

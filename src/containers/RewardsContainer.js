@@ -14,19 +14,39 @@ class RewardsContainer extends Component {
     super(props)
   }
 
-  gotoAddReward() {
-    Actions.rewardDetails({ params: {}, title: 'Add Reward' })
+  gotoReward(rewardId, title) {
+    Actions.rewards({ params: { rewardId, title }, title, backTitle: 'Rewards' })
   }
 
-  gotoRemoveReward(rewardId) {
+  gotoEditReward(rewardId) {
+    Actions.rewardDetails({
+      params: { rewardId },
+      title: 'Edit Reward',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
+  }
+
+  gotoDeleteReward(rewardId) {
     Alert.alert(
-      'Delete this reward?',
-      'This will be removed',
+      'Delete this reward',
+      'This reward will be deleted.',
       [
         {text: 'Cancel', style: 'cancel'},
         {text: 'OK', onPress: () => this.props.removeReward(rewardId), style: 'destructive'},
       ]
     )
+  }
+
+  gotoAddReward() {
+    Actions.rewardDetails({
+      params: { },
+      title: 'Add Reward',
+      direction: 'vertical',
+      backTitle: 'Cancel',
+      hideBackImage: true
+    })
   }
 
   componentWillMount() {
@@ -41,9 +61,9 @@ class RewardsContainer extends Component {
         accountPoints={this.props.accountPoints}
         object="reward"
         loading={this.props.loading}
-        onRowPress={() => null}
-        onEditPress={() => null}
-        onDeletePress={this.gotoRemoveReward.bind(this)}
+        onRowPress={this.gotoReward.bind(this)}
+        onEditPress={this.gotoEditReward.bind(this)}
+        onDeletePress={this.gotoDeleteReward.bind(this)}
         onAddPress={this.gotoAddReward.bind(this)}
       />
     )
