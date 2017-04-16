@@ -23,7 +23,7 @@ export default class HeaderLists extends Component {
     return (
       <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={[common.altPrimary, common.altSecondary]} style={[styles.container, styles.header]}>
         <View style={styles.section}>
-          <Text style={[styles.title]}>At a glance</Text>
+          <Text style={styles.title}>At a glance</Text>
           <View style={styles.pointsDisplay}>
             <Text style={[styles.pointsDisplayText]}>{this.props.points || 0}</Text>
             <Diamond size={27} />

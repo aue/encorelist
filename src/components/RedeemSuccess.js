@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Animated, ScrollView, Text, View } from 'react-native'
+import { Animated, InteractionManager, ScrollView, Text, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import styles from '../styles'
@@ -18,8 +18,10 @@ export default class RedeemSuccess extends Component {
   }
 
   componentDidMount() {
-    Animated.timing(this.state.opacity, { toValue: 1, duration: 500 }).start()
-    Animated.timing(this.state.scale, { toValue: 1, duration: 750 }).start()
+    InteractionManager.runAfterInteractions(() => {
+      Animated.timing(this.state.opacity, { toValue: 1, duration: 500 }).start()
+      Animated.timing(this.state.scale, { toValue: 1, duration: 750 }).start()
+    })
   }
 
   render() {

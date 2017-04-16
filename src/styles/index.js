@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native'
+import { Platform, StyleSheet } from 'react-native'
 import common from './common'
 
 export default StyleSheet.create({
   scene: {
-    paddingTop: 54
+    paddingTop: (Platform.OS === 'ios')? 64 : 54
   },
   sceneTabs: {
-    paddingTop: 54,
+    paddingTop: (Platform.OS === 'ios')? 64 : 54,
     paddingBottom: 50
   },
 
@@ -60,6 +60,7 @@ export default StyleSheet.create({
   },
 
   title: {
+    backgroundColor: 'transparent',
     fontWeight: 'bold',
     color: common.darkText
   },
@@ -84,6 +85,7 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   pointsDisplayText: {
+    backgroundColor: 'transparent',
     fontSize: 35,
     marginRight: 6,
     color: common.darkText
@@ -122,16 +124,16 @@ export default StyleSheet.create({
     alignItems: 'center'
   },
   rowSlideinButton: {
-    margin: 4
-  },
-  rowSlideinButtonText: {
     backgroundColor: common.mediumGrey,
-    color: common.white,
-    fontWeight: 'bold',
+    borderRadius: 30,
+    margin: 4,
     padding: 10,
     paddingLeft: 15,
-    paddingRight: 15,
-    borderRadius: 30
+    paddingRight: 15
+  },
+  rowSlideinButtonText: {
+    color: common.white,
+    fontWeight: 'bold'
   },
 
   pointRowContainer: {
@@ -263,6 +265,7 @@ export default StyleSheet.create({
     borderRadius: 40
   },
   buttonText: {
+    backgroundColor: 'transparent',
     color: common.lightText,
     textAlign: 'center',
     fontWeight: 'bold'

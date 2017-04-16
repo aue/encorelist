@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Animated, Dimensions, PanResponder, Text, TouchableOpacity, View } from 'react-native'
+import { Animated, Dimensions, InteractionManager, PanResponder, Text, TouchableOpacity, View } from 'react-native'
 
 import styles from '../styles'
 
@@ -73,13 +73,34 @@ export default class PointRow extends Component {
     })
   }
 
+  onPress = () => {
+    this._reset()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.onPress()
+    })
+  }
+
+  onEditPress = () => {
+    this._reset()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.onEditPress()
+    })
+  }
+
+  onDeletePress = () => {
+    this._reset()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.onDeletePress()
+    })
+  }
+
   render() {
     return (
       <View {...this._panResponder.panHandlers}>
         <Animated.View style={[styles.pointRowContainer, { transform: [{ translateX: this.state.rowPan }] }]}>
           <TouchableOpacity
             style={styles.pointRow}
-            onPress={() => { this.props.onPress(); this._reset() }}
+            onPress={this.onPress}
           >
             <View style={styles.pointRowCircle}>
               <PointCircle value={this.props.value} />
@@ -96,13 +117,15 @@ export default class PointRow extends Component {
         <Animated.View style={[styles.rowSlidein, { opacity: this.state.opacityPan }]} pointerEvents={(this.state.open)? 'auto' : 'none'}>
           <TouchableOpacity
             style={styles.rowSlideinButton}
-            onPress={() => { this.props.onEditPress(); this._reset() }}
+            onPress={this.onEditPress}
           >
-            <Text style={styles.rowSlideinButtonText}>Edit</Text>
+            <View >
+              <Text style={styles.rowSlideinButtonText}>Edit</Text>
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.rowSlideinButton}
-            onPress={() => { this.props.onDeletePress(); this._reset() }}
+            onPress={this.onDeletePress}
           >
             <Text style={styles.rowSlideinButtonText}>Delete</Text>
           </TouchableOpacity>

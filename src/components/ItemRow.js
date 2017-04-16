@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Dimensions, Animated, PanResponder, Text, View, TouchableOpacity } from 'react-native'
+import { Animated, Dimensions, InteractionManager, PanResponder, Text, TouchableOpacity, View } from 'react-native'
 
 import styles from '../styles'
 import common from '../styles/common'
@@ -80,8 +80,8 @@ export default class ItemRow extends Component {
 
         if (this.state.circlePan._value > 0.7*max || gestureState.vx > 1 && this.state.rowPan._value > 0) {
           // Swipe -->
-          requestAnimationFrame(() => this.props.onPress())
           this._reset()
+          this.onPress()
         }
         else if (this.state.rowPan._value < -50 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
           // Swipe <--
@@ -94,12 +94,33 @@ export default class ItemRow extends Component {
     })
   }
 
+  onPress = () => {
+    this._reset()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.onPress()
+    })
+  }
+
+  onEditPress = () => {
+    this._reset()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.onEditPress()
+    })
+  }
+
+  onDeletePress = () => {
+    this._reset()
+    InteractionManager.runAfterInteractions(() => {
+      this.props.onDeletePress()
+    })
+  }
+
   render() {
     return (
       <View {...this._panResponder.panHandlers} style={styles.itemRow}>
         <TouchableOpacity
           style={styles.itemRowCheck}
-          onPress={() => { this.props.onPress(); this._reset() }}
+          onPress={this.onPress}
         >
           <Animated.View style={[styles.circle, this.props.complete && styles.circleActive, { width: this.state.circlePan, transform: [{ translateX: this.state.circleRowPan }] }]}>
             <Animated.Text style={[styles.circleText, this.props.complete && styles.circleTextActive, { opacity: this.state.circleOpacityPan }]}>
@@ -110,7 +131,7 @@ export default class ItemRow extends Component {
 
         <Animated.View style={[styles.itemRowSection, { transform: [{ translateX: this.state.rowPan }] }]}>
           <TouchableOpacity
-            onPress={() => { this.props.onEditPress(); this._reset() }}
+            onPress={this.onEditPress}
           >
             <Text style={styles.rowTitle}>{this.props.title}</Text>
             <View style={styles.rowSubtitle}>
@@ -124,13 +145,13 @@ export default class ItemRow extends Component {
         <Animated.View style={[styles.rowSlidein, { opacity: this.state.opacityPan }]} pointerEvents={(this.state.open)? 'auto' : 'none'}>
           <TouchableOpacity
             style={styles.rowSlideinButton}
-            onPress={() => { this.props.onEditPress(); this._reset() }}
+            onPress={this.onEditPress}
           >
             <Text style={styles.rowSlideinButtonText}>Edit</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.rowSlideinButton}
-            onPress={() => { this.props.onDeletePress(); this._reset() }}
+            onPress={this.onDeletePress}
           >
             <Text style={styles.rowSlideinButtonText}>Delete</Text>
           </TouchableOpacity>

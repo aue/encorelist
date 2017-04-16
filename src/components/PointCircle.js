@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row'
   },
   text: {
+    backgroundColor: 'transparent',
     color: common.lightText,
     fontSize: 20,
     fontWeight: '700',
