@@ -23,6 +23,7 @@ export default class PointRow extends Component {
       open: false,
       width: 0,
       height: 0,
+      sensitivity: 5,
       screenWidth: screen.width,
       screenHeight: screen.height,
       rowPan: new Animated.Value(0),
@@ -45,9 +46,12 @@ export default class PointRow extends Component {
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: (event, gestureState) =>
+        (Math.abs(gestureState.dx) > this.state.sensitivity &&
+        Math.abs(gestureState.dy) < 6*this.state.sensitivity) ||
+        Math.abs(gestureState.dx) > 50,
       onPanResponderGrant: () => true,
-      onPanResponderMove: (evt, gestureState) => {
+      onPanResponderMove: (event, gestureState) => {
         let dx = gestureState.dx
         if (this.state.open) dx -= 80
 
@@ -60,7 +64,7 @@ export default class PointRow extends Component {
         else if (opacity < 0) opacity = 0
         this.state.opacityPan.setValue(opacity)
       },
-      onPanResponderRelease: (evt, gestureState) => {
+      onPanResponderRelease: (event, gestureState) => {
         if (this.state.rowPan._value < -50 || gestureState.vx > 1 && this.state.rowPan._value < 0) {
           // Swipe <--
           this._open()

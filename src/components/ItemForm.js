@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ScrollView, TextInput, View } from 'react-native'
+import { ScrollView, StatusBar, TextInput, View } from 'react-native'
 
 import common from '../styles/common'
 import styles from '../styles'
@@ -37,6 +37,10 @@ export default class ItemForm extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
+        <StatusBar
+         backgroundColor={common.lightGrey}
+         barStyle="dark-content"
+        />
         <View style={styles.section}>
           <TextInput
             placeholder="Title"

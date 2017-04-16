@@ -195,7 +195,7 @@ export default StyleSheet.create({
   circleText: {
     color: common.mediumGrey,
     fontSize: 18,
-    lineHeight: 29
+    lineHeight: (Platform.OS === 'ios')? 36 : 29
   },
   circleTextActive: {
     color: common.lightText
@@ -232,12 +232,14 @@ export default StyleSheet.create({
     borderBottomRightRadius: 16
   },
   redeemedTagline: {
-    fontWeight: 'bold',
-    color: common.mediumGrey,
     borderTopWidth: 1,
     borderBottomWidth: 1,
     borderColor: common.mediumGrey,
     marginBottom: 16
+  },
+  redeemedTaglineText: {
+    fontWeight: 'bold',
+    color: common.mediumGrey,
   },
   redeemedCircle: {
     position: 'absolute',
@@ -246,7 +248,8 @@ export default StyleSheet.create({
   redeemedTitle: {
     marginBottom: 32,
     fontSize: 35,
-    color: common.darkText
+    color: common.darkText,
+    textAlign: 'center'
   },
 
   formInput: {

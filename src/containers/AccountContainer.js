@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert, ScrollView, Text, View } from 'react-native'
+import { Alert, ScrollView, StatusBar, Text, View } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -7,6 +7,7 @@ import { Actions } from 'react-native-router-flux'
 import * as AccountActions from '../actions/account'
 
 import styles from '../styles'
+import common from '../styles/common'
 import Diamond from '../components/Diamond'
 import PillButton from '../components/PillButton'
 
@@ -33,6 +34,11 @@ class AccountContainer extends Component {
   render() {
     return (
       <ScrollView style={styles.container}>
+        <StatusBar
+         backgroundColor={common.lightGrey}
+         barStyle="dark-content"
+        />
+
         <View style={styles.section}>
           <Text style={styles.title}>{this.props.name}</Text>
           <Text>{this.props.email}</Text>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Animated, InteractionManager, ScrollView, Text, View } from 'react-native'
+import { Animated, InteractionManager, ScrollView, StatusBar, Text, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import styles from '../styles'
@@ -27,11 +27,17 @@ export default class RedeemSuccess extends Component {
   render() {
     return (
       <Animated.View style={[styles.redeemedContainer, { opacity: this.state.opacity }]}>
+        <StatusBar
+         backgroundColor={common.brandPrimary}
+         barStyle="light-content"
+        />
         <LinearGradient start={{x: 0, y: 0}} end={{x: 0, y: 1}} colors={[common.brandSecondary, common.brandPrimary]} style={styles.redeemedBackground} />
         <ScrollView>
           <Animated.View style={[styles.redeemedTicket, { transform: [{ scale: this.state.scale }] }]}>
             <View style={[styles.redeemedSection, styles.redeemedTopSection]}>
-              <Text style={styles.redeemedTagline}>REDEEM ONE</Text>
+              <View style={styles.redeemedTagline}>
+                <Text style={styles.redeemedTaglineText}>REDEEM ONE</Text>
+              </View>
               <PointCircle value={this.props.pointCost} style={styles.redeemedCircle} />
             </View>
             <View style={[styles.redeemedSection, styles.redeemedBottomSection]}>

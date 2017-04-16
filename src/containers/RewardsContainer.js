@@ -84,15 +84,18 @@ class RewardsContainer extends Component {
 const mapStateToProps = (state) => {
   let rewards = Object.values(state.rewards.rewards)
   if (rewards.length > 0) {
-    rewards = rewards.map(reward => {
-      return {
-        key: reward.id,
-        id: reward.id,
-        title: reward.title,
-        subtitle: `${reward.pointCost} Points`,
-        value: reward.pointCost
-      }
-    })
+    rewards = rewards
+      .map(reward => {
+        return {
+          key: reward.id,
+          id: reward.id,
+          title: reward.title,
+          subtitle: `${reward.pointCost} Points`,
+          value: reward.pointCost
+        }
+      }).sort(function(a, b) {
+        return a.value - b.value
+      })
   }
 
   return {

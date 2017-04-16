@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Text, View } from 'react-native'
+import { StatusBar, Text, View } from 'react-native'
 import LinearGradient from 'react-native-linear-gradient'
 
 import styles from '../styles'
@@ -33,6 +33,10 @@ export default class HeaderItems extends Component {
 
     return (
       <LinearGradient start={{x: 0, y: 0}} end={{x: 1, y: 0}} colors={[common.brandPrimary, common.brandSecondary]} style={[styles.container, styles.header]}>
+        <StatusBar
+         backgroundColor={common.brandPrimary}
+         barStyle="light-content"
+        />
         {content}
       </LinearGradient>
     )
