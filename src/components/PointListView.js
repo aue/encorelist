@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ListView } from 'react-native'
+import { FlatList } from 'react-native'
 
 import HeaderLists from './HeaderLists'
 import PointRow from './PointRow'
@@ -18,14 +18,6 @@ export default class PointListView extends Component {
     onDeletePress
     onAddPress
     */
-  }
-
-  componentWillMount() {
-    this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(this.props.data)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.dataSource = this.dataSource.cloneWithRows(nextProps.data)
   }
 
   renderHeader() {
@@ -50,10 +42,11 @@ export default class PointListView extends Component {
   renderRow(rowData) {
     return (
       <PointRow
-        {...rowData}
-        onPress={() => this.props.onRowPress(rowData.id, rowData.title)}
-        onEditPress={() => this.props.onEditPress(rowData.id)}
-        onDeletePress={() => this.props.onDeletePress(rowData.id)}
+        key={rowData.item.key}
+        {...rowData.item}
+        onPress={() => this.props.onRowPress(rowData.item.id, rowData.item.title)}
+        onEditPress={() => this.props.onEditPress(rowData.item.id)}
+        onDeletePress={() => this.props.onDeletePress(rowData.item.id)}
       />
     )
   }
@@ -62,12 +55,11 @@ export default class PointListView extends Component {
     if (this.props.loading) return <PointRowLoading />
 
     return (
-      <ListView
-        dataSource={this.dataSource}
-        enableEmptySections={true}
-        renderHeader={this.renderHeader.bind(this)}
-        renderFooter={this.renderFooter.bind(this)}
-        renderRow={this.renderRow.bind(this)}
+      <FlatList
+        data={this.props.data}
+        ListHeaderComponent={this.renderHeader.bind(this)}
+        ListFooterComponent={this.renderFooter.bind(this)}
+        renderItem={this.renderRow.bind(this)}
       />
     )
   }

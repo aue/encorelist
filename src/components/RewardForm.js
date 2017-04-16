@@ -16,6 +16,13 @@ export default class RewardForm extends Component {
     }
   }
 
+  validateFormCheck = () => {
+    if (this.state.title.length === 0
+      || !this.state.title.trim()
+    ) return false
+    return true
+  }
+
   onPress = () => {
     let data = {
       title: this.state.title,
@@ -45,7 +52,7 @@ export default class RewardForm extends Component {
           <PillButton
             onPress={this.onPress}
             title={(this.props.mode == 'ADD')? 'Add' : 'Save'}
-            disabled={this.props.addingItem || this.props.changingItem}
+            disabled={!this.validateFormCheck() || this.props.addingItem || this.props.changingItem}
           />
         </View>
       </ScrollView>

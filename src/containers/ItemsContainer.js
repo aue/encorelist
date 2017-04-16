@@ -108,7 +108,16 @@ const mapStateToProps = (state, ownProps) => {
     let itemIds = Object.keys(list.items)
     if (itemIds.length > 0) {
       activeList.items = itemIds
-        .map(itemId => state.items.items[itemId])
+        .map(itemId => {
+          let item = state.items.items[itemId]
+          if (item)
+            return {
+              ...item,
+              key: item.id
+            }
+          else
+            return null
+        })
         .filter(value => value !== null)
     }
   }

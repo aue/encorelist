@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { ListView } from 'react-native'
+import { FlatList } from 'react-native'
 
 import HeaderItems from './HeaderItems'
 import ItemRow from './ItemRow'
@@ -18,15 +18,7 @@ export default class ItemListView extends Component {
     */
   }
 
-  componentWillMount() {
-    this.dataSource = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2}).cloneWithRows(this.props.data)
-  }
-
-  componentWillReceiveProps(nextProps) {
-    this.dataSource = this.dataSource.cloneWithRows(nextProps.data)
-  }
-
-  renderHeader() {
+  renderHeader = () => {
     return (
       <HeaderItems
         totalPoints={this.props.totalPoints}
@@ -36,7 +28,7 @@ export default class ItemListView extends Component {
     )
   }
 
-  renderFooter() {
+  renderFooter = () => {
     return (
       <ItemRowAdd
         onPress={this.props.onAddPress}
@@ -44,25 +36,25 @@ export default class ItemListView extends Component {
     )
   }
 
-  renderRow(rowData) {
+  renderRow = (rowData) => {
     return (
       <ItemRow
-        {...rowData}
-        onPress={() => this.props.onRowPress(rowData.id, rowData.complete, rowData.points)}
-        onEditPress={() => this.props.onEditPress(rowData)}
-        onDeletePress={() => this.props.onDeletePress(rowData.id)}
+        key={rowData.item.key}
+        {...rowData.item}
+        onPress={() => this.props.onRowPress(rowData.item.id, rowData.item.complete, rowData.item.points)}
+        onEditPress={() => this.props.onEditPress(rowData.item)}
+        onDeletePress={() => this.props.onDeletePress(rowData.item.id)}
       />
     )
   }
 
   render() {
     return (
-      <ListView
-        dataSource={this.dataSource}
-        enableEmptySections={true}
-        renderHeader={this.renderHeader.bind(this)}
-        renderFooter={this.renderFooter.bind(this)}
-        renderRow={this.renderRow.bind(this)}
+      <FlatList
+        data={this.props.data}
+        ListHeaderComponent={this.renderHeader}
+        ListFooterComponent={this.renderFooter}
+        renderItem={this.renderRow}
       />
     )
   }

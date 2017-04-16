@@ -18,7 +18,7 @@ class RewardsContainer extends Component {
     Actions.rewardRedeem({
       params: { rewardId, title },
       title: 'Redeem',
-      backTitle: 'Rewards' 
+      backTitle: 'Rewards'
     })
   }
 
@@ -78,15 +78,12 @@ const mapStateToProps = (state) => {
   let rewards = Object.values(state.rewards.rewards)
   if (rewards.length > 0) {
     rewards = rewards.map(reward => {
-      let percentage = state.account.points/reward.pointCost
-      if (percentage > 1) percentage = 1
-
       return {
+        key: reward.id,
         id: reward.id,
         title: reward.title,
         subtitle: `${reward.pointCost} Points`,
-        value: reward.pointCost,
-        percentage: percentage
+        value: reward.pointCost
       }
     })
   }

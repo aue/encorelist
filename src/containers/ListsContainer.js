@@ -77,6 +77,7 @@ const mapStateToProps = (state) => {
     lists = lists.map(list => {
       let numberOfItems = Object.keys(list.items).length
       return {
+        key: list.id,
         id: list.id,
         title: list.title,
         subtitle: `${numberOfItems} ${(numberOfItems == 1)? 'Item' : 'Items'}`,

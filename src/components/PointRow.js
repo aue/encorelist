@@ -82,7 +82,7 @@ export default class PointRow extends Component {
             onPress={() => { this.props.onPress(); this._reset() }}
           >
             <View style={styles.pointRowCircle}>
-              <PointCircle value={this.props.value} percentage={this.props.percentage} />
+              <PointCircle value={this.props.value} />
             </View>
             <View style={styles.pointRowSection}>
               <Text style={styles.rowTitle}>{this.props.title}</Text>

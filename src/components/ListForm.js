@@ -14,6 +14,13 @@ export default class ListForm extends Component {
     }
   }
 
+  validateFormCheck = () => {
+    if (this.state.title.length === 0
+      || !this.state.title.trim()
+    ) return false
+    return true
+  }
+
   onPress = () => {
     let data = {
       title: this.state.title,
@@ -38,7 +45,7 @@ export default class ListForm extends Component {
           <PillButton
             onPress={this.onPress}
             title={(this.props.mode == 'ADD')? 'Add' : 'Save'}
-            disabled={this.props.adding || this.props.changing}
+            disabled={!this.validateFormCheck() || this.props.adding || this.props.changing}
           />
         </View>
       </ScrollView>
