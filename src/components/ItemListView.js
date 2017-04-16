@@ -4,6 +4,7 @@ import { FlatList } from 'react-native'
 import HeaderItems from './HeaderItems'
 import ItemRow from './ItemRow'
 import ItemRowAdd from './ItemRowAdd'
+import ItemRowLoading from '../components/ItemRowLoading'
 
 export default class ItemListView extends Component {
   constructor(props) {
@@ -49,6 +50,8 @@ export default class ItemListView extends Component {
   }
 
   render() {
+    if (this.props.loading) return <ItemRowLoading />
+
     return (
       <FlatList
         data={this.props.data}

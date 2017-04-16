@@ -11,17 +11,45 @@ export default StyleSheet.create({
   },
 
   navBar: {
-    backgroundColor: common.lightGrey
+    backgroundColor: common.lightGrey,
+    borderBottomColor: common.altPrimary
   },
   navBarTitle: {
     fontWeight: 'bold'
   },
-  leftButton: {
+  navBarLeftButton: {
+    color: common.brandPrimary
+  },
+  navBarLeftButtonIcon: {
     tintColor: common.brandPrimary
   },
 
+  navBarAlt: {
+    backgroundColor: common.brandPrimary,
+    borderBottomColor: common.brandSecondary
+  },
+  navBarTitleAlt: {
+    fontWeight: 'bold',
+    color: common.lightText
+  },
+  navBarLeftButtonAlt: {
+    color: common.lightText
+  },
+  navBarLeftButtonIconAlt: {
+    tintColor: common.lightText
+  },
+
   tabs: {
-    backgroundColor: common.lightGrey
+    backgroundColor: common.lightGrey,
+    borderBottomColor: common.altPrimary,
+    borderBottomWidth: 0.5
+  },
+  tabButton: {
+    color: common.darkText
+  },
+  tabButtonSelected: {
+    color: common.brandPrimary,
+    fontWeight: 'bold'
   },
 
   container: {
@@ -29,12 +57,6 @@ export default StyleSheet.create({
   },
   section: {
     padding: 8
-  },
-  message: {
-    margin: 16,
-    padding: 16,
-    borderWidth: 1,
-    borderColor: '#ccc'
   },
 
   title: {

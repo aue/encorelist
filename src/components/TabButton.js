@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { Text } from 'react-native'
-import common from '../styles/common'
+import styles from '../styles'
 
 export default class TabButton extends Component {
   render() {
     return (
-      <Text style={{color: this.props.selected ? common.brandPrimary : common.mediumGrey }}>{this.props.title}</Text>
+      <Text style={[styles.tabButton, this.props.selected && styles.tabButtonSelected]}>{this.props.title}</Text>
     )
   }
 }

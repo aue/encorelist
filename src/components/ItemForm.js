@@ -12,6 +12,7 @@ export default class ItemForm extends Component {
 
     this.state = {
       title: this.props.title || '',
+      complete: this.props.complete || false,
       points: this.props.points || 0
     }
   }
@@ -26,10 +27,11 @@ export default class ItemForm extends Component {
   onPress = () => {
     let data = {
       title: this.state.title,
+      complete: this.state.complete,
       points: this.state.points
     }
-    if (this.props.mode == 'edit') this.props._update(data)
-    else this.props._add(data)
+    if (this.props.mode == 'EDIT') this.props.update(data)
+    else this.props.add(data)
   }
 
   render() {
@@ -39,6 +41,8 @@ export default class ItemForm extends Component {
           <TextInput
             placeholder="Title"
             underlineColorAndroid={common.brandPrimary}
+            autoCapitalize="sentences"
+            autoFocus={true}
             style={styles.formInput}
             value={this.state.title}
             onChangeText={(value) => this.setState({title: value})}

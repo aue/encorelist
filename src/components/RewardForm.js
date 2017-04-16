@@ -39,6 +39,8 @@ export default class RewardForm extends Component {
           <TextInput
             placeholder="Title"
             underlineColorAndroid={common.brandPrimary}
+            autoCapitalize="sentences"
+            autoFocus={true}
             style={styles.formInput}
             value={this.state.title}
             onChangeText={(value) => this.setState({title: value})}

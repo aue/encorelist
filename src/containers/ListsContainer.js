@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert } from 'react-native'
+import { Alert, InteractionManager } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -12,6 +12,9 @@ import PointListView from '../components/PointListView'
 class ListsContainer extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      renderPlaceholderOnly: true
+    }
   }
 
   gotoList(listId, title) {
@@ -50,9 +53,13 @@ class ListsContainer extends Component {
   }
 
   componentWillMount() {
-    if (auth.currentUser && !this.props.init) {
-      this.props.getUserLists(auth.currentUser.uid)
-    }
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({renderPlaceholderOnly: false})
+
+      if (auth.currentUser && !this.props.init) {
+        this.props.getUserLists(auth.currentUser.uid)
+      }
+    })
   }
 
   render() {
@@ -61,7 +68,7 @@ class ListsContainer extends Component {
         data={this.props.lists}
         accountPoints={this.props.accountPoints}
         object="list"
-        loading={this.props.loading}
+        loading={this.state.renderPlaceholderOnly || this.props.loading}
         onRowPress={this.gotoList.bind(this)}
         onEditPress={this.gotoEditList.bind(this)}
         onDeletePress={this.gotoDeleteList.bind(this)}
@@ -81,8 +88,7 @@ const mapStateToProps = (state) => {
         id: list.id,
         title: list.title,
         subtitle: `${numberOfItems} ${(numberOfItems == 1)? 'Item' : 'Items'}`,
-        value: list.completedPoints,
-        outOfValue: list.totalPoints
+        value: list.totalPoints
       }
     })
   }

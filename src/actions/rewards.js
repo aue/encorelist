@@ -174,9 +174,10 @@ export function changeReward(rewardId, data) {
 export function redeemReward(rewardId) {
   return (dispatch, getState) => {
     const reward = getState().rewards.rewards[rewardId]
-    if (reward) {
-      dispatch({ type: REDEEM_REWARD, rewardId, pointCost: reward.pointCost })
+    dispatch({ type: REDEEM_REWARD, rewardId })
+    if (reward && reward.pointCost > 0) {
       dispatch(updatePointsInUser(-reward.pointCost, reward.pointCost))
     }
+    return new Promise((resolve) => resolve()) // hacky
   }
 }

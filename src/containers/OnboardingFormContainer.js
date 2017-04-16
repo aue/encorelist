@@ -15,8 +15,8 @@ class OnboardingFormContainer extends Component {
     super(props)
     this.state = {
       mode: this.props.params.mode || 'login',
-      email: 'test@example.com',
-      password: 'testing'
+      email: '',
+      password: ''
     }
   }
 
@@ -59,6 +59,7 @@ class OnboardingFormContainer extends Component {
             autoCapitalize="none"
             returnKeyType="next"
             underlineColorAndroid={common.brandPrimary}
+            autoFocus={true}
             value={this.state.email}
             disabled={this.props.waitingForResponse}
             onChangeText={(email) => this.setState({email})}

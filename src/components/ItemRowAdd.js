@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, TouchableOpacity } from 'react-native'
+import common from '../styles/common'
 
 export default class ItemRowAdd extends Component {
   constructor(props) {
@@ -30,9 +31,11 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     width: 40,
     marginRight: 16,
-    textAlign: 'center'
+    textAlign: 'center',
+    color: common.darkText
   },
   text: {
-    fontSize: 16
+    fontSize: 16,
+    color: common.darkText
   }
 })

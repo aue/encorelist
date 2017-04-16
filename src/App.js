@@ -20,6 +20,7 @@ import ItemDetailsContainer from './containers/ItemDetailsContainer'
 import RewardsContainer from './containers/RewardsContainer'
 import RewardDetailsContainer from './containers/RewardDetailsContainer'
 import RewardRedeemContainer from './containers/RewardRedeemContainer'
+import RewardRedeemSuccessContainer from './containers/RewardRedeemSuccessContainer'
 import AccountContainer from './containers/AccountContainer'
 import OnboardingContainer from './containers/OnboardingContainer'
 import OnboardingFormContainer from './containers/OnboardingFormContainer'
@@ -30,25 +31,26 @@ import configureStore from './store/configureStore'
 const store = configureStore()
 
 const scenes = Actions.create(
-  <Scene key="root" navigationBarStyle={styles.navBar} titleStyle={styles.navBarTitle}>
+  <Scene key="root">
     <Scene key="launch" component={LoadingContainer} hideNavBar={true} initial={true} />
-    <Scene key="onboarding" type="replace">
-      <Scene key="welcome" component={OnboardingContainer} title="Welcome to Encore List" sceneStyle={styles.scene} initial={true} />
+    <Scene key="onboarding" type="replace" navigationBarStyle={styles.navBar} titleStyle={styles.navBarTitle} backButtonTextStyle={styles.navBarLeftButton} leftButtonIconStyle={styles.navBarLeftButtonIcon}>
+      <Scene key="welcome" component={OnboardingContainer} title="Encore List" sceneStyle={styles.scene} initial={true} />
       <Scene key="form" component={OnboardingFormContainer} sceneStyle={styles.scene} />
     </Scene>
     <Scene key="app" tabs={true} type="replace" tabBarStyle={styles.tabs}>
-      <Scene key="listsTab" title="Lists" icon={TabButton} initial={true}>
+      <Scene key="listsTab" title="Lists" icon={TabButton} initial={true} navigationBarStyle={styles.navBar} titleStyle={styles.navBarTitle} backButtonTextStyle={styles.navBarLeftButton} leftButtonIconStyle={styles.navBarLeftButtonIcon}>
         <Scene key="lists" component={ListsContainer} title="Lists" sceneStyle={styles.sceneTabs} />
         <Scene key="listDetails" component={ListDetailsContainer} sceneStyle={styles.scene} hideTabBar={true} />
-        <Scene key="items" component={ItemsContainer} sceneStyle={styles.sceneTabs} />
+        <Scene key="items" component={ItemsContainer} sceneStyle={styles.sceneTabs} navigationBarStyle={styles.navBarAlt} titleStyle={styles.navBarTitleAlt} backButtonTextStyle={styles.navBarLeftButtonAlt} leftButtonIconStyle={styles.navBarLeftButtonIconAlt} />
         <Scene key="itemDetails" component={ItemDetailsContainer} sceneStyle={styles.scene} hideTabBar={true} />
       </Scene>
-      <Scene key="rewardsTab" title="Rewards" icon={TabButton}>
+      <Scene key="rewardsTab" title="Rewards" icon={TabButton} navigationBarStyle={styles.navBar} titleStyle={styles.navBarTitle} backButtonTextStyle={styles.navBarLeftButton} leftButtonIconStyle={styles.navBarLeftButtonIcon}>
         <Scene key="rewards" component={RewardsContainer} title="Rewards" sceneStyle={styles.sceneTabs} />
         <Scene key="rewardDetails" component={RewardDetailsContainer} sceneStyle={styles.scene} hideTabBar={true} />
         <Scene key="rewardRedeem" component={RewardRedeemContainer} sceneStyle={styles.scene} hideTabBar={true} />
+        <Scene key="rewardRedeemSuccess" component={RewardRedeemSuccessContainer} sceneStyle={styles.scene} hideTabBar={true} navigationBarStyle={styles.navBarAlt} titleStyle={styles.navBarTitleAlt} backButtonTextStyle={styles.navBarLeftButtonAlt} leftButtonIconStyle={styles.navBarLeftButtonIconAlt} />
       </Scene>
-      <Scene key="accountTab" component={AccountContainer} title="Account" icon={TabButton} sceneStyle={styles.sceneTabs} />
+      <Scene key="accountTab" component={AccountContainer} title="Account" icon={TabButton} sceneStyle={styles.sceneTabs} navigationBarStyle={styles.navBar} titleStyle={styles.navBarTitle} backButtonTextStyle={styles.navBarLeftButton} leftButtonIconStyle={styles.navBarLeftButtonIcon} />
     </Scene>
   </Scene>
 )

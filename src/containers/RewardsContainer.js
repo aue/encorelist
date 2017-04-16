@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert } from 'react-native'
+import { Alert, InteractionManager } from 'react-native'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
 import { Actions } from 'react-native-router-flux'
@@ -12,6 +12,9 @@ import PointListView from '../components/PointListView'
 class RewardsContainer extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      renderPlaceholderOnly: true
+    }
   }
 
   gotoReward(rewardId, title) {
@@ -54,8 +57,12 @@ class RewardsContainer extends Component {
   }
 
   componentWillMount() {
-    if (auth.currentUser && !this.props.init)
-      this.props.getUserRewards(auth.currentUser.uid)
+    InteractionManager.runAfterInteractions(() => {
+      this.setState({renderPlaceholderOnly: false})
+
+      if (auth.currentUser && !this.props.init)
+        this.props.getUserRewards(auth.currentUser.uid)
+    })
   }
 
   render() {
@@ -64,7 +71,7 @@ class RewardsContainer extends Component {
         data={this.props.rewards}
         accountPoints={this.props.accountPoints}
         object="reward"
-        loading={this.props.loading}
+        loading={this.state.renderPlaceholderOnly || this.props.loading}
         onRowPress={this.gotoReward.bind(this)}
         onEditPress={this.gotoEditReward.bind(this)}
         onDeletePress={this.gotoDeleteReward.bind(this)}

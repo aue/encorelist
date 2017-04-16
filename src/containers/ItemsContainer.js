@@ -6,7 +6,7 @@ import { Actions } from 'react-native-router-flux'
 
 import * as ItemsActions from '../actions/items'
 
-import ItemRowLoading from '../components/ItemRowLoading'
+
 import ItemListView from '../components/ItemListView'
 
 class ItemsContainer extends Component {
@@ -25,9 +25,7 @@ class ItemsContainer extends Component {
     Actions.itemDetails({
       params: {
         listId: this.props.listId,
-        id: data.id,
-        title: data.title,
-        points: data.points
+        id: data.id
       },
       title: 'Edit Item',
       direction: 'vertical',
@@ -68,16 +66,12 @@ class ItemsContainer extends Component {
   }
 
   render() {
-    if (this.state.renderPlaceholderOnly || this.props.loading) {
-      return <ItemRowLoading />
-    }
-
     return (
       <ItemListView
         data={this.props.items}
         totalPoints={this.props.totalPoints}
         completedPoints={this.props.completedPoints}
-        loading={this.props.loading}
+        loading={this.state.renderPlaceholderOnly || this.props.loading}
         onRowPress={this.gotoToggleItem.bind(this)}
         onEditPress={this.gotoEditItem.bind(this)}
         onDeletePress={this.gotoDeleteItem.bind(this)}

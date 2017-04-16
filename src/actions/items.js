@@ -38,7 +38,7 @@ export function getListItemIds(listId) {
     if (getState().lists.listIds[listId]) {
       // if list is cache in store, use that
       let itemIds = getState().lists.lists[listId].items
-      dispatch({ type: GET_LIST_ITEM_IDS_SUCCESS, listId, itemIds: itemIds })
+      dispatch({ type: GET_LIST_ITEM_IDS_SUCCESS, listId, itemIds: itemIds, cache: true })
       return new Promise((resolve) => resolve()) // hacky
     }
     else {
@@ -132,7 +132,7 @@ export function addListItem(listId, data) {
       lastUpdated: TIMESTAMP
     }
 
-    dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId: newItem.id, data })
+    dispatch({ type: ADD_LIST_ITEM_REQUEST, listId, newItemId: newItem.id, data: newItem })
 
     let updates = {}
     updates[`/items/${newItem.id}`] = newItem
@@ -143,7 +143,7 @@ export function addListItem(listId, data) {
       dispatch(updatePointsInList(listId, newItem.points, 0))
     })
     .catch(error => {
-      dispatch({ type: ADD_LIST_ITEM_FAILURE, listId, newItemId: newItem.id, data, error: error.message })
+      dispatch({ type: ADD_LIST_ITEM_FAILURE, listId, newItemId: newItem.id, data: newItem, error: error.message })
       if (__DEV__) throw error
     })
   }
@@ -198,12 +198,35 @@ export function toggleListItem(listId, itemId, complete = false, points = 0) {
 /*
  * Change an item in a list
  */
-export function changeListItem(itemId, data) {
+export function changeListItem(listId, itemId, data, oldData) {
   return dispatch => {
-    dispatch({ type: CHANGE_LIST_ITEM_REQUEST, itemId, data })
+    dispatch({ type: CHANGE_LIST_ITEM_REQUEST, itemId, data, oldData })
 
     return database.ref('/items/').child(itemId).update(data).then(() => {
       dispatch({ type: CHANGE_LIST_ITEM_SUCCESS, itemId, data })
+
+      if (oldData.points !== data.points) {
+        const difference = data.points - oldData.points
+        // if item is not completed, update list totalPoints
+        if (!oldData.complete && !data.complete) {
+          dispatch(updatePointsInList(listId, difference, 0))
+        }
+        // if item is just now completed, update list completedPoints, list totalPoints, and account points
+        else if (!oldData.complete && data.complete) {
+          dispatch(updatePointsInList(listId, difference, data.points))
+          dispatch(updatePointsInUser(data.points, 0))
+        }
+        // if item is just now UNcompleted, update list completedPoints, list totalPoints, and account points
+        else if (oldData.complete && !data.complete) {
+          dispatch(updatePointsInList(listId, difference, -oldData.points))
+          dispatch(updatePointsInUser(-oldData.points, 0))
+        }
+        // if item was already completed, update list completedPoints, list totalPoints, and account points
+        else if (oldData.complete && data.complete) {
+          dispatch(updatePointsInList(listId, difference, difference))
+          dispatch(updatePointsInUser(difference, 0))
+        }
+      }
     })
     .catch(error => {
       dispatch({ type: CHANGE_LIST_ITEM_FAILURE, itemId, error: error.message })

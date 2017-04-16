@@ -9,21 +9,23 @@ import * as ItemsActions from '../actions/items'
 class ItemDetailsContainer extends Component {
   constructor(props) {
     super(props)
-
-    this.state = {
-      data: this.props.params || {},
-      mode: (this.props.params.id)? 'edit':'add'
-    }
   }
 
-  _add(data) {
-    this.props.addListItem(this.state.data.listId, data).then(() => {
+  add = (data) => {
+    // listId, data
+    this.props.addListItem(this.props.listId, data).then(() => {
       Actions.pop()
     })
   }
 
-  _update(data) {
-    this.props.changeListItem(this.state.data.id, data).then(() => {
+  update = (data) => {
+    let oldData = {
+      title: this.props.title,
+      complete: this.props.complete,
+      points: this.props.points
+    }
+    // listId, itemId, data, oldData
+    this.props.changeListItem(this.props.listId, this.props.itemId, data, oldData).then(() => {
       Actions.pop()
     })
   }
@@ -31,20 +33,48 @@ class ItemDetailsContainer extends Component {
   render() {
     return (
       <ItemForm
-        { ...this.state.data }
-        mode={this.state.mode}
+        title={this.props.title}
+        complete={this.props.complete}
+        points={this.props.points}
+        mode={this.props.mode}
         error={this.props.error}
         addingItem={this.props.addingItem}
         changingItem={this.props.changingItem}
-        _add={this._add.bind(this)}
-        _update={this._update.bind(this)}
+        add={this.add}
+        update={this.update}
       />
     )
   }
 }
 
-const mapStateToProps = (state) => {
+const mapStateToProps = (state, ownProps) => {
+  let activeItem = {
+    listId: null,
+    itemId: null,
+    title: '',
+    complete: false,
+    points: 0,
+    mode: 'ADD'
+  }
+
+  // if a listId has been passed in
+  let listId = ownProps.params.listId
+  if (listId)
+    activeItem.listId = listId
+
+  // if a itemId has been passed in
+  let itemId = ownProps.params.id
+  if (itemId) {
+    let item = state.items.items[itemId]
+    activeItem.itemId = itemId
+    activeItem.title = item.title
+    activeItem.complete = item.complete
+    activeItem.points = item.points
+    activeItem.mode = 'EDIT'
+  }
+
   return {
+    ...activeItem,
     error: state.items.error,
     addingItem: state.items.addingItem,
     changingItem: state.items.changingItem

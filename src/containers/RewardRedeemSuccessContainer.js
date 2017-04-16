@@ -1,36 +1,22 @@
 import React, { Component } from 'react'
 import { bindActionCreators } from 'redux'
 import { connect } from 'react-redux'
-import { Actions } from 'react-native-router-flux'
 
 import * as RewardsActions from '../actions/rewards'
 
-import RedeemForm from '../components/RedeemForm'
+import RedeemSuccess from '../components/RedeemSuccess'
 
-class RewardRedeemContainer extends Component {
+class RewardRedeemSuccessContainer extends Component {
   constructor(props) {
     super(props)
   }
 
-  redeem = () => {
-    this.props.redeemReward(this.props.rewardId).then(() => {
-      Actions.rewardRedeemSuccess({
-        type: 'replace',
-        params: { rewardId: this.props.rewardId },
-        title: 'Redeemed',
-        backTitle: 'Rewards'
-      })
-    })
-  }
-
   render() {
     return (
-      <RedeemForm
+      <RedeemSuccess
         title={this.props.title}
         pointCost={this.props.pointCost}
         accountPoints={this.props.accountPoints}
-        error={this.props.error}
-        redeem={this.redeem}
       />
     )
   }
@@ -65,4 +51,4 @@ const mapDispatchToProps = (dispatch) => {
   return bindActionCreators(RewardsActions, dispatch)
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(RewardRedeemContainer)
+export default connect(mapStateToProps, mapDispatchToProps)(RewardRedeemSuccessContainer)
