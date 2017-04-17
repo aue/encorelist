@@ -10,6 +10,7 @@
     "firebase": "^3.7.0",
     "react": "16.0.0-alpha.6",
     "react-native": "0.43.3",
+    "react-native-firebase": "^1.0.0-alpha12",
     "react-native-linear-gradient": "^2.0.0",
     "react-native-router-flux": "^3.38.0",
     "react-native-svg": "^5.1.7",

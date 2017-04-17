@@ -1,4 +1,4 @@
-import firebase from 'firebase'
+import RNFirebase from 'react-native-firebase'
 import config from './config'
 
 const firebaseApp = {
@@ -6,10 +6,11 @@ const firebaseApp = {
   authDomain: config.AUTH_DOMAIN,
   databaseURL: config.DATABASE_URL,
   storageBucket: config.STORAGE_BUCKET,
-  messagingSenderId: config.MESSAGING_SENDER_ID
+  messagingSenderId: config.MESSAGING_SENDER_ID,
+  persistence: true
 }
 
-firebase.initializeApp(firebaseApp)
+const firebase = RNFirebase.initializeApp(firebaseApp)
 export const database = firebase.database()
 export const auth = firebase.auth()
 export const TIMESTAMP = firebase.database.ServerValue.TIMESTAMP
