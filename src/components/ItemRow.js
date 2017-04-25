@@ -13,6 +13,7 @@ export default class ItemRow extends Component {
       open: false,
       width: 0,
       height: 0,
+      sensitivity: 5,
       screenWidth: screen.width,
       screenHeight: screen.height,
       circlePan: new Animated.Value(40),
@@ -44,7 +45,10 @@ export default class ItemRow extends Component {
   componentWillMount() {
     this._panResponder = PanResponder.create({
       onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
+      onMoveShouldSetPanResponderCapture: (event, gestureState) =>
+        (Math.abs(gestureState.dx) > this.state.sensitivity &&
+        Math.abs(gestureState.dy) < 6*this.state.sensitivity) ||
+        Math.abs(gestureState.dx) > 50,
       onPanResponderGrant: () => true,
       onPanResponderMove: (evt, gestureState) => {
         const max = this.state.screenWidth/2

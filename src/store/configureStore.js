@@ -1,6 +1,5 @@
 import { applyMiddleware, createStore } from 'redux'
 import thunk from 'redux-thunk'
-import Reactotron from 'reactotron-react-native'
 
 import reducers from '../reducers'
 
@@ -8,7 +7,7 @@ export default function configureStore() {
   let store
 
   if (__DEV__) {
-    store = Reactotron.createStore(reducers, applyMiddleware(thunk))
+    //store = Reactotron.createStore(reducers, applyMiddleware(thunk))
 
     if (module.hot) {
       module.hot.accept(() => {

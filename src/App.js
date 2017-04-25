@@ -3,13 +3,6 @@ import { AppRegistry } from 'react-native'
 import { Provider } from 'react-redux'
 import { Actions, Scene, Router } from 'react-native-router-flux'
 
-import Reactotron from 'reactotron-react-native'
-import { reactotronRedux } from 'reactotron-redux'
-Reactotron
-  .configure()
-  .use(reactotronRedux())
-  .connect()
-
 import styles from './styles'
 
 import LoadingContainer from './containers/LoadingContainer'
